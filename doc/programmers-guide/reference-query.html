@@ -1,0 +1,1421 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Managing Queries and Results</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Database Independent Abstraction Layer for C"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="libdbi API Reference"
+HREF="reference.html"><LINK
+REL="PREVIOUS"
+TITLE="SQL and Database Infrastructure"
+HREF="reference-database.html"><LINK
+REL="NEXT"
+TITLE="Retrieving Field Meta-data"
+HREF="reference-field-meta.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Database Independent Abstraction Layer for C: libdbi Programmer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="reference-database.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. libdbi API Reference</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="reference-field-meta.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="REFERENCE-QUERY"
+>3.5. Managing Queries and Results</A
+></H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-QUERY"
+>3.5.1. dbi_conn_query</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1151"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>dbi_result <B
+CLASS="FSFUNC"
+>dbi_conn_query</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>statement</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Execute the specified SQL query statement.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>statement</TT
+>: A string containing the SQL statement.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>A query result object, or NULL if there was an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-QUERYF"
+>3.5.2. dbi_conn_queryf</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1174"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>dbi_result <B
+CLASS="FSFUNC"
+>dbi_conn_queryf</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>formatstr</VAR
+>, <VAR
+CLASS="PDPARAM"
+>...</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Execute the specified SQL query statement.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>formatstr</TT
+>: The format string for the SQL statement. It uses the same format as printf().</P
+><P
+><TT
+CLASS="LITERAL"
+>ARG</TT
+>: (...) Any variables that correspond to the printf-like format string.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>A query result object, or NULL if there was an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-QUERY-NULL"
+>3.5.3. dbi_conn_query_null</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1201"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>dbi_result <B
+CLASS="FSFUNC"
+>dbi_conn_query_null</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const unsigned char *<VAR
+CLASS="PDPARAM"
+>statement</VAR
+>, unsigned long <VAR
+CLASS="PDPARAM"
+>st_length</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Execute the specified SQL query statement, which may contain valid NULL characters.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This function is not implemented by all database drivers. For a portable way of including binary strings into SQL queries, see the function <A
+HREF="reference-query.html#DBI-CONN-QUOTE-BINARY-COPY"
+>dbi_conn_quote_binary_copy</A
+>.</P
+></BLOCKQUOTE
+></DIV
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>statement</TT
+>: The SQL statement, which may contain binary data.</P
+><P
+><TT
+CLASS="LITERAL"
+>st_length</TT
+>: The number of characters in the non-null-terminated statement string.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>A query result object, or NULL if there was an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-SEQUENCE-LAST"
+>3.5.4. dbi_conn_sequence_last</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1231"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>unsigned long long <B
+CLASS="FSFUNC"
+>dbi_conn_sequence_last</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>name</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Requests the row ID generated by the last <B
+CLASS="COMMAND"
+>INSERT</B
+> command. The row ID is most commonly generated by an auto-incrementing column in the table. Use the return value to address the dataset that was last inserted.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The current database connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>name</TT
+>: The name of the sequence, or NULL if the database engine does not use explicit sequences.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>You may have noted that this function does not sufficiently encapsulate the peculiarities of the underlying database engines. You must keep track of sequence names yourself if your target database engine does use sequences.</P
+></BLOCKQUOTE
+></DIV
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>An integer value corresponding to the ID that was created by the last <B
+CLASS="COMMAND"
+>INSERT</B
+> command.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-SEQUENCE-NEXT"
+>3.5.5. dbi_conn_sequence_next</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1258"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>unsigned long long <B
+CLASS="FSFUNC"
+>dbi_conn_sequence_next</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>name</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Requests the row ID that would be generated by the next <B
+CLASS="COMMAND"
+>INSERT</B
+> command. The row ID is most commonly generated by an auto-incrementing column in the table.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Not all database engines support this feature. Portable code should use <A
+HREF="reference-query.html#DBI-CONN-SEQUENCE-LAST"
+>dbi_conn_sequence_last</A
+> instead.</P
+></BLOCKQUOTE
+></DIV
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The current database connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>name</TT
+>: The name of the sequence, or NULL if the database engine does not use explicit sequences.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>You may have noted that this function does not sufficiently encapsulate the peculiarities of the underlying database engines. You must keep track of sequence names yourself if your target database engine does use sequences.</P
+></BLOCKQUOTE
+></DIV
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>An integer value corresponding to the ID that was created by the last <B
+CLASS="COMMAND"
+>INSERT</B
+> command, or 0 if the database engine does not support this feature.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-PING"
+>3.5.6. dbi_conn_ping</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1288"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_ping</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Checks whether the current connection is still alive. Use this function to decide whether you must reconnect before running a query if your program is designed to keep connections open over prolonged periods of time.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The current database connection.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>1 if the connection is alive. Otherwise the function returns 0.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Database drivers may attempt to reconnect automatically if this function is called. If the reconnect is successful, this function will also return 1, as if the connection never had gone down.</P
+></BLOCKQUOTE
+></DIV
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-QUOTE-STRING"
+>3.5.7. dbi_conn_quote_string</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1309"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>size_t <B
+CLASS="FSFUNC"
+>dbi_conn_quote_string</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, char **<VAR
+CLASS="PDPARAM"
+>orig</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Escapes any special characters in a string and places the string itself in quotes so the string can be sent to the database engine as a query string, using either <A
+HREF="reference-query.html#DBI-CONN-QUERY"
+>dbi_conn_query</A
+> or <A
+HREF="reference-query.html#DBI-CONN-QUERYF"
+>dbi_conn_queryf</A
+>. The original string will be freed and <CODE
+CLASS="PARAMETER"
+>orig</CODE
+> will point to a newly allocated one (which you still must free on your own). If an error occurs, the original string will be left alone. This function is preferred over <A
+HREF="reference-driver.html#DBI-DRIVER-QUOTE-STRING"
+>dbi_driver_quote_string</A
+> because it takes the character encoding of the current connection into account when performing the escaping.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The current database connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>orig</TT
+>: A pointer to the string to quote and escape.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error. The length of a quoted empty string is 2 bytes.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-QUOTE-STRING-COPY"
+>3.5.8. dbi_conn_quote_string_copy</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1336"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>size_t <B
+CLASS="FSFUNC"
+>dbi_conn_quote_string_copy</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, char *<VAR
+CLASS="PDPARAM"
+>orig</VAR
+>, char **<VAR
+CLASS="PDPARAM"
+>newstr</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Escapes any special characters in a string and places the string itself in quotes so the string can be sent to the database engine as a query string, using either <A
+HREF="reference-query.html#DBI-CONN-QUERY"
+>dbi_conn_query</A
+> or <A
+HREF="reference-query.html#DBI-CONN-QUERYF"
+>dbi_conn_queryf</A
+>. The original string will be left alone, and <CODE
+CLASS="PARAMETER"
+>newstr</CODE
+> will point to a newly allocated string containing the quoted string (which you still must free on your own). If the function fails, <CODE
+CLASS="PARAMETER"
+>newstr</CODE
+> is an invalid pointer that must not be freed. This function is preferred over <A
+HREF="reference-driver.html#DBI-DRIVER-QUOTE-STRING-COPY"
+>dbi_driver_quote_string_copy</A
+> because it takes the character encoding of the current connection into account when performing the escaping.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The current database connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>orig</TT
+>: A pointer to the string to quote and escape.</P
+><P
+><TT
+CLASS="LITERAL"
+>newstr</TT
+>: After the function returns, this pointer will point to the quoted and escaped string.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-QUOTE-BINARY-COPY"
+>3.5.9. dbi_conn_quote_binary_copy</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1368"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>size_t <B
+CLASS="FSFUNC"
+>dbi_conn_quote_binary_copy</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, char *<VAR
+CLASS="PDPARAM"
+>orig</VAR
+>, size_t <VAR
+CLASS="PDPARAM"
+>from_length</VAR
+>, char **<VAR
+CLASS="PDPARAM"
+>newstr</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Escapes any special characters, including null bytes, in a binary string and places the resulting string in quotes so it can be used in an SQL query. The original string will be left alone, and <CODE
+CLASS="PARAMETER"
+>newstr</CODE
+> will point to a newly allocated string containing the quoted string (which you still must free on your own). If an error occurs, <CODE
+CLASS="PARAMETER"
+>newstr</CODE
+> is an invalid pointer which must not be freed.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The current database connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>orig</TT
+>: A pointer to the string to quote and escape.</P
+><P
+><TT
+CLASS="LITERAL"
+>from_length</TT
+>: The length of the binary string in bytes.</P
+><P
+><TT
+CLASS="LITERAL"
+>newstr</TT
+>: After the function returns, this pointer will point to the quoted and escaped string.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-GET-CONN"
+>3.5.10. dbi_result_get_conn</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1401"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>dbi_conn <B
+CLASS="FSFUNC"
+>dbi_result_get_conn</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Returns the connection belonging to the specified result object.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The connection belonging to the target query result.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-FREE"
+>3.5.11. dbi_result_free</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1420"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_result_free</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Frees the result's query, disables all stored field bindings, and releases internally stored variables.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>-1 on failure, zero on success.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-SEEK-ROW"
+>3.5.12. dbi_result_seek_row</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1439"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_result_seek_row</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>, unsigned long long <VAR
+CLASS="PDPARAM"
+>rowidx</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Jump to a specific row in a result set.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+><P
+><TT
+CLASS="LITERAL"
+>rowidx</TT
+>: The ordinal number of the row to seek to. The first row is at position 1, not zero.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>1 if successful, or 0 if there was an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-FIRST-ROW"
+>3.5.13. dbi_result_first_row</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1462"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_result_first_row</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Jump to the first row in a result set.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>1 if successful, or 0 if there was an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-LAST-ROW"
+>3.5.14. dbi_result_last_row</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1481"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_result_last_row</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Jump to the last row in a result set.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>1 if successful, or 0 if there was an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-PREV-ROW"
+>3.5.15. dbi_result_prev_row</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1500"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_result_prev_row</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Jump to the previous row in a result set.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>1 if successful, or 0 if there is an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-NEXT-ROW"
+>3.5.16. dbi_result_next_row</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1519"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_result_next_row</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Jump to the next row in a result set.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>1 if successful, or 0 if there was an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-GET-CURROW"
+>3.5.17. dbi_result_get_currow</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1538"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>unsigned long long <B
+CLASS="FSFUNC"
+>dbi_result_get_currow</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Returns the ordinal number of the current row in the specified result set.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The ordinal number of the row, or 0 if there was an error. The first row has the number 1.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-GET-NUMROWS"
+>3.5.18. dbi_result_get_numrows</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1557"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>unsigned long long <B
+CLASS="FSFUNC"
+>dbi_result_get_numrows</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Returns the number of rows in the specified result set.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The number of rows in the result set, which may be 0 if the query did not return any datasets, or DBI_ROW_ERROR in case of an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-RESULT-GET-NUMROWS-AFFECTED"
+>3.5.19. dbi_result_get_numrows_affected</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1576"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>unsigned long long <B
+CLASS="FSFUNC"
+>dbi_result_get_numrows_affected</B
+></CODE
+>(dbi_result <VAR
+CLASS="PDPARAM"
+>Result</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Returns the number of rows in the specified result set that were actually modified. Note that not all database servers support this, in which case it will always be zero. See the documentation for each specific driver for details.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Result</TT
+>: The target query result.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The number of modified rows in the result set which may be 0 if no row was affected by the previous query. Also returns 0 if the database engine does not support this feature. The return value will be DBI_ROW_ERROR in case of an error.</P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="reference-database.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="reference-field-meta.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SQL and Database Infrastructure</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reference.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Retrieving Field Meta-data</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
