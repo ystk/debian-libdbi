@@ -1,0 +1,37 @@
+Source: libdbi
+Section: libs
+Priority: optional
+Maintainer: Thomas Goirand <thomas@goirand.fr>
+Build-Depends: debhelper (>= 5), autotools-dev, docbook-dsssl, jadetex
+Standards-Version: 3.7.2
+Homepage: http://libdbi.sourceforge.net/
+
+Package: libdbi0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: libapache2-mod-log-sql-dbi (< 1.100-11), libdbd-mysql (<< 0.8.2-1), libdbd-pgsql (<< 0.8.2-1), libdbd-sqlite (<< 0.8.2-1)
+Description: Database Independent Abstraction Layer for C
+ libdbi implements a database-independent abstraction layer in C, similar to
+ the DBI/DBD layer in Perl. Writing one generic set of code, programmers can
+ leverage the power of multiple databases and multiple simultaneous database
+ connections by using this framework.
+
+Package: libdbi0-dev
+Section: libs
+Architecture: any
+Depends: libdbi0 (= ${binary:Version})
+Description: DB Independent Abstraction Layer for C  -- development files
+ libdbi implements a database-independent abstraction layer in C, similar to
+ the DBI/DBD layer in Perl. Writing one generic set of code, programmers can
+ leverage the power of multiple databases and multiple simultaneous database
+ connections by using this framework.
+
+Package: libdbi-doc
+Section: doc
+Architecture: all
+Description: DB Independent Abstraction Layer for C  -- documentation
+ libdbi implements a database-independent abstraction layer in C, similar to
+ the DBI/DBD layer in Perl. Writing one generic set of code, programmers can
+ leverage the power of multiple databases and multiple simultaneous database
+ connections by using this framework.
