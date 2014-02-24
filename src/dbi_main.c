@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbi_main.c,v 1.75 2006/06/02 17:18:16 qu1j0t3 Exp $
+ * $Id: dbi_main.c,v 1.79 2008/02/06 16:21:29 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -121,6 +121,7 @@ static void _free_caps(_capability_t *caproot);
 static const char *_get_option(dbi_conn Conn, const char *key, int aggressive);
 static int _get_option_numeric(dbi_conn Conn, const char *key, int aggressive);
 static unsigned int _parse_versioninfo(const char *version);
+static int _safe_dlclose(dbi_driver_t *driver);
 
 void _error_handler(dbi_conn_t *conn, dbi_error_flag errflag);
 extern int _disjoin_from_conn(dbi_result_t *result);
@@ -174,7 +175,7 @@ int dbi_initialize(const char *driverdir) {
 					num_loaded++;
 				}
 				else {
-					if (driver && driver->dlhandle) my_dlclose(driver->dlhandle);
+					if (driver && driver->dlhandle) _safe_dlclose(driver);
 					if (driver && driver->functions) free(driver->functions);
 					if (driver) free(driver);
 					driver = NULL; /* don't include in linked list */
@@ -203,7 +204,7 @@ void dbi_shutdown() {
 	
 	while (curdriver) {
 		nextdriver = curdriver->next;
-		my_dlclose(curdriver->dlhandle);
+ 		_safe_dlclose(curdriver);
 		free(curdriver->functions);
 		_free_custom_functions(curdriver);
 		_free_caps(curdriver->caps);
@@ -287,12 +288,14 @@ int dbi_driver_cap_get(dbi_driver Driver, const char *capname) {
 	dbi_driver_t *driver = Driver;
 	_capability_t *cap;
 
-	if (!driver) return 0;
+	if (!driver) {
+	  return 0;
+	}
 
 	cap = driver->caps;
 
-	while (cap && strcmp(capname, cap->name)) {
-		cap = cap->next;
+ 	while (cap && strcmp(capname, cap->name)) {
+	    cap = cap->next;
 	}
 
 	return cap ? cap->value : 0;
@@ -371,6 +374,7 @@ const char *dbi_driver_get_date_compiled(dbi_driver Driver) {
 	return driver->info->date_compiled;
 }
 
+/* DEPRECATED. Use dbi_conn_quote_string_copy instead */
 size_t dbi_driver_quote_string_copy(dbi_driver Driver, const char *orig, char **newquoted) {
 	dbi_driver_t *driver = Driver;
 	char *newstr;
@@ -395,6 +399,7 @@ size_t dbi_driver_quote_string_copy(dbi_driver Driver, const char *orig, char **
 	return newlen;
 }
 
+/* DEPRECATED. Use dbi_conn_quote_string instead */
 size_t dbi_driver_quote_string(dbi_driver Driver, char **orig) {
 	char *temp = NULL;
 	char *newstr = NULL;
@@ -467,8 +472,8 @@ dbi_conn dbi_conn_open(dbi_driver Driver) {
 	conn->caps = NULL;
 	conn->connection = NULL;
 	conn->current_db = NULL;
-	conn->error_flag = DBI_ERROR_NONE;
-	conn->error_number = 0;
+	conn->error_flag = DBI_ERROR_NONE; /* for legacy code only */
+	conn->error_number = DBI_ERROR_NONE;
 	conn->error_message = NULL;
 	conn->error_handler = NULL;
 	conn->error_handler_argument = NULL;
@@ -561,11 +566,14 @@ void dbi_conn_error_handler(dbi_conn Conn, dbi_conn_error_handler_func function,
 	}
 }
 
+/* DEPRECATED */
 dbi_error_flag dbi_conn_error_flag(dbi_conn Conn) {
 	dbi_conn_t *conn = Conn;
 	return conn->error_flag;
 }
 
+/* this function allows applications to set their own error messages
+   and display them through the libdbi API */
 int dbi_conn_set_error(dbi_conn Conn, int errnum, const char *formatstr, ...) {
 	dbi_conn_t *conn = Conn;
 	char *msg;
@@ -594,23 +602,38 @@ int dbi_conn_set_error(dbi_conn Conn, int errnum, const char *formatstr, ...) {
 	return len;
 }
 
+/* CONN: quoting functions. These functions escape SQL special
+   characters and surround the resulting string with appropriate
+   quotes to insert it into a SQL query string */
+
 size_t dbi_conn_quote_string_copy(dbi_conn Conn, const char *orig, char **newquoted) {
 	dbi_conn_t *conn = Conn;
 	char *newstr;
 	size_t newlen;
 	
-	if (!Conn || !orig || !newquoted) return 0;
+	if (!conn) {
+	  return 0;
+	}
+
+	_reset_conn_error(conn);
+
+	if (!orig || !newquoted) {
+	  _error_handler(conn, DBI_ERROR_BADPTR);
+	  return 0;
+	}
 
 	newstr = malloc((strlen(orig)*2)+4+1); /* worst case, we have to escape every character and add 2*2 surrounding quotes */
 
 	if (!newstr) {
-		return 0;
+	  _error_handler(conn, DBI_ERROR_NOMEM);
+	  return 0;
 	}
 	
 	newlen = conn->driver->functions->conn_quote_string(conn, orig, newstr);
 	if (!newlen) {
-		free(newstr);
-		return 0;
+	  free(newstr);
+	  _error_handler(conn, DBI_ERROR_NOMEM);
+	  return 0;
 	}
 
 	*newquoted = newstr;
@@ -619,17 +642,26 @@ size_t dbi_conn_quote_string_copy(dbi_conn Conn, const char *orig, char **newquo
 }
 
 size_t dbi_conn_quote_string(dbi_conn Conn, char **orig) {
+	dbi_conn_t *conn = Conn;
 	char *temp = NULL;
 	char *newstr = NULL;
 	size_t newlen;
 
+	if (!conn) {
+	  return 0;
+	}
+
+	_reset_conn_error(conn);
+
 	if (!orig || !*orig) {
-		return 0;
+	  _error_handler(conn, DBI_ERROR_BADPTR);
+	  return 0;
 	}
 	
 	newlen = dbi_conn_quote_string_copy(Conn, *orig, &newstr);
 	if (!newlen) {
 	  /* leave original string alone in case of an error */
+	  /* error number was set by called function */
 	  return 0;
 	}
 	temp = *orig;
@@ -644,12 +676,20 @@ size_t dbi_conn_quote_binary_copy(dbi_conn Conn, const unsigned char *orig, size
   size_t newlen;
   dbi_conn_t *conn = Conn;
 
-  if (!Conn || !orig || !ptr_dest) {
+  if (!conn) {
+    return 0;
+  }
+
+  _reset_conn_error(conn);
+
+  if (!orig || !ptr_dest) {
+    _error_handler(conn, DBI_ERROR_BADPTR);
     return 0;
   }
 
   newlen = conn->driver->functions->quote_binary(conn, orig, from_length, &temp);
   if (!newlen) {
+    _error_handler(conn, DBI_ERROR_NOMEM);
     return 0;
   }
 
@@ -658,7 +698,54 @@ size_t dbi_conn_quote_binary_copy(dbi_conn Conn, const unsigned char *orig, size
   return newlen;
 }
 
-/* DRIVER: option manipulation */
+/* CONN: escaping functions. These functions escape SQL special
+   characters but do not add the quotes like the quoting functions
+   do */
+
+size_t dbi_conn_escape_string_copy(dbi_conn Conn, const char *orig, char **newquoted) {
+	char *newstr;
+	size_t newlen;
+	
+	if (!Conn) {
+	  return 0;
+	}
+
+	newlen = dbi_conn_quote_string_copy(Conn, orig, newquoted);
+
+	if (newlen) {
+	  (*newquoted)[newlen-1] = '\0';
+	  memmove(*newquoted, (*newquoted)+1, newlen-1);
+	}
+
+	return newlen-2;
+}
+
+size_t dbi_conn_escape_string(dbi_conn Conn, char **orig) {
+	size_t newlen;
+
+	newlen = dbi_conn_quote_string(Conn, orig);
+
+	if (newlen) {
+	  (*orig)[newlen-1] = '\0';
+	  memmove(*orig, (*orig)+1, newlen-1);
+	}
+	return newlen-2;
+}
+
+size_t dbi_conn_escape_binary_copy(dbi_conn Conn, const unsigned char *orig, size_t from_length, unsigned char **ptr_dest) {
+	size_t newlen;
+
+	newlen = dbi_conn_quote_binary_copy(Conn, orig, from_length, ptr_dest);
+
+	if (newlen) {
+	  (*ptr_dest)[newlen-1] = '\0';
+	  memmove(*ptr_dest, (*ptr_dest)+1, newlen-1);
+	}
+
+	return newlen-2;
+}
+
+/* CONN: option manipulation */
 
 int dbi_conn_set_option(dbi_conn Conn, const char *key, const char *value) {
 	dbi_conn_t *conn = Conn;
@@ -668,6 +755,8 @@ int dbi_conn_set_option(dbi_conn Conn, const char *key, const char *value) {
 		return -1;
 	}
 	
+	_reset_conn_error(conn);
+
 	option = _find_or_create_option_node(conn, key);
 	if (!option) {
 		_error_handler(conn, DBI_ERROR_NOMEM);
@@ -689,6 +778,8 @@ int dbi_conn_set_option_numeric(dbi_conn Conn, const char *key, int value) {
 		return -1;
 	}
 	
+	_reset_conn_error(conn);
+
 	option = _find_or_create_option_node(conn, key);
 	if (!option) {
 		_error_handler(conn, DBI_ERROR_NOMEM);
@@ -710,6 +801,8 @@ static const char *_get_option(dbi_conn Conn, const char *key, int aggressive) {
 		return NULL;
 	}
 	
+	_reset_conn_error(conn);
+
 	option = conn->options;
 	while (option && strcasecmp(key, option->key)) {
 		option = option->next;
@@ -738,6 +831,8 @@ static int _get_option_numeric(dbi_conn Conn, const char *key, int aggressive) {
 
 	if (!conn) return 0;
 	
+	_reset_conn_error(conn);
+
 	option = conn->options;
 	while (option && strcasecmp(key, option->key)) {
 		option = option->next;
@@ -764,8 +859,17 @@ const char *dbi_conn_get_option_list(dbi_conn Conn, const char *current) {
 	dbi_conn_t *conn = Conn;
 	dbi_option_t *option;
 	
-	if (conn && conn->options) option = conn->options;
-	else return NULL;
+	if (!conn) {
+	  return NULL;
+	}
+
+	_reset_conn_error(conn);
+
+	if (!conn->options) {
+	  _error_handler(conn, DBI_ERROR_BADPTR);
+	  return NULL;
+	}
+	option = conn->options;
 	
 	if (!current) {
 		return option->key;
@@ -774,6 +878,8 @@ const char *dbi_conn_get_option_list(dbi_conn Conn, const char *current) {
 		while (option && strcasecmp(current, option->key)) {
 			option = option->next;
 		}
+		/* return NULL if there are no more options but don't make
+		   this an error */
 		return (option && option->next) ? option->next->key : NULL;
 	}
 }
@@ -830,14 +936,16 @@ int dbi_conn_connect(dbi_conn Conn) {
 	
 	if (!conn) return -1;
 	
+	_reset_conn_error(conn);
+
 	retval = conn->driver->functions->connect(conn);
-	if (retval == -2) {
-		/* a DBD-level error has already been set and the callback has already triggered */
-	}
-	else if (retval == -1) {
+	if (retval == -1) {
 		/* couldn't create a connection and no DBD-level error information is available */
 		_error_handler(conn, DBI_ERROR_NOCONN);
 	}
+/* 	else if (retval == -2) { */
+		/* a DBD-level error has already been set and the callback has already triggered */
+/* 	} */
 
 	return retval;
 }
@@ -846,7 +954,11 @@ int dbi_conn_get_socket(dbi_conn Conn){
 	dbi_conn_t *conn = Conn;
 	int retval;
 
-	if (!conn) return -1;
+	if (!conn) {
+	  return -1;
+	}
+
+	_reset_conn_error(conn);
 
 	retval = conn->driver->functions->get_socket(conn);
 
@@ -859,6 +971,8 @@ const char *dbi_conn_get_encoding(dbi_conn Conn){
 
 	if (!conn) return NULL;
 
+	_reset_conn_error(conn);
+
 	retval = conn->driver->functions->get_encoding(conn);
 
 	return retval;
@@ -870,6 +984,8 @@ unsigned int dbi_conn_get_engine_version(dbi_conn Conn){
 
 	if (!conn) return 0;
 
+	_reset_conn_error(conn);
+
 	conn->driver->functions->get_engine_version(conn, versionstring);
 
 	return _parse_versioninfo(versionstring);
@@ -880,6 +996,8 @@ char* dbi_conn_get_engine_version_string(dbi_conn Conn, char *versionstring) {
 
 	if (!conn) return 0;
 
+	_reset_conn_error(conn);
+
 	return conn->driver->functions->get_engine_version(conn, versionstring);
 }
 
@@ -889,6 +1007,8 @@ dbi_result dbi_conn_get_db_list(dbi_conn Conn, const char *pattern) {
 	
 	if (!conn) return NULL;
 	
+	_reset_conn_error(conn);
+
 	result = conn->driver->functions->list_dbs(conn, pattern);
 	
 	if (result == NULL) {
@@ -904,6 +1024,8 @@ dbi_result dbi_conn_get_table_list(dbi_conn Conn, const char *db, const char *pa
 	
 	if (!conn) return NULL;
 	
+	_reset_conn_error(conn);
+
 	result = conn->driver->functions->list_tables(conn, db, pattern);
 	
 	if (result == NULL) {
@@ -919,6 +1041,8 @@ dbi_result dbi_conn_query(dbi_conn Conn, const char *statement) {
 
 	if (!conn) return NULL;
 	
+	_reset_conn_error(conn);
+
 	_logquery(conn, "[query] %s\n", statement);
 	result = conn->driver->functions->query(conn, statement);
 
@@ -937,6 +1061,8 @@ dbi_result dbi_conn_queryf(dbi_conn Conn, const char *formatstr, ...) {
 
 	if (!conn) return NULL;
 	
+	_reset_conn_error(conn);
+
 	va_start(ap, formatstr);
 	vasprintf(&statement, formatstr, ap);
 	va_end(ap);
@@ -958,6 +1084,8 @@ dbi_result dbi_conn_query_null(dbi_conn Conn, const unsigned char *statement, si
 
 	if (!conn) return NULL;
 
+	_reset_conn_error(conn);
+
 	_logquery_null(conn, statement, st_length);
 	result = conn->driver->functions->query_null(conn, statement, st_length);
 
@@ -974,6 +1102,8 @@ int dbi_conn_select_db(dbi_conn Conn, const char *db) {
 	
 	if (!conn) return -1;
 	
+	_reset_conn_error(conn);
+
 	if (conn->current_db) free(conn->current_db);
 	conn->current_db = NULL;
 	
@@ -984,7 +1114,7 @@ int dbi_conn_select_db(dbi_conn Conn, const char *db) {
 		return -1;
 	}
 	
-	if (retval[0] == '\0') {
+	if (*retval == '\0') {
 		/* if "" was returned, conn doesn't support switching databases */
 		_error_handler(conn, DBI_ERROR_UNSUPPORTED);
 		return -1;
@@ -1000,6 +1130,9 @@ unsigned long long dbi_conn_sequence_last(dbi_conn Conn, const char *name) {
 	dbi_conn_t *conn = Conn;
 	unsigned long long result;
 	if (!conn) return 0;
+
+	_reset_conn_error(conn);
+
 	result = conn->driver->functions->get_seq_last(conn, name);
 	return result;
 }
@@ -1008,6 +1141,9 @@ unsigned long long dbi_conn_sequence_next(dbi_conn Conn, const char *name) {
 	dbi_conn_t *conn = Conn;
 	unsigned long long result;
 	if (!conn) return 0;
+
+	_reset_conn_error(conn);
+
 	result = conn->driver->functions->get_seq_next(conn, name);
 	return result;
 }
@@ -1017,6 +1153,9 @@ int dbi_conn_ping(dbi_conn Conn) {
 	int result;
 
 	if (!conn) return 0;
+
+	_reset_conn_error(conn);
+
 	result = conn->driver->functions->ping(conn);
 	return result;
 }
@@ -1212,13 +1351,13 @@ static dbi_option_t *_find_or_create_option_node(dbi_conn Conn, const char *key)
 
 #define COUNTOF(array) (sizeof(array)/sizeof((array)[0]))
 
+/* sets conn->error_number and conn->error_message values */
 void _error_handler(dbi_conn_t *conn, dbi_error_flag errflag) {
 	int my_errno = 0;
 	char *errmsg = NULL;
 	int errstatus;
 	static const char *errflag_messages[] = {
 		/* DBI_ERROR_USER */		NULL,
-		/* DBI_ERROR_NONE */		NULL,
 		/* DBI_ERROR_DBD */			NULL,
 		/* DBI_ERROR_BADOBJECT */	"An invalid or NULL object was passed to libdbi",
 		/* DBI_ERROR_BADTYPE */		"The requested variable type does not match what libdbi thinks it should be",
@@ -1227,7 +1366,10 @@ void _error_handler(dbi_conn_t *conn, dbi_error_flag errflag) {
 		/* DBI_ERROR_UNSUPPORTED */	"This particular libdbi driver or connection does not support this feature",
 		/* DBI_ERROR_NOCONN */		"libdbi could not establish a connection",
 		/* DBI_ERROR_NOMEM */		"libdbi ran out of memory",
-		/* DBI_ERROR_BADPTR */		"An invalid pointer was passed to libdbi"};
+		/* DBI_ERROR_BADPTR */		"An invalid pointer was passed to libdbi",
+		/* DBI_ERROR_NONE */		NULL,
+		/* DBI_ERROR_CLIENT */          NULL
+};
 	
 	if (conn == NULL) {
 		/* temp hack... if a result is disjoined and encounters an error, conn
@@ -1252,15 +1394,23 @@ void _error_handler(dbi_conn_t *conn, dbi_error_flag errflag) {
 			return;
 		}
 	}
+	else {
+	  my_errno = errflag;
+	}
 
 	if (conn->error_message) free(conn->error_message);
 
-	if (errflag >= -1 && errflag < COUNTOF(errflag_messages)-1 
-			&& errflag_messages[errflag+1] != NULL) {
-		errmsg = strdup(errflag_messages[errflag+1]);
+	if ((errflag-DBI_ERROR_USER) >= 0 && (errflag-DBI_ERROR_USER) < COUNTOF(errflag_messages) 
+			&& errflag_messages[(errflag-DBI_ERROR_USER)] != NULL) {
+		errmsg = strdup(errflag_messages[(errflag-DBI_ERROR_USER)]);
 	}
 	
-	conn->error_flag = errflag;
+	conn->error_flag = errflag; /* should always be DBI_ERROR_DBD,
+				       DBI_ERROR_UNSUPPORTED,
+				       DBI_ERROR_NOCONN,
+				       DBI_ERROR_BADNAME, or
+				       DBI_ERROR_NOMEM for conn
+				       errors */
 	conn->error_number = my_errno;
 	conn->error_message = errmsg;
 	
@@ -1270,10 +1420,23 @@ void _error_handler(dbi_conn_t *conn, dbi_error_flag errflag) {
 	}
 }
 
+/* this function should be called by all functions that may alter the
+   connection error status*/
+void _reset_conn_error(dbi_conn_t *conn) {
+  if (conn) {
+    conn->error_flag = DBI_ERROR_NONE;
+    conn->error_number = DBI_ERROR_NONE;
+    if (conn->error_message) {
+      free(conn->error_message);
+      conn->error_message = NULL;
+    }
+  }
+}
+
 void _verbose_handler(dbi_conn_t *conn, const char* fmt, ...) {
 	va_list ap;
 
-	//if(conn && dbi_conn_get_option_numeric(conn, "Verbosity"))
+	if(conn && dbi_conn_get_option_numeric(conn, "Verbosity"))
 	{
 	  fputs("libdbi: ",stderr);
 	  va_start(ap, fmt);
@@ -1351,6 +1514,25 @@ static unsigned int _parse_versioninfo(const char *version) {
     return 0;
   }
   return n_version;
+}
+
+/* this is to work around nasty database client libraries which
+   install exit handlers although they're not supposed to. If we
+   unload drivers linked against one of these libraries, the
+   application linked against libdbi will crash on exit if running on
+   FreeBSD and other OSes sticking to the rule. Drivers which can be
+   safely dlclose()d should set the driver capability "safe_dlclose"
+   to nonzero */
+/* returns 0 if the driver was closed, 1 if not */
+static int _safe_dlclose(dbi_driver_t *driver) {
+  int may_close = 0;
+
+  may_close = dbi_driver_cap_get((dbi_driver)driver, "safe_dlclose");
+  if (may_close) {
+    my_dlclose(driver->dlhandle);
+    return 0;
+  }
+  return 1;
 }
 
 #if HAVE_MACH_O_DYLD_H

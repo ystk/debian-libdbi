@@ -117,19 +117,19 @@ HREF="reference-driver.html#DBI-DRIVER-QUOTE-STRING"
 HREF="reference-driver.html#DBI-DRIVER-QUOTE-STRING-COPY"
 >dbi_driver_quote_string_copy</A
 > are still supported but should be avoided in new code. After a successful query, you can retrieve rows with <A
-HREF="reference-query.html#DBI-RESULT-FIRST-ROW"
+HREF="reference-results.html#DBI-RESULT-FIRST-ROW"
 >dbi_result_first_row</A
 >, <A
-HREF="reference-query.html#DBI-RESULT-LAST-ROW"
+HREF="reference-results.html#DBI-RESULT-LAST-ROW"
 >dbi_result_last_row</A
 >, <A
-HREF="reference-query.html#DBI-RESULT-PREV-ROW"
+HREF="reference-results.html#DBI-RESULT-PREV-ROW"
 >dbi_result_prev_row</A
 >, <A
-HREF="reference-query.html#DBI-RESULT-NEXT-ROW"
+HREF="reference-results.html#DBI-RESULT-NEXT-ROW"
 >dbi_result_next_row</A
 >, and <A
-HREF="reference-query.html#DBI-RESULT-SEEK-ROW"
+HREF="reference-results.html#DBI-RESULT-SEEK-ROW"
 >dbi_result_seek_row</A
 >.
     </P
@@ -244,10 +244,10 @@ HREF="reference-field.html#DBI-RESULT-BIND-BINARY-COPY"
 ></UL
 ><P
 >      <A
-HREF="reference-query.html#DBI-RESULT-NEXT-ROW"
+HREF="reference-results.html#DBI-RESULT-NEXT-ROW"
 >dbi_result_next_row</A
 > and the other row-seeking functions will return zero when there are no more rows available. Before the next database operation is performed, you must call <A
-HREF="reference-query.html#DBI-RESULT-FREE"
+HREF="reference-results.html#DBI-RESULT-FREE"
 >dbi_result_free</A
 >.  Before the program terminates, the connection must be disconnected and unloaded with <A
 HREF="reference-conn.html#DBI-CONN-CLOSE"

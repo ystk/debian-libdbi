@@ -1,6 +1,6 @@
 <!--
 vim:ft=sgml
-$Id: libdbi-reference.sgml,v 1.14 2005/08/29 19:20:01 mhoenicka Exp $
+$Id: libdbi-reference.sgml,v 1.17 2008/02/06 19:34:27 mhoenicka Exp $
 Copyright (C) 2001-2005, David Parker, Neon Goat Productions.
 This document is licensed under the GNU Free Documentation License, version 1.1 or later, as
 published by the Free Software Foundation.
@@ -93,7 +93,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The requested driver, or NULL if there is an error or it is not found.</Para></ListItem>
+	    <ListItem><Para>The requested driver, or NULL if there is no such driver.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -497,7 +497,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>-1 on error, 0 on success.</Para></ListItem>
+	    <ListItem><Para>-1 on error, 0 on success. In case of an error, the <link linkend="errornumbers">error number</link> is DBI_ERROR_NOMEM.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -522,7 +522,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>-1 on error, 0 on success.</Para></ListItem>
+	    <ListItem><Para>-1 on error, 0 on success. In case of an error, the <link linkend="errornumbers">error number</link> is DBI_ERROR_NOMEM.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -534,7 +534,7 @@ published by the Free Software Foundation.
 	    <paramdef>const char *<parameter>key</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Retrieves the string value of the specified option set for a connection.</Para>
+	<Para>Retrieves the string value of the specified option set for a connection if available.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -545,7 +545,30 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>A read-only string with the setting, or NULL if it is not available.</Para></ListItem>
+	    <ListItem><Para>A read-only string with the setting, or NULL if it is not available. It is not considered an error if the setting is not available.</Para></ListItem>
+	  </VarListEntry>
+	</VariableList>
+      </Section>
+      <Section id="dbi-conn-require-option" XRefLabel="dbi_conn_require_option"><Title>dbi_conn_require_option</Title>
+	<funcsynopsis>
+	  <funcprototype>
+	    <funcdef>const char *<function>dbi_conn_require_option</function></funcdef>
+	    <paramdef>dbi_conn <parameter>Conn</parameter></paramdef>
+	    <paramdef>const char *<parameter>key</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+	<Para>Retrieves the string value of the specified option set for a connection and throws an error if the option was not set.</Para>
+	<VariableList>
+	  <VarListEntry>
+	    <term>Arguments</term>
+	    <ListItem>
+	      <Para><Literal>Conn</Literal>: The target connection.</Para>
+	      <Para><Literal>key</Literal>: The name of the target setting.</Para>
+	    </ListItem>
+	  </VarListEntry>
+	  <VarListEntry>
+	    <term>Returns</term>
+	    <ListItem><Para>A read-only string with the setting, or NULL if it is not available. In the latter case, the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -557,7 +580,7 @@ published by the Free Software Foundation.
 	    <paramdef>const char *<parameter>key</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Retrieves the integer value of the specified option set for a connection.</Para>
+	<Para>Retrieves the integer value of the specified option set for a connection if available.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -568,7 +591,30 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The value of the setting, or -1 if it is not available.</Para></ListItem>
+	    <ListItem><Para>The value of the setting, or -1 if it is not available. It is not considered an error if the option has not been set.</Para></ListItem>
+	  </VarListEntry>
+	</VariableList>
+      </Section>
+      <Section id="dbi-conn-require-option-numeric" XRefLabel="dbi_conn_require_option_numeric"><Title>dbi_conn_require_option_numeric</Title>
+	<funcsynopsis>
+	  <funcprototype>
+	    <funcdef>int <function>dbi_conn_require_option_numeric</function></funcdef>
+	    <paramdef>dbi_conn <parameter>Conn</parameter></paramdef>
+	    <paramdef>const char *<parameter>key</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+	<Para>Retrieves the integer value of the specified option set for a connection and throws an error if it is not available.</Para>
+	<VariableList>
+	  <VarListEntry>
+	    <term>Arguments</term>
+	    <ListItem>
+	      <Para><Literal>Conn</Literal>: The target connection.</Para>
+	      <Para><Literal>key</Literal>: The name of the target setting.</Para>
+	    </ListItem>
+	  </VarListEntry>
+	  <VarListEntry>
+	    <term>Returns</term>
+	    <ListItem><Para>The value of the setting, or -1 if it is not available. In the latter case, the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -591,7 +637,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The key name of the next option, or NULL if there was an error or there are no more options.</Para></ListItem>
+	    <ListItem><Para>The key name of the next option, or NULL if there are no more options or if there was an error. In the latter case the <link linkend="errornumbers">error number</link> is set to DBI_ERROR_BADPTR.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -603,7 +649,7 @@ published by the Free Software Foundation.
 	    <paramdef>const char *<parameter>key</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Removes the target option setting from a connection.</Para>
+	<Para>Removes the target option setting from a connection. It is not considered an error if the requested option was not set before.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -749,7 +795,7 @@ published by the Free Software Foundation.
 	    </VarListEntry>
 	    <VarListEntry>
 	      <term>Returns</term>
-	      <ListItem><Para>The error number of the most recent database operation if it resulted in an error. If not, this will return -1.</Para></ListItem>
+	      <ListItem><Para>The error number of the most recent database operation if it resulted in an error. If not, this will return DBI_ERROR_NONE. See <xref linkend="errorhandling"> for further information.</Para></ListItem>
 	    </VarListEntry>
 	  </VariableList>
 	</Section>
@@ -806,6 +852,38 @@ published by the Free Software Foundation.
 	      </listitem>
 	    </varlistentry>
 	  </variablelist>
+	  <note>
+	    <para>This function is deprecated. Use <xref linkend="dbi-conn-error"> instead. Both functions return the same error code to maintain backwards compatibility.</para>
+	  </note>
+	</section>
+	<section id="dbi-conn-set-error" xreflabel="dbi_conn_set_error">
+	  <title>dbi_conn_set_error</title>
+	  <funcsynopsis>
+	    <funcprototype>
+	      <funcdef>int <function>dbi_conn_set_error</function></funcdef>
+	      <paramdef>dbi_conn <parameter>Conn</parameter></paramdef>
+	      <paramdef>int <parameter moreinfo="none">errnum</parameter></paramdef>
+	      <paramdef>const char <parameter moreinfo="none">*formatstr</parameter></paramdef>
+	      <paramdef>...</paramdef>
+	    </funcprototype>
+	  </funcsynopsis>
+	  <para>Applications may set an error status and an error message which are accessible through the libdbi error API function <link linkend="dbi-conn-error">dbi_conn_error</link>.</para>
+	  <variablelist>
+	    <varlistentry>
+	      <term><emphasis>Arguments</emphasis></term>
+	      <listitem>
+		<Para><Literal>Conn</Literal>: The target connection.</Para>
+		<Para><Literal>errnum</Literal>: An application-defined error code. Applications should use only positive nonzero integers to indicate errors.</Para>
+		<Para>The remainder of the argument list is interpreted using a printf(3)-like syntax to define an error message.</Para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><emphasis>Returns</emphasis></term>
+	      <listitem>
+		<para>The length of the error message in bytes, or 0 if there was an error.</para>
+	      </listitem>
+	    </varlistentry>
+	  </variablelist>
 	</section>
       </Section>
     </Section>
@@ -817,7 +895,7 @@ published by the Free Software Foundation.
 	    <paramdef>dbi_conn <parameter>Conn</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Connects to the database using the options (host, username, password, port, (etc.) set with dbi_set_option() and dbi_set_option_numeric().  See the documentation for each specific database driver for the options it recognizes and requires.</Para>
+	<Para>Connects to the database using the options (host, username, password, port, (etc.) set with <link linkend="dbi-conn-set-option">dbi_conn_set_option</link> and related functions.  See the documentation for each specific database driver for the options it recognizes and requires.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -827,7 +905,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 (zero) on success, less than zero on failure.</Para></ListItem>
+	    <ListItem><Para>0 (zero) on success, less than zero on failure. In the latter case, the <link linkend="errornumbers">error number</link> may be DBI_ERROR_NOMEM, DBI_ERROR_NOCONN, or one of the driver-specific values.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -850,7 +928,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>A query result object, which will contain database names in the first field (for use with the by-index field functions).</Para></ListItem>
+	    <ListItem><Para>A query result object, which will contain database names in the first field (for use with the by-index field functions). In case of an error, the function returns NULL and sets the <link linkend="errornumbers">error number</link> to a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -875,7 +953,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>A query result object, which will contain table names in the first field (for use with the by-index field functions).</Para></ListItem>
+	    <ListItem><Para>A query result object, which will contain table names in the first field (for use with the by-index field functions). In case of an error, the function returns NULL and sets the <link linkend="errornumbers">error number</link> to a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -898,13 +976,13 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>-1 on failure, zero on success.</Para></ListItem>
+	    <ListItem><Para>-1 on failure, zero on success. In case of an error, the <link linkend="errornumbers">error number</link> may be DBI_ERROR_UNSUPPORTED or a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
     </section>
     <section id="reference-query">
-      <title>Managing Queries and Results</title>
+      <title>Managing Queries</title>
       <Section id="dbi-conn-query" XRefLabel="dbi_conn_query"><Title>dbi_conn_query</Title>
 	<funcsynopsis>
 	  <funcprototype>
@@ -924,7 +1002,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>A query result object, or NULL if there was an error.</Para></ListItem>
+	    <ListItem><Para>A query result object, or NULL if there was an error. In the latter case the <link linkend="errornumbers">error number</link> is a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -949,7 +1027,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>A query result object, or NULL if there was an error.</Para></ListItem>
+	    <ListItem><Para>A query result object, or NULL if there was an error. In the latter case the <link linkend="errornumbers">error number</link> is a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -977,7 +1055,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>A query result object, or NULL if there was an error.</Para></ListItem>
+	    <ListItem><Para>A query result object, or NULL if there was an error. In the latter case the <link linkend="errornumbers">error number</link> is a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1005,7 +1083,7 @@ published by the Free Software Foundation.
 	  <varlistentry>
 	    <term>Returns</term>
 	    <listitem>
-	      <para>An integer value corresponding to the ID that was created by the last <command moreinfo="none">INSERT</command> command.</para>
+	      <para>An integer value corresponding to the ID that was created by the last <command moreinfo="none">INSERT</command> command. If the database engine does not support sequences, the function returns 0 (zero) and sets the <link linkend="errornumbers">error number</link> to DBI_ERROR_UNSUPPORTED.</para>
 	    </listitem>
 	  </varlistentry>
 	</variablelist>
@@ -1037,7 +1115,7 @@ published by the Free Software Foundation.
 	  <varlistentry>
 	    <term>Returns</term>
 	    <listitem>
-	      <para>An integer value corresponding to the ID that was created by the last <command moreinfo="none">INSERT</command> command, or 0 if the database engine does not support this feature.</para>
+	      <para>An integer value corresponding to the ID that was created by the last <command moreinfo="none">INSERT</command> command, or 0 if the database engine does not support this feature. In the latter case, the <link linkend="errornumbers">error number</link> is DBI_ERROR_UNSUPPORTED</para>
 	    </listitem>
 	  </varlistentry>
 	</variablelist>
@@ -1090,7 +1168,7 @@ published by the Free Software Foundation.
 	  <varlistentry>
 	    <term>Returns</term>
 	    <listitem>
-	      <para>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error. The length of a quoted empty string is 2 bytes.</para>
+	      <para>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error. The length of a quoted empty string is 2 bytes. In case of an error the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR or DBI_ERROR_NOMEM.</para>
 	    </listitem>
 	  </varlistentry>
 	</variablelist>
@@ -1118,7 +1196,7 @@ published by the Free Software Foundation.
 	  <varlistentry>
 	    <term>Returns</term>
 	    <listitem>
-	      <para>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error.</para>
+	      <para>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR and DBI_ERROR_NOMEM.</para>
 	    </listitem>
 	  </varlistentry>
 	</variablelist>
@@ -1148,11 +1226,98 @@ published by the Free Software Foundation.
 	  <varlistentry>
 	    <term>Returns</term>
 	    <listitem>
-	      <para>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error.</para>
+	      <para>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR and DBI_ERROR_NOMEM.</para>
 	    </listitem>
 	  </varlistentry>
 	</variablelist>
       </section>
+      <section id="dbi-conn-escape-string" xreflabel="dbi_conn_escape_string">
+	<title>dbi_conn_escape_string</title>
+	<funcsynopsis>
+	  <funcprototype>
+	    <funcdef>size_t <function>dbi_conn_escape_string</function></funcdef>
+	    <paramdef>dbi_conn <parameter moreinfo="none">Conn</parameter></paramdef>
+	    <paramdef>char **<parameter moreinfo="none">orig</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+	<para>Works like <xref linkend="dbi-conn-quote-string"> but does not surround the resulting string with quotes.</para>
+	<variablelist>
+	  <varlistentry>
+	    <term>Arguments</term>
+	    <listitem>
+	      <para><literal moreinfo="none">Conn</literal>: The current database connection.</para>
+	      <para><literal moreinfo="none">orig</literal>: A pointer to the string to quote and escape.</para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>Returns</term>
+	    <listitem>
+	      <para>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error. The length of a quoted empty string is 2 bytes. In case of an error the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR or DBI_ERROR_NOMEM.</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </section>
+      <section id="dbi-conn-escape-string-copy" xreflabel="dbi_conn_escape_string_copy">
+	<title>dbi_conn_escape_string_copy</title>
+	<funcsynopsis>
+	  <funcprototype>
+	    <funcdef>size_t <function>dbi_conn_escape_string_copy</function></funcdef>
+	    <paramdef>dbi_conn <parameter moreinfo="none">Conn</parameter></paramdef>
+	      <paramdef>char *<parameter moreinfo="none">orig</parameter></paramdef>
+	      <paramdef>char **<parameter>newstr</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+	<para>Works like <xref linkend="dbi-conn-quote-string-copy"> but does not surround the resulting string with quotes.</para>
+	<variablelist>
+	  <varlistentry>
+	    <term>Arguments</term>
+	    <listitem>
+	      <para><literal moreinfo="none">Conn</literal>: The current database connection.</para>
+	      <para><literal moreinfo="none">orig</literal>: A pointer to the string to quote and escape.</para>
+	      <para><literal>newstr</literal>: After the function returns, this pointer will point to the quoted and escaped string.</para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>Returns</term>
+	    <listitem>
+	      <para>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR and DBI_ERROR_NOMEM.</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </section>
+      <section id="dbi-conn-escape-binary-copy" xreflabel="dbi_conn_escape_binary_copy">
+	<title>dbi_conn_escape_binary_copy</title>
+	<funcsynopsis>
+	  <funcprototype>
+	    <funcdef>size_t <function>dbi_conn_escape_binary_copy</function></funcdef>
+	    <paramdef>dbi_conn <parameter moreinfo="none">Conn</parameter></paramdef>
+	      <paramdef>char *<parameter moreinfo="none">orig</parameter></paramdef>
+	    <paramdef>size_t <parameter moreinfo="none">from_length</parameter></paramdef>
+	      <paramdef>char **<parameter>newstr</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+	<para>Works like <xref linkend="dbi-conn-quote-binary-copy"> but does not surround the resulting string with quotes.</para>
+	<variablelist>
+	  <varlistentry>
+	    <term>Arguments</term>
+	    <listitem>
+	      <para><literal moreinfo="none">Conn</literal>: The current database connection.</para>
+	      <para><literal moreinfo="none">orig</literal>: A pointer to the string to quote and escape.</para>
+	      <para><literal moreinfo="none">from_length</literal>: The length of the binary string in bytes.</para>
+	      <para><literal>newstr</literal>: After the function returns, this pointer will point to the quoted and escaped string.</para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>Returns</term>
+	    <listitem>
+	      <para>The new string's length in bytes, excluding the terminating zero byte, or 0 in case of an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR and DBI_ERROR_NOMEM.</para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </section>
+    </section>
+    <section id="reference-results">
+      <title>Managing Results</title>
       <Section id="dbi-result-get-conn" XRefLabel="dbi_result_get_conn"><Title>dbi_result_get_conn</Title>
 	<funcsynopsis>
 	  <funcprototype>
@@ -1170,7 +1335,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The connection belonging to the target query result.</Para></ListItem>
+	    <ListItem><Para>The connection belonging to the target query result.If an error occurs, the return value is NULL, and the <link linkend="errornumbers">error number</link> is set to DBI_ERROR_BADPTR.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1191,7 +1356,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>-1 on failure, zero on success.</Para></ListItem>
+	    <ListItem><Para>-1 on failure, zero on success. If a failure was caused by the database client library, the <link linkend="errornumbers">error number</link> is set to the database engine-specific nonzero error code.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1214,7 +1379,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>1 if successful, or 0 if there was an error.</Para></ListItem>
+	    <ListItem><Para>1 if successful, or 0 if there was an error. In the latter case, the <link linkend="errornumbers">error number</link> is one of DBI_ERROR_BADPTR, DBI_ERROR_BADIDX, or a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1235,7 +1400,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>1 if successful, or 0 if there was an error.</Para></ListItem>
+	    <ListItem><Para>1 if successful, or 0 if there was an error. In the latter case, the <link linkend="errornumbers">error number</link> is one of DBI_ERROR_BADPTR, DBI_ERROR_BADIDX, or a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1256,7 +1421,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>1 if successful, or 0 if there was an error.</Para></ListItem>
+	    <ListItem><Para>1 if successful, or 0 if there was an error. In the latter case, the <link linkend="errornumbers">error number</link> is one of DBI_ERROR_BADPTR, DBI_ERROR_BADIDX, or a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1277,7 +1442,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>1 if successful, or 0 if there is an error.</Para></ListItem>
+	    <ListItem><Para>1 if successful, or 0 if there is an error. In the latter case, the <link linkend="errornumbers">error number</link> is one of DBI_ERROR_BADPTR, DBI_ERROR_BADIDX, or a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1298,7 +1463,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>1 if successful, or 0 if there was an error.</Para></ListItem>
+	    <ListItem><Para>1 if successful, or 0 if there was an error. In the latter case, the <link linkend="errornumbers">error number</link> is one of DBI_ERROR_BADPTR, DBI_ERROR_BADIDX, or a database engine-specific nonzero value.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1319,7 +1484,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The ordinal number of the row, or 0 if there was an error. The first row has the number 1.</Para></ListItem>
+	    <ListItem><Para>The ordinal number of the row, or 0 if there was an error. The first row has the number 1. In case of an error, the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1340,7 +1505,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The number of rows in the result set, which may be 0 if the query did not return any datasets, or DBI_ROW_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>The number of rows in the result set, which may be 0 if the query did not return any datasets, or DBI_ROW_ERROR in case of an error. In that case, the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1361,7 +1526,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The number of modified rows in the result set which may be 0 if no row was affected by the previous query. Also returns 0 if the database engine does not support this feature. The return value will be DBI_ROW_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>The number of modified rows in the result set which may be 0 if no row was affected by the previous query. Also returns 0 if the database engine does not support this feature. The return value will be DBI_ROW_ERROR in case of an error. In case of an error, the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1389,7 +1554,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The length in bytes of the target field data, excluding the terminating zero byte, or DBI_LENGTH_ERROR in case of an error. The return value is 0 for field types other than string or binary string.</Para></ListItem>
+	    <ListItem><Para>The length in bytes of the target field data, excluding the terminating zero byte, or DBI_LENGTH_ERROR in case of an error. The return value is 0 for field types other than string or binary string. In case of an error the <link linkend="errornumbers">error number</link> is one of DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1412,7 +1577,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The length in bytes of the target field data, excluding the terminating zero byte, or DBI_LENGTH_ERROR in case of an error. The return value is 0 for field types other than string or binary string.</Para></ListItem>
+	    <ListItem><Para>The length in bytes of the target field data, excluding the terminating zero byte, or DBI_LENGTH_ERROR in case of an error. The return value is 0 for field types other than string or binary string. In case of an error the <link linkend="errornumbers">error number</link> is one of DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1461,7 +1626,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The index (starting at 1) of the target field, or 0 in case of an error.</Para></ListItem>
+	    <ListItem><Para>The index (starting at 1) of the target field, or 0 in case of an error. In that case, the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1483,7 +1648,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The target field's name, or NULL in case of an error.</Para></ListItem>
+	    <ListItem><Para>The target field's name, or NULL in case of an error. In that case the <link linkend="errornumbers">error number</link> is one of DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1527,7 +1692,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The target field's data type, or DBI_TYPE_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>The target field's data type, or DBI_TYPE_ERROR in case of an error. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1550,7 +1715,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The target field's data type, or DBI_TYPE_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>The target field's data type, or DBI_TYPE_ERROR in case of an error. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1564,7 +1729,7 @@ published by the Free Software Foundation.
 	      <paramdef>unsigned int <parameter moreinfo="none">attribmax</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Returns the target field's data type attributes in the specified range. The constants returned by this function are defined in dbi.h with the prefix "DBI_", followed by the name of the field's datatype.</Para>
+	<Para>Returns the target field's data type attributes in the specified range. The constants returned by this function are defined in <filename>include/dbi/dbi.h</filename> with the prefix "DBI_", followed by the name of the field's datatype.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -1577,7 +1742,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The target field's requested attribute range, or DBI_ATTRIBUTE_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>The target field's requested attribute range, or DBI_ATTRIBUTE_ERROR in case of an error. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1604,7 +1769,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The target field's requested attribute range, or DBI_ATTRIBUTE_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>The target field's requested attribute range, or DBI_ATTRIBUTE_ERROR in case of an error. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1627,7 +1792,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The target field's attributes, or DBI_ATTRIBUTE_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>The target field's attributes, or DBI_ATTRIBUTE_ERROR in case of an error. In case of an error the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1650,7 +1815,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The target field's attributes, or DBI_ATTRIBUTE_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>The target field's attributes, or DBI_ATTRIBUTE_ERROR in case of an error. In that case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1673,7 +1838,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>1 if the field contains a NULL value, otherwise 0, or DBI_FIELD_FLAG_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>1 if the field contains a NULL value, otherwise 0, or DBI_FIELD_FLAG_ERROR in case of an error. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1696,7 +1861,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>1 if the field contains a NULL value, otherwise 0, or DBI_FIELD_FLAG_ERROR in case of an error.</Para></ListItem>
+	    <ListItem><Para>1 if the field contains a NULL value, otherwise 0, or DBI_FIELD_FLAG_ERROR in case of an error. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADPTR, DBI_ERROR_BADOBJECT, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1791,7 +1956,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1814,7 +1979,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1837,7 +2002,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1860,7 +2025,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1883,7 +2048,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1906,7 +2071,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1949,7 +2114,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1972,7 +2137,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -1995,7 +2160,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field, which contains a fractional number.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, which contains a fractional number, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2018,7 +2183,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2030,7 +2195,7 @@ published by the Free Software Foundation.
 	    <paramdef>const char *<parameter moreinfo="none">fieldname</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Fetch the data stored in the speficied field, which contains a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer. The string may not be modified, and may not necessairly persist between row fetches. In case of an error, this function returns the string "ERROR".</Para>
+	<Para>Fetch the data stored in the speficied field, which contains a zero-terminated string.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -2041,7 +2206,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field, which is a zero-terminated string.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, which is a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer. The string may not be modified, and may not necessarily persist between row fetches. In case of an error, this function returns the string "ERROR". In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2053,7 +2218,7 @@ published by the Free Software Foundation.
 	    <paramdef>const char *<parameter moreinfo="none">fieldname</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Fetch the data stored in the speficied field, which contains a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer, and no memory is allocated. The newly allocated string may be modified by the host program, but the program is responsible for freeing the string. In case of an error, this function returns an allocated string reading "ERROR".</Para>
+	<Para>Fetch the data stored in the speficied field, which contains a zero-terminated string, and return it in an allocated buffer.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -2064,7 +2229,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field as a zero-terminated allocated string.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field as a zero-terminated allocated string. If the field contains a NULL value, the function returns a NULL pointer, and no memory is allocated. The newly allocated string may be modified by the host program, but the program is responsible for freeing the string. In case of an error, this function returns an allocated string reading "ERROR". In that case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2076,7 +2241,7 @@ published by the Free Software Foundation.
 	    <paramdef>const char *<parameter moreinfo="none">fieldname</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Fetch the data stored in the speficied field, which contains binary data. The data may not be modified, and may not necessarily persist between row fetches. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR".</Para>
+	<Para>Fetch the data stored in the speficied field, which contains binary data.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -2087,7 +2252,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field. The binary data may contain zero bytes and non-printable characters. Use <xref linkend="dbi-result-get-field-length"> or <xref linkend="dbi-result-get-field-length-idx"> to determine the number of bytes contained in the resulting binary string.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field. The binary data may contain zero bytes and non-printable characters. Use <xref linkend="dbi-result-get-field-length"> or <xref linkend="dbi-result-get-field-length-idx"> to determine the number of bytes contained in the resulting binary string. The data may not be modified, and may not necessarily persist between row fetches. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR". In that case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2099,7 +2264,7 @@ published by the Free Software Foundation.
 	    <paramdef>const char *<parameter moreinfo="none">fieldname</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Fetch the data stored in the speficied field, which contains binary data. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR".</Para>
+	<Para>Fetch the data stored in the speficied field, which contains binary data, and return it in an allocated buffer.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -2110,7 +2275,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field. The binary data may contain zero bytes and non-printable characters. Use <xref linkend="dbi-result-get-field-length"> or <xref linkend="dbi-result-get-field-length-idx"> to determine the number of bytes contained in the resulting binary string.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field. The binary data may contain zero bytes and non-printable characters. Use <xref linkend="dbi-result-get-field-length"> or <xref linkend="dbi-result-get-field-length-idx"> to determine the number of bytes contained in the resulting binary string. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR". In that case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2135,7 +2300,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field as a time_t value. To convert this into human-readable dates or times, use the C library functions gmtime (3) and localtime (3).</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field as a time_t value. To convert this into human-readable dates or times, use the C library functions gmtime (3) and localtime (3). In case of an error this function returns 0 (zero) which resolves to the Unix epoch when converted. In case of an error the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2160,7 +2325,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2185,7 +2350,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2210,7 +2375,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2235,7 +2400,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2260,7 +2425,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2285,7 +2450,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2332,7 +2497,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2357,7 +2522,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2382,7 +2547,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2407,7 +2572,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2432,7 +2597,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2457,7 +2622,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_BINARY if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2482,7 +2647,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_BINARY if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2507,7 +2672,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_BINARY if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2534,7 +2699,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>0 upon success, DBI_BIND_BINARY if there was an error</Para></ListItem>
+	    <ListItem><Para>0 upon success, DBI_BIND_ERROR if there was an error. Possible <link linkend="errornumbers">error numbers</link> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2562,7 +2727,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2585,7 +2750,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2608,7 +2773,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2631,7 +2796,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2654,7 +2819,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2677,7 +2842,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2720,7 +2885,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2743,7 +2908,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2766,7 +2931,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2789,7 +2954,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2801,7 +2966,7 @@ published by the Free Software Foundation.
 	    <paramdef>unsigned int <parameter moreinfo="none">fieldidx</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Fetch the data stored in the speficied field, which contains a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer. The string may not be modified, and may not necessairly persist between row fetches. In case of an error, this function returns the string "ERROR".</Para>
+	<Para>Fetch the data stored in the speficied field, which contains a zero-terminated string.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -2812,7 +2977,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field. If the field contains a NULL value, the function returns a NULL pointer. The string may not be modified, and may not necessairly persist between row fetches. In case of an error, this function returns the string "ERROR". In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2824,7 +2989,7 @@ published by the Free Software Foundation.
 	    <paramdef>unsigned int <parameter moreinfo="none">fieldidx</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Fetch the data stored in the speficied field, which contains a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer, and no memory is allocated. The newly allocated string may be modified by the host program, but the program is responsible for freeing the string. In case of an error, this function returns an allocated string reading "ERROR".</Para>
+	<Para>Fetch the data stored in the speficied field, which contains a zero-terminated string, and return it in an allocated buffer.</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -2835,7 +3000,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field. If the field contains a NULL value, the function returns a NULL pointer, and no memory is allocated. The newly allocated string may be modified by the host program, but the program is responsible for freeing the string. In case of an error, this function returns an allocated string reading "ERROR". In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2858,7 +3023,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field. The binary data may contain zero bytes and non-printable characters. Use <xref linkend="dbi-result-get-field-length"> or <xref linkend="dbi-result-get-field-length-idx"> to determine the number of bytes contained in the resulting binary string.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field. The binary data may contain zero bytes and non-printable characters. Use <xref linkend="dbi-result-get-field-length"> or <xref linkend="dbi-result-get-field-length-idx"> to determine the number of bytes contained in the resulting binary string. The data may not be modified, and may not necessarily persist between row fetches. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR". In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2870,7 +3035,7 @@ published by the Free Software Foundation.
 	    <paramdef>unsigned int <parameter moreinfo="none">fieldidx</parameter></paramdef>
 	  </funcprototype>
 	</funcsynopsis>
-	<Para>Fetch the data stored in the speficied field, which contains binary data. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR".</Para>
+	<Para>Fetch the data stored in the speficied field, which contains binary data, and return it in an allocated buffer. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR".</Para>
 	<VariableList>
 	  <VarListEntry>
 	    <term>Arguments</term>
@@ -2881,7 +3046,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field.</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR". In the latter case the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>
@@ -2906,7 +3071,7 @@ published by the Free Software Foundation.
 	  </VarListEntry>
 	  <VarListEntry>
 	    <term>Returns</term>
-	    <ListItem><Para>The data stored in the specified field as a time_t value. To convert this into human-readable dates or times, use the C library functions gmtime (3) and localtime (3).</Para></ListItem>
+	    <ListItem><Para>The data stored in the specified field as a time_t value. To convert this into human-readable dates or times, use the C library functions gmtime (3) and localtime (3). In case of an error this function returns 0 (zero) which resolves to the Unix epoch when converted. In case of an error the <link linkend="errornumbers">error number</link> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</Para></ListItem>
 	  </VarListEntry>
 	</VariableList>
       </Section>

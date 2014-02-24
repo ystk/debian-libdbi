@@ -16,7 +16,7 @@ REL="PREVIOUS"
 TITLE="Connection Infrastructure"
 HREF="reference-conn.html"><LINK
 REL="NEXT"
-TITLE="Managing Queries and Results"
+TITLE="Managing Queries"
 HREF="reference-query.html"></HEAD
 ><BODY
 CLASS="SECTION"
@@ -53,7 +53,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 3. libdbi API Reference</TD
+>Chapter 4. libdbi API Reference</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -74,7 +74,7 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-DATABASE"
->3.4. SQL and Database Infrastructure</A
+>4.4. SQL and Database Infrastructure</A
 ></H1
 ><DIV
 CLASS="SECTION"
@@ -82,14 +82,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-CONNECT"
->3.4.1. dbi_conn_connect</A
+>4.4.1. dbi_conn_connect</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1057"
+NAME="AEN1220"
 ></A
 ><P
 ><CODE
@@ -108,7 +108,10 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Connects to the database using the options (host, username, password, port, (etc.) set with dbi_set_option() and dbi_set_option_numeric().  See the documentation for each specific database driver for the options it recognizes and requires.</P
+>Connects to the database using the options (host, username, password, port, (etc.) set with <A
+HREF="reference-conn.html#DBI-CONN-SET-OPTION"
+>dbi_conn_set_option</A
+> and related functions.  See the documentation for each specific database driver for the options it recognizes and requires.</P
 ><P
 ></P
 ><DIV
@@ -127,7 +130,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 (zero) on success, less than zero on failure.</P
+>0 (zero) on success, less than zero on failure. In the latter case, the <A
+HREF="errornumbers.html"
+>error number</A
+> may be DBI_ERROR_NOMEM, DBI_ERROR_NOCONN, or one of the driver-specific values.</P
 ></DD
 ></DL
 ></DIV
@@ -138,14 +144,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-DB-LIST"
->3.4.2. dbi_conn_get_db_list</A
+>4.4.2. dbi_conn_get_db_list</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1076"
+NAME="AEN1241"
 ></A
 ><P
 ><CODE
@@ -191,7 +197,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->A query result object, which will contain database names in the first field (for use with the by-index field functions).</P
+>A query result object, which will contain database names in the first field (for use with the by-index field functions). In case of an error, the function returns NULL and sets the <A
+HREF="errornumbers.html"
+>error number</A
+> to a database engine-specific nonzero value.</P
 ></DD
 ></DL
 ></DIV
@@ -202,14 +211,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-TABLE-LIST"
->3.4.3. dbi_conn_get_table_list</A
+>4.4.3. dbi_conn_get_table_list</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1099"
+NAME="AEN1265"
 ></A
 ><P
 ><CODE
@@ -263,7 +272,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->A query result object, which will contain table names in the first field (for use with the by-index field functions).</P
+>A query result object, which will contain table names in the first field (for use with the by-index field functions). In case of an error, the function returns NULL and sets the <A
+HREF="errornumbers.html"
+>error number</A
+> to a database engine-specific nonzero value.</P
 ></DD
 ></DL
 ></DIV
@@ -274,14 +286,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-SELECT-DB"
->3.4.4. dbi_conn_select_db</A
+>4.4.4. dbi_conn_select_db</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1126"
+NAME="AEN1293"
 ></A
 ><P
 ><CODE
@@ -327,7 +339,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->-1 on failure, zero on success.</P
+>-1 on failure, zero on success. In case of an error, the <A
+HREF="errornumbers.html"
+>error number</A
+> may be DBI_ERROR_UNSUPPORTED or a database engine-specific nonzero value.</P
 ></DD
 ></DL
 ></DIV
@@ -391,7 +406,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Managing Queries and Results</TD
+>Managing Queries</TD
 ></TR
 ></TABLE
 ></DIV

@@ -2,7 +2,7 @@ AUTHORS
 README
 NEWS
 TODO
-doc/driver-guide
-doc/programmers-guide
-doc/programmers-guide.pdf
-doc/driver-guide.pdf
+debian/zigo-build/doc/driver-guide
+debian/zigo-build/doc/programmers-guide
+debian/zigo-build/doc/programmers-guide.pdf
+debian/zigo-build/doc/driver-guide.pdf
