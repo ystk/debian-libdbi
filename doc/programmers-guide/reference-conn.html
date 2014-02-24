@@ -53,7 +53,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 3. libdbi API Reference</TD
+>Chapter 4. libdbi API Reference</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -74,7 +74,7 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-CONN"
->3.3. Connection Infrastructure</A
+>4.3. Connection Infrastructure</A
 ></H1
 ><DIV
 CLASS="SECTION"
@@ -82,14 +82,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-NEW"
->3.3.1. dbi_conn_new</A
+>4.3.1. dbi_conn_new</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN664"
+NAME="AEN742"
 ></A
 ><P
 ><CODE
@@ -138,14 +138,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-OPEN"
->3.3.2. dbi_conn_open</A
+>4.3.2. dbi_conn_open</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN683"
+NAME="AEN761"
 ></A
 ><P
 ><CODE
@@ -194,14 +194,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-CLOSE"
->3.3.3. dbi_conn_close</A
+>4.3.3. dbi_conn_close</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN702"
+NAME="AEN780"
 ></A
 ><P
 ><CODE
@@ -244,14 +244,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-DRIVER"
->3.3.4. dbi_conn_get_driver</A
+>4.3.4. dbi_conn_get_driver</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN717"
+NAME="AEN795"
 ></A
 ><P
 ><CODE
@@ -300,14 +300,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-SET-OPTION"
->3.3.5. dbi_conn_set_option</A
+>4.3.5. dbi_conn_set_option</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN736"
+NAME="AEN814"
 ></A
 ><P
 ><CODE
@@ -361,7 +361,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->-1 on error, 0 on success.</P
+>-1 on error, 0 on success. In case of an error, the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_NOMEM.</P
 ></DD
 ></DL
 ></DIV
@@ -372,14 +375,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-SET-OPTION-NUMERIC"
->3.3.6. dbi_conn_set_option_numeric</A
+>4.3.6. dbi_conn_set_option_numeric</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN763"
+NAME="AEN842"
 ></A
 ><P
 ><CODE
@@ -433,7 +436,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->-1 on error, 0 on success.</P
+>-1 on error, 0 on success. In case of an error, the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_NOMEM.</P
 ></DD
 ></DL
 ></DIV
@@ -444,14 +450,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-OPTION"
->3.3.7. dbi_conn_get_option</A
+>4.3.7. dbi_conn_get_option</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN790"
+NAME="AEN870"
 ></A
 ><P
 ><CODE
@@ -473,7 +479,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Retrieves the string value of the specified option set for a connection.</P
+>Retrieves the string value of the specified option set for a connection if available.</P
 ><P
 ></P
 ><DIV
@@ -497,7 +503,74 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->A read-only string with the setting, or NULL if it is not available.</P
+>A read-only string with the setting, or NULL if it is not available. It is not considered an error if the setting is not available.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-REQUIRE-OPTION"
+>4.3.8. dbi_conn_require_option</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN893"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>const char *<B
+CLASS="FSFUNC"
+>dbi_conn_require_option</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>key</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Retrieves the string value of the specified option set for a connection and throws an error if the option was not set.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>key</TT
+>: The name of the target setting.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>A read-only string with the setting, or NULL if it is not available. In the latter case, the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -508,14 +581,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-OPTION-NUMERIC"
->3.3.8. dbi_conn_get_option_numeric</A
+>4.3.9. dbi_conn_get_option_numeric</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN813"
+NAME="AEN917"
 ></A
 ><P
 ><CODE
@@ -537,7 +610,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Retrieves the integer value of the specified option set for a connection.</P
+>Retrieves the integer value of the specified option set for a connection if available.</P
 ><P
 ></P
 ><DIV
@@ -561,7 +634,74 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The value of the setting, or -1 if it is not available.</P
+>The value of the setting, or -1 if it is not available. It is not considered an error if the option has not been set.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-REQUIRE-OPTION-NUMERIC"
+>4.3.10. dbi_conn_require_option_numeric</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN940"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_require_option_numeric</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>key</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Retrieves the integer value of the specified option set for a connection and throws an error if it is not available.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>key</TT
+>: The name of the target setting.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The value of the setting, or -1 if it is not available. In the latter case, the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -572,14 +712,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-OPTION-LIST"
->3.3.9. dbi_conn_get_option_list</A
+>4.3.11. dbi_conn_get_option_list</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN836"
+NAME="AEN964"
 ></A
 ><P
 ><CODE
@@ -625,7 +765,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The key name of the next option, or NULL if there was an error or there are no more options.</P
+>The key name of the next option, or NULL if there are no more options or if there was an error. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is set to DBI_ERROR_BADPTR.</P
 ></DD
 ></DL
 ></DIV
@@ -636,14 +779,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-CLEAR-OPTION"
->3.3.10. dbi_conn_clear_option</A
+>4.3.12. dbi_conn_clear_option</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN859"
+NAME="AEN988"
 ></A
 ><P
 ><CODE
@@ -665,7 +808,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Removes the target option setting from a connection.</P
+>Removes the target option setting from a connection. It is not considered an error if the requested option was not set before.</P
 ><P
 ></P
 ><DIV
@@ -694,14 +837,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-CLEAR-OPTIONS"
->3.3.11. dbi_conn_clear_options</A
+>4.3.13. dbi_conn_clear_options</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN878"
+NAME="AEN1007"
 ></A
 ><P
 ><CODE
@@ -744,14 +887,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-SOCKET"
->3.3.12. dbi_conn_get_socket</A
+>4.3.14. dbi_conn_get_socket</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN893"
+NAME="AEN1022"
 ></A
 ><P
 ><CODE
@@ -800,14 +943,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-ENCODING"
->3.3.13. dbi_conn_get_encoding</A
+>4.3.15. dbi_conn_get_encoding</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN912"
+NAME="AEN1041"
 ></A
 ><P
 ><CODE
@@ -866,14 +1009,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-ENGINE-VERSION-STRING"
->3.3.14. dbi_conn_get_engine_version_string</A
+>4.3.16. dbi_conn_get_engine_version_string</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN934"
+NAME="AEN1063"
 ></A
 ><P
 ><CODE
@@ -946,14 +1089,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-ENGINE-VERSION"
->3.3.15. dbi_conn_get_engine_version</A
+>4.3.17. dbi_conn_get_engine_version</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN961"
+NAME="AEN1090"
 ></A
 ><P
 ><CODE
@@ -1002,7 +1145,7 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-CONN-ERROR"
->3.3.16. Error Handling</A
+>4.3.18. Error Handling</A
 ></H2
 ><DIV
 CLASS="SECTION"
@@ -1010,14 +1153,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-ERROR"
->3.3.16.1. dbi_conn_error</A
+>4.3.18.1. dbi_conn_error</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN982"
+NAME="AEN1111"
 ></A
 ><P
 ><CODE
@@ -1063,7 +1206,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The error number of the most recent database operation if it resulted in an error. If not, this will return -1.</P
+>The error number of the most recent database operation if it resulted in an error. If not, this will return DBI_ERROR_NONE. See <A
+HREF="errorhandling.html"
+>Chapter 3</A
+> for further information.</P
 ></DD
 ></DL
 ></DIV
@@ -1074,14 +1220,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-ERROR-HANDLER"
->3.3.16.2. dbi_conn_error_handler</A
+>4.3.18.2. dbi_conn_error_handler</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1005"
+NAME="AEN1135"
 ></A
 ><P
 ><CODE
@@ -1156,14 +1302,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-ERROR-FLAG"
->3.3.16.3. dbi_conn_error_flag</A
+>4.3.18.3. dbi_conn_error_flag</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1034"
+NAME="AEN1164"
 ></A
 ><P
 ><CODE
@@ -1206,6 +1352,95 @@ CLASS="LITERAL"
 ><DD
 ><P
 >0 means the previous query finished without errors. A value larger than zero means an error occurred.</P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This function is deprecated. Use <A
+HREF="reference-conn.html#DBI-CONN-ERROR"
+>dbi_conn_error</A
+> instead. Both functions return the same error code to maintain backwards compatibility.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-SET-ERROR"
+>4.3.18.4. dbi_conn_set_error</A
+></H3
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1188"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_set_error</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, int <VAR
+CLASS="PDPARAM"
+>errnum</VAR
+>, const char <VAR
+CLASS="PDPARAM"
+>*formatstr</VAR
+>, ...);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Applications may set an error status and an error message which are accessible through the libdbi error API function <A
+HREF="reference-conn.html#DBI-CONN-ERROR"
+>dbi_conn_error</A
+>.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><EM
+>Arguments</EM
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>errnum</TT
+>: An application-defined error code. Applications should use only positive nonzero integers to indicate errors.</P
+><P
+>The remainder of the argument list is interpreted using a printf(3)-like syntax to define an error message.</P
+></DD
+><DT
+><EM
+>Returns</EM
+></DT
+><DD
+><P
+>The length of the error message in bytes, or 0 if there was an error.</P
 ></DD
 ></DL
 ></DIV

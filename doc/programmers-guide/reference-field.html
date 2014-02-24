@@ -53,7 +53,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 3. libdbi API Reference</TD
+>Chapter 4. libdbi API Reference</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -74,7 +74,7 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-FIELD"
->3.7. Retrieving Field Data by Name</A
+>4.8. Retrieving Field Data by Name</A
 ></H1
 ><DIV
 CLASS="SECTION"
@@ -82,14 +82,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-FIELDS"
->3.7.1. dbi_result_get_fields</A
+>4.8.1. dbi_result_get_fields</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1938"
+NAME="AEN2226"
 ></A
 ><P
 ><CODE
@@ -256,14 +256,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-FIELDS"
->3.7.2. dbi_result_bind_fields</A
+>4.8.2. dbi_result_bind_fields</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2008"
+NAME="AEN2296"
 ></A
 ><P
 ><CODE
@@ -331,14 +331,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-CHAR"
->3.7.3. dbi_result_get_char</A
+>4.8.3. dbi_result_get_char</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2036"
+NAME="AEN2324"
 ></A
 ><P
 ><CODE
@@ -384,7 +384,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -395,14 +398,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-UCHAR"
->3.7.4. dbi_result_get_uchar</A
+>4.8.4. dbi_result_get_uchar</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2059"
+NAME="AEN2348"
 ></A
 ><P
 ><CODE
@@ -448,7 +451,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -459,14 +465,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-SHORT"
->3.7.5. dbi_result_get_short</A
+>4.8.5. dbi_result_get_short</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2082"
+NAME="AEN2372"
 ></A
 ><P
 ><CODE
@@ -512,7 +518,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</P
 ></DD
 ></DL
 ></DIV
@@ -523,14 +532,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-USHORT"
->3.7.6. dbi_result_get_ushort</A
+>4.8.6. dbi_result_get_ushort</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2105"
+NAME="AEN2396"
 ></A
 ><P
 ><CODE
@@ -576,7 +585,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</P
 ></DD
 ></DL
 ></DIV
@@ -587,14 +599,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-INT"
->3.7.7. dbi_result_get_int</A
+>4.8.7. dbi_result_get_int</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2128"
+NAME="AEN2420"
 ></A
 ><P
 ><CODE
@@ -640,7 +652,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</P
 ></DD
 ></DL
 ></DIV
@@ -651,14 +666,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-UINT"
->3.7.8. dbi_result_get_uint</A
+>4.8.8. dbi_result_get_uint</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2151"
+NAME="AEN2444"
 ></A
 ><P
 ><CODE
@@ -704,7 +719,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</P
 ></DD
 ></DL
 ></DIV
@@ -715,14 +733,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-LONG"
->3.7.9. dbi_result_get_long</A
+>4.8.9. dbi_result_get_long</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2174"
+NAME="AEN2468"
 ></A
 ><P
 ><CODE
@@ -755,14 +773,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-ULONG"
->3.7.10. dbi_result_get_ulong</A
+>4.8.10. dbi_result_get_ulong</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2186"
+NAME="AEN2480"
 ></A
 ><P
 ><CODE
@@ -795,14 +813,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-LONGLONG"
->3.7.11. dbi_result_get_longlong</A
+>4.8.11. dbi_result_get_longlong</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2198"
+NAME="AEN2492"
 ></A
 ><P
 ><CODE
@@ -848,7 +866,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</P
 ></DD
 ></DL
 ></DIV
@@ -859,14 +880,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-ULONGLONG"
->3.7.12. dbi_result_get_ulonglong</A
+>4.8.12. dbi_result_get_ulonglong</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2221"
+NAME="AEN2516"
 ></A
 ><P
 ><CODE
@@ -912,7 +933,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</P
 ></DD
 ></DL
 ></DIV
@@ -923,14 +947,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-FLOAT"
->3.7.13. dbi_result_get_float</A
+>4.8.13. dbi_result_get_float</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2244"
+NAME="AEN2540"
 ></A
 ><P
 ><CODE
@@ -976,7 +1000,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field, which contains a fractional number.</P
+>The data stored in the specified field, which contains a fractional number, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</P
 ></DD
 ></DL
 ></DIV
@@ -987,14 +1014,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-DOUBLE"
->3.7.14. dbi_result_get_double</A
+>4.8.14. dbi_result_get_double</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2267"
+NAME="AEN2564"
 ></A
 ><P
 ><CODE
@@ -1040,7 +1067,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME..</P
 ></DD
 ></DL
 ></DIV
@@ -1051,14 +1081,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-STRING"
->3.7.15. dbi_result_get_string</A
+>4.8.15. dbi_result_get_string</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2290"
+NAME="AEN2588"
 ></A
 ><P
 ><CODE
@@ -1080,7 +1110,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Fetch the data stored in the speficied field, which contains a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer. The string may not be modified, and may not necessairly persist between row fetches. In case of an error, this function returns the string "ERROR".</P
+>Fetch the data stored in the speficied field, which contains a zero-terminated string.</P
 ><P
 ></P
 ><DIV
@@ -1104,7 +1134,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field, which is a zero-terminated string.</P
+>The data stored in the specified field, which is a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer. The string may not be modified, and may not necessarily persist between row fetches. In case of an error, this function returns the string "ERROR". In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1115,14 +1148,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-STRING-COPY"
->3.7.16. dbi_result_get_string_copy</A
+>4.8.16. dbi_result_get_string_copy</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2313"
+NAME="AEN2612"
 ></A
 ><P
 ><CODE
@@ -1144,7 +1177,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Fetch the data stored in the speficied field, which contains a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer, and no memory is allocated. The newly allocated string may be modified by the host program, but the program is responsible for freeing the string. In case of an error, this function returns an allocated string reading "ERROR".</P
+>Fetch the data stored in the speficied field, which contains a zero-terminated string, and return it in an allocated buffer.</P
 ><P
 ></P
 ><DIV
@@ -1168,7 +1201,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field as a zero-terminated allocated string.</P
+>The data stored in the specified field as a zero-terminated allocated string. If the field contains a NULL value, the function returns a NULL pointer, and no memory is allocated. The newly allocated string may be modified by the host program, but the program is responsible for freeing the string. In case of an error, this function returns an allocated string reading "ERROR". In that case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1179,14 +1215,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-BINARY"
->3.7.17. dbi_result_get_binary</A
+>4.8.17. dbi_result_get_binary</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2336"
+NAME="AEN2636"
 ></A
 ><P
 ><CODE
@@ -1208,7 +1244,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Fetch the data stored in the speficied field, which contains binary data. The data may not be modified, and may not necessarily persist between row fetches. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR".</P
+>Fetch the data stored in the speficied field, which contains binary data.</P
 ><P
 ></P
 ><DIV
@@ -1238,7 +1274,10 @@ HREF="reference-field-meta.html#DBI-RESULT-GET-FIELD-LENGTH"
 > or <A
 HREF="reference-field-meta.html#DBI-RESULT-GET-FIELD-LENGTH-IDX"
 >dbi_result_get_field_length_idx</A
-> to determine the number of bytes contained in the resulting binary string.</P
+> to determine the number of bytes contained in the resulting binary string. The data may not be modified, and may not necessarily persist between row fetches. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR". In that case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1249,14 +1288,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-BINARY-COPY"
->3.7.18. dbi_result_get_binary_copy</A
+>4.8.18. dbi_result_get_binary_copy</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2361"
+NAME="AEN2662"
 ></A
 ><P
 ><CODE
@@ -1278,7 +1317,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Fetch the data stored in the speficied field, which contains binary data. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR".</P
+>Fetch the data stored in the speficied field, which contains binary data, and return it in an allocated buffer.</P
 ><P
 ></P
 ><DIV
@@ -1308,7 +1347,10 @@ HREF="reference-field-meta.html#DBI-RESULT-GET-FIELD-LENGTH"
 > or <A
 HREF="reference-field-meta.html#DBI-RESULT-GET-FIELD-LENGTH-IDX"
 >dbi_result_get_field_length_idx</A
-> to determine the number of bytes contained in the resulting binary string.</P
+> to determine the number of bytes contained in the resulting binary string. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR". In that case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1319,14 +1361,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-DATETIME"
->3.7.19. dbi_result_get_datetime</A
+>4.8.19. dbi_result_get_datetime</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2386"
+NAME="AEN2688"
 ></A
 ><P
 ><CODE
@@ -1372,7 +1414,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field as a time_t value. To convert this into human-readable dates or times, use the C library functions gmtime (3) and localtime (3).</P
+>The data stored in the specified field as a time_t value. To convert this into human-readable dates or times, use the C library functions gmtime (3) and localtime (3). In case of an error this function returns 0 (zero) which resolves to the Unix epoch when converted. In case of an error the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1383,14 +1428,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-CHAR"
->3.7.20. dbi_result_bind_char</A
+>4.8.20. dbi_result_bind_char</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2409"
+NAME="AEN2712"
 ></A
 ><P
 ><CODE
@@ -1444,7 +1489,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1455,14 +1503,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-UCHAR"
->3.7.21. dbi_result_bind_uchar</A
+>4.8.21. dbi_result_bind_uchar</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2436"
+NAME="AEN2740"
 ></A
 ><P
 ><CODE
@@ -1516,7 +1564,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1527,14 +1578,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-SHORT"
->3.7.22. dbi_result_bind_short</A
+>4.8.22. dbi_result_bind_short</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2463"
+NAME="AEN2768"
 ></A
 ><P
 ><CODE
@@ -1588,7 +1639,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1599,14 +1653,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-USHORT"
->3.7.23. dbi_result_bind_ushort</A
+>4.8.23. dbi_result_bind_ushort</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2490"
+NAME="AEN2796"
 ></A
 ><P
 ><CODE
@@ -1660,7 +1714,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1671,14 +1728,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-INT"
->3.7.24. dbi_result_bind_int</A
+>4.8.24. dbi_result_bind_int</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2517"
+NAME="AEN2824"
 ></A
 ><P
 ><CODE
@@ -1732,7 +1789,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1743,14 +1803,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-UINT"
->3.7.25. dbi_result_bind_uint</A
+>4.8.25. dbi_result_bind_uint</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2544"
+NAME="AEN2852"
 ></A
 ><P
 ><CODE
@@ -1804,7 +1864,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1815,14 +1878,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-LONG"
->3.7.26. dbi_result_bind_long</A
+>4.8.26. dbi_result_bind_long</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2571"
+NAME="AEN2880"
 ></A
 ><P
 ><CODE
@@ -1858,14 +1921,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-ULONG"
->3.7.27. dbi_result_bind_ulong</A
+>4.8.27. dbi_result_bind_ulong</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2585"
+NAME="AEN2894"
 ></A
 ><P
 ><CODE
@@ -1901,14 +1964,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-LONGLONG"
->3.7.28. dbi_result_bind_longlong</A
+>4.8.28. dbi_result_bind_longlong</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2599"
+NAME="AEN2908"
 ></A
 ><P
 ><CODE
@@ -1962,7 +2025,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1973,14 +2039,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-ULONGLONG"
->3.7.29. dbi_result_bind_ulonglong</A
+>4.8.29. dbi_result_bind_ulonglong</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2626"
+NAME="AEN2936"
 ></A
 ><P
 ><CODE
@@ -2034,7 +2100,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -2045,14 +2114,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-FLOAT"
->3.7.30. dbi_result_bind_float</A
+>4.8.30. dbi_result_bind_float</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2653"
+NAME="AEN2964"
 ></A
 ><P
 ><CODE
@@ -2106,7 +2175,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -2117,14 +2189,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-DOUBLE"
->3.7.31. dbi_result_bind_double</A
+>4.8.31. dbi_result_bind_double</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2680"
+NAME="AEN2992"
 ></A
 ><P
 ><CODE
@@ -2178,7 +2250,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -2189,14 +2264,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-STRING"
->3.7.32. dbi_result_bind_string</A
+>4.8.32. dbi_result_bind_string</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2707"
+NAME="AEN3020"
 ></A
 ><P
 ><CODE
@@ -2250,7 +2325,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_ERROR if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -2261,14 +2339,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-BINARY"
->3.7.33. dbi_result_bind_binary</A
+>4.8.33. dbi_result_bind_binary</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2734"
+NAME="AEN3048"
 ></A
 ><P
 ><CODE
@@ -2322,7 +2400,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_BINARY if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -2333,14 +2414,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-STRING-COPY"
->3.7.34. dbi_result_bind_string_copy</A
+>4.8.34. dbi_result_bind_string_copy</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2761"
+NAME="AEN3076"
 ></A
 ><P
 ><CODE
@@ -2394,7 +2475,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_BINARY if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -2405,14 +2489,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-BINARY-COPY"
->3.7.35. dbi_result_bind_binary_copy</A
+>4.8.35. dbi_result_bind_binary_copy</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2788"
+NAME="AEN3104"
 ></A
 ><P
 ><CODE
@@ -2466,7 +2550,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_BINARY if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -2477,14 +2564,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-BIND-DATETIME"
->3.7.36. dbi_result_bind_datetime</A
+>4.8.36. dbi_result_bind_datetime</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2815"
+NAME="AEN3132"
 ></A
 ><P
 ><CODE
@@ -2538,7 +2625,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->0 upon success, DBI_BIND_BINARY if there was an error</P
+>0 upon success, DBI_BIND_ERROR if there was an error. Possible <A
+HREF="errornumbers.html"
+>error numbers</A
+> are DBI_ERROR_BADPTR, DBI_ERROR_NOMEM, and DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV

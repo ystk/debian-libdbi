@@ -53,7 +53,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 3. libdbi API Reference</TD
+>Chapter 4. libdbi API Reference</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -74,7 +74,7 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-FIELD-IDX"
->3.8. Retrieving Field Data by Index</A
+>4.9. Retrieving Field Data by Index</A
 ></H1
 ><DIV
 CLASS="SECTION"
@@ -82,14 +82,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-CHAR-IDX"
->3.8.1. dbi_result_get_char_idx</A
+>4.9.1. dbi_result_get_char_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2844"
+NAME="AEN3162"
 ></A
 ><P
 ><CODE
@@ -135,7 +135,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -146,14 +149,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-UCHAR-IDX"
->3.8.2. dbi_result_get_uchar_idx</A
+>4.9.2. dbi_result_get_uchar_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2867"
+NAME="AEN3186"
 ></A
 ><P
 ><CODE
@@ -199,7 +202,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -210,14 +216,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-SHORT-IDX"
->3.8.3. dbi_result_get_short_idx</A
+>4.9.3. dbi_result_get_short_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2890"
+NAME="AEN3210"
 ></A
 ><P
 ><CODE
@@ -263,7 +269,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -274,14 +283,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-USHORT-IDX"
->3.8.4. dbi_result_get_ushort_idx</A
+>4.9.4. dbi_result_get_ushort_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2913"
+NAME="AEN3234"
 ></A
 ><P
 ><CODE
@@ -327,7 +336,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -338,14 +350,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-INT-IDX"
->3.8.5. dbi_result_get_int_idx</A
+>4.9.5. dbi_result_get_int_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2936"
+NAME="AEN3258"
 ></A
 ><P
 ><CODE
@@ -391,7 +403,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -402,14 +417,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-UINT-IDX"
->3.8.6. dbi_result_get_uint_idx</A
+>4.9.6. dbi_result_get_uint_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2959"
+NAME="AEN3282"
 ></A
 ><P
 ><CODE
@@ -455,7 +470,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -466,14 +484,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-LONG-IDX"
->3.8.7. dbi_result_get_long_idx</A
+>4.9.7. dbi_result_get_long_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2982"
+NAME="AEN3306"
 ></A
 ><P
 ><CODE
@@ -506,14 +524,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-ULONG-IDX"
->3.8.8. dbi_result_get_ulong_idx</A
+>4.9.8. dbi_result_get_ulong_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN2994"
+NAME="AEN3318"
 ></A
 ><P
 ><CODE
@@ -546,14 +564,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-LONGLONG-IDX"
->3.8.9. dbi_result_get_longlong_idx</A
+>4.9.9. dbi_result_get_longlong_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN3006"
+NAME="AEN3330"
 ></A
 ><P
 ><CODE
@@ -599,7 +617,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -610,14 +631,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-ULONGLONG-IDX"
->3.8.10. dbi_result_get_ulonglong_idx</A
+>4.9.10. dbi_result_get_ulonglong_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN3029"
+NAME="AEN3354"
 ></A
 ><P
 ><CODE
@@ -663,7 +684,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -674,14 +698,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-FLOAT-IDX"
->3.8.11. dbi_result_get_float_idx</A
+>4.9.11. dbi_result_get_float_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN3052"
+NAME="AEN3378"
 ></A
 ><P
 ><CODE
@@ -727,7 +751,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -738,14 +765,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-DOUBLE-IDX"
->3.8.12. dbi_result_get_double_idx</A
+>4.9.12. dbi_result_get_double_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN3075"
+NAME="AEN3402"
 ></A
 ><P
 ><CODE
@@ -791,7 +818,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field, or 0 (zero) if an error occurs. In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE or DBI_ERROR_BADIDX.</P
 ></DD
 ></DL
 ></DIV
@@ -802,14 +832,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-STRING-IDX"
->3.8.13. dbi_result_get_string_idx</A
+>4.9.13. dbi_result_get_string_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN3098"
+NAME="AEN3426"
 ></A
 ><P
 ><CODE
@@ -831,7 +861,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Fetch the data stored in the speficied field, which contains a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer. The string may not be modified, and may not necessairly persist between row fetches. In case of an error, this function returns the string "ERROR".</P
+>Fetch the data stored in the speficied field, which contains a zero-terminated string.</P
 ><P
 ></P
 ><DIV
@@ -855,7 +885,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field. If the field contains a NULL value, the function returns a NULL pointer. The string may not be modified, and may not necessairly persist between row fetches. In case of an error, this function returns the string "ERROR". In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -866,14 +899,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-STRING-COPY-IDX"
->3.8.14. dbi_result_get_string_copy_idx</A
+>4.9.14. dbi_result_get_string_copy_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN3121"
+NAME="AEN3450"
 ></A
 ><P
 ><CODE
@@ -895,7 +928,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Fetch the data stored in the speficied field, which contains a zero-terminated string. If the field contains a NULL value, the function returns a NULL pointer, and no memory is allocated. The newly allocated string may be modified by the host program, but the program is responsible for freeing the string. In case of an error, this function returns an allocated string reading "ERROR".</P
+>Fetch the data stored in the speficied field, which contains a zero-terminated string, and return it in an allocated buffer.</P
 ><P
 ></P
 ><DIV
@@ -919,7 +952,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field. If the field contains a NULL value, the function returns a NULL pointer, and no memory is allocated. The newly allocated string may be modified by the host program, but the program is responsible for freeing the string. In case of an error, this function returns an allocated string reading "ERROR". In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -930,14 +966,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-BINARY-IDX"
->3.8.15. dbi_result_get_binary_idx</A
+>4.9.15. dbi_result_get_binary_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN3144"
+NAME="AEN3474"
 ></A
 ><P
 ><CODE
@@ -989,7 +1025,10 @@ HREF="reference-field-meta.html#DBI-RESULT-GET-FIELD-LENGTH"
 > or <A
 HREF="reference-field-meta.html#DBI-RESULT-GET-FIELD-LENGTH-IDX"
 >dbi_result_get_field_length_idx</A
-> to determine the number of bytes contained in the resulting binary string.</P
+> to determine the number of bytes contained in the resulting binary string. The data may not be modified, and may not necessarily persist between row fetches. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR". In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1000,14 +1039,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-BINARY-COPY-IDX"
->3.8.16. dbi_result_get_binary_copy_idx</A
+>4.9.16. dbi_result_get_binary_copy_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN3169"
+NAME="AEN3500"
 ></A
 ><P
 ><CODE
@@ -1029,7 +1068,7 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Fetch the data stored in the speficied field, which contains binary data. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR".</P
+>Fetch the data stored in the speficied field, which contains binary data, and return it in an allocated buffer. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR".</P
 ><P
 ></P
 ><DIV
@@ -1053,7 +1092,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field.</P
+>The data stored in the specified field. The newly allocated memory may be modified by the host program, but the program is responsible for freeing the data. If the field contains a NULL value, the function returns a NULL pointer. In case of an error, this function returns the string "ERROR". In the latter case the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV
@@ -1064,14 +1106,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-RESULT-GET-DATETIME-IDX"
->3.8.17. dbi_result_get_datetime_idx</A
+>4.9.17. dbi_result_get_datetime_idx</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN3192"
+NAME="AEN3524"
 ></A
 ><P
 ><CODE
@@ -1117,7 +1159,10 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The data stored in the specified field as a time_t value. To convert this into human-readable dates or times, use the C library functions gmtime (3) and localtime (3).</P
+>The data stored in the specified field as a time_t value. To convert this into human-readable dates or times, use the C library functions gmtime (3) and localtime (3). In case of an error this function returns 0 (zero) which resolves to the Unix epoch when converted. In case of an error the <A
+HREF="errornumbers.html"
+>error number</A
+> is DBI_ERROR_BADTYPE, DBI_ERROR_BADIDX, or DBI_ERROR_BADNAME.</P
 ></DD
 ></DL
 ></DIV

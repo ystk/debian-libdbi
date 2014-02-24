@@ -2,21 +2,24 @@
 <HTML
 ><HEAD
 ><TITLE
->libdbi in a Nutshell (Quickstart Guide)</TITLE
+>Required driver capabilities</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
 TITLE="Database Independent Abstraction Layer for C"
 HREF="index.html"><LINK
+REL="UP"
+TITLE="Driver Capabilities"
+HREF="drivercaps.html"><LINK
 REL="PREVIOUS"
-TITLE="Contact Info"
-HREF="contact.html"><LINK
+TITLE="Setting driver capabilities"
+HREF="settingdrivercaps.html"><LINK
 REL="NEXT"
-TITLE="Quick Overview"
-HREF="quickstart-debriefing.html"></HEAD
+TITLE="Driver Functions"
+HREF="driverfuncs.html"></HEAD
 ><BODY
-CLASS="CHAPTER"
+CLASS="SECTION"
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
 LINK="#0000FF"
@@ -34,7 +37,7 @@ CELLSPACING="0"
 ><TH
 COLSPAN="3"
 ALIGN="center"
->Database Independent Abstraction Layer for C: libdbi Programmer's Guide</TH
+>Database Independent Abstraction Layer for C: libdbi Driver Author's Guide</TH
 ></TR
 ><TR
 ><TD
@@ -42,7 +45,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="contact.html"
+HREF="settingdrivercaps.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -50,13 +53,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
-></TD
+>Chapter 2. Driver Capabilities</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="quickstart-debriefing.html"
+HREF="driverfuncs.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -66,39 +69,26 @@ ACCESSKEY="N"
 ALIGN="LEFT"
 WIDTH="100%"></DIV
 ><DIV
-CLASS="CHAPTER"
+CLASS="SECTION"
 ><H1
+CLASS="SECTION"
 ><A
-NAME="QUICKSTART"
-></A
->Chapter 2. libdbi in a Nutshell (Quickstart Guide)</H1
+NAME="REQUIREDDRIVERCAPS"
+>2.2. Required driver capabilities</A
+></H1
+><P
+>libdbi currently queries only one driver capability.</P
+><P
+></P
 ><DIV
-CLASS="TOC"
+CLASS="VARIABLELIST"
 ><DL
 ><DT
-><B
->Table of Contents</B
-></DT
-><DT
->2.1. <A
-HREF="quickstart-debriefing.html"
->Quick Overview</A
-></DT
-><DT
->2.2. <A
-HREF="quickstart-code.html"
->Generic Example Program</A
-></DT
-><DT
->2.3. <A
-HREF="x267.html"
->Loading libdbi at runtime</A
-></DT
-><DT
->2.4. <A
-HREF="x276.html"
->Adding libdbi to your project</A
-></DT
+>safe_dlclose</DT
+><DD
+><P
+>A nonzero value indicates that the driver can safely be unloaded from memory by calling dlclose(). A value of 0 (zero) indicates that the driver should not be unloaded when libdbi is shut down. Drivers must not be unloaded if they, or any library they are linked against, install exit handlers via atexit() as this would leave dangling pointers, causing segfaults on some platforms.</P
+></DD
 ></DL
 ></DIV
 ></DIV
@@ -118,7 +108,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="contact.html"
+HREF="settingdrivercaps.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -136,7 +126,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="quickstart-debriefing.html"
+HREF="driverfuncs.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -146,17 +136,21 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Contact Info</TD
+>Setting driver capabilities</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
->&nbsp;</TD
+><A
+HREF="drivercaps.html"
+ACCESSKEY="U"
+>Up</A
+></TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Quick Overview</TD
+>Driver Functions</TD
 ></TR
 ></TABLE
 ></DIV

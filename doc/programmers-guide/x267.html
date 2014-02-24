@@ -17,7 +17,7 @@ TITLE="Generic Example Program"
 HREF="quickstart-code.html"><LINK
 REL="NEXT"
 TITLE="Adding libdbi to your project"
-HREF="x278.html"></HEAD
+HREF="x276.html"></HEAD
 ><BODY
 CLASS="SECTION"
 BGCOLOR="#FFFFFF"
@@ -59,7 +59,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="x278.html"
+HREF="x276.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -86,15 +86,12 @@ CLASS="INFORMALEXAMPLE"
 NAME="AEN270"
 ></A
 ><P
->Parent =&gt; dl_open(module) =&gt; dl_open(libdbi) =&gt; dl_open(driver)</P
+>Parent =&gt; dl_open(module) =&gt; dl_open(driver)</P
 ><P
 ></P
 ></DIV
 ><P
->Both libdbi and the drivers have to be loaded using the <CODE
-CLASS="FUNCTION"
->dl_open</CODE
-> function as it is not possible to link the dynamically loaded module against libdbi. For this pattern to work, the drivers need a little tweak, like this:</P
+>The dynamically loaded module is linked against libdbi whereas the parent application is not. For this pattern to work, the drivers are linked against libdbi by default. This avoids "undefined symbol" errors at runtime, but may cause problems under arcane conditions or on equally arcane operating systems. If you should ever encounter such problems, you can switch off linking the drivers against libdbi like this:</P
 ><TABLE
 BORDER="0"
 BGCOLOR="#000000"
@@ -110,14 +107,12 @@ CLASS="PROMPT"
 >~/libdbi-drivers #</SAMP
 ><KBD
 CLASS="USERINPUT"
->./configure --enable-libdbi --with-mysql</KBD
+>./configure --disable-libdbi --with-mysql</KBD
 ></PRE
 ></FONT
 ></TD
 ></TR
 ></TABLE
-><P
->Drivers built with this option are supposed to work both with the procedure shown above and with the generic procedure shown in the previous section. This has been tested on Linux, FreeBSD, and Cygwin. You may want to test the drivers on other platforms in both modes to avoid surprises.</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -153,7 +148,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="x278.html"
+HREF="x276.html"
 ACCESSKEY="N"
 >Next</A
 ></TD

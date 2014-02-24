@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->libdbi in a Nutshell (Quickstart Guide)</TITLE
+>Driver Capabilities</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,8 +13,8 @@ REL="PREVIOUS"
 TITLE="Contact Info"
 HREF="contact.html"><LINK
 REL="NEXT"
-TITLE="Quick Overview"
-HREF="quickstart-debriefing.html"></HEAD
+TITLE="Setting driver capabilities"
+HREF="settingdrivercaps.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
 BGCOLOR="#FFFFFF"
@@ -34,7 +34,7 @@ CELLSPACING="0"
 ><TH
 COLSPAN="3"
 ALIGN="center"
->Database Independent Abstraction Layer for C: libdbi Programmer's Guide</TH
+>Database Independent Abstraction Layer for C: libdbi Driver Author's Guide</TH
 ></TR
 ><TR
 ><TD
@@ -56,7 +56,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="quickstart-debriefing.html"
+HREF="settingdrivercaps.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -69,9 +69,9 @@ WIDTH="100%"></DIV
 CLASS="CHAPTER"
 ><H1
 ><A
-NAME="QUICKSTART"
+NAME="DRIVERCAPS"
 ></A
->Chapter 2. libdbi in a Nutshell (Quickstart Guide)</H1
+>Chapter 2. Driver Capabilities</H1
 ><DIV
 CLASS="TOC"
 ><DL
@@ -81,26 +81,18 @@ CLASS="TOC"
 ></DT
 ><DT
 >2.1. <A
-HREF="quickstart-debriefing.html"
->Quick Overview</A
+HREF="settingdrivercaps.html"
+>Setting driver capabilities</A
 ></DT
 ><DT
 >2.2. <A
-HREF="quickstart-code.html"
->Generic Example Program</A
-></DT
-><DT
->2.3. <A
-HREF="x267.html"
->Loading libdbi at runtime</A
-></DT
-><DT
->2.4. <A
-HREF="x276.html"
->Adding libdbi to your project</A
+HREF="requireddrivercaps.html"
+>Required driver capabilities</A
 ></DT
 ></DL
 ></DIV
+><P
+>Driver capabilities are essentially an array of key/value pairs which the drivers set when they're loaded. Both the libdbi framework and programs linked against libdbi can query these capabilities and adjust their behaviour accordingly.</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -136,7 +128,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="quickstart-debriefing.html"
+HREF="settingdrivercaps.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -156,7 +148,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Quick Overview</TD
+>Setting driver capabilities</TD
 ></TR
 ></TABLE
 ></DIV
