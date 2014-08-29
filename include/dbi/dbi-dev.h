@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbi-dev.h,v 1.42 2008/01/15 00:21:25 mhoenicka Exp $
+ * $Id: dbi-dev.h,v 1.49 2013/01/08 23:54:30 mhoenicka Exp $
  */
 
 #ifndef __DBI_DEV_H__
@@ -27,6 +27,7 @@
 extern "C" {
 #endif
 
+#include "dirent.h" /* DIR definition */
 #include <dbi/dbi.h> /* for dbi_conn_error_handler_func */
 
 /*********************
@@ -35,6 +36,7 @@ extern "C" {
 
 /* to fool the compiler into letting us use the following structs before they're actually defined: */
 typedef struct dbi_driver_s *dbi_driver_t_pointer;
+typedef struct dbi_inst_s *dbi_inst_t_pointer;
 typedef struct dbi_conn_s *dbi_conn_t_pointer;
 typedef struct _field_binding_s *_field_binding_t_pointer;
 
@@ -109,17 +111,24 @@ typedef struct dbi_option_s {
 typedef struct dbi_functions_s {
 	void (*register_driver)(const dbi_info_t **, const char ***, const char ***);
 	int (*initialize)(dbi_driver_t_pointer);
+	int (*finalize)(dbi_driver_t_pointer);
 	int (*connect)(dbi_conn_t_pointer);
 	int (*disconnect)(dbi_conn_t_pointer);
 	int (*fetch_row)(dbi_result_t *, unsigned long long);
 	int (*free_query)(dbi_result_t *);
-	int (*goto_row)(dbi_result_t *, unsigned long long);
+        int (*goto_row)(dbi_result_t *, unsigned long long, unsigned long long);
 	int (*get_socket)(dbi_conn_t_pointer);
 	const char *(*get_encoding)(dbi_conn_t_pointer);
 	dbi_result_t *(*list_dbs)(dbi_conn_t_pointer, const char *);
 	dbi_result_t *(*list_tables)(dbi_conn_t_pointer, const char *, const char *);
 	dbi_result_t *(*query)(dbi_conn_t_pointer, const char *);
 	dbi_result_t *(*query_null)(dbi_conn_t_pointer, const unsigned char *, size_t);
+        int (*transaction_begin)(dbi_conn_t_pointer);
+        int (*transaction_commit)(dbi_conn_t_pointer);
+        int (*transaction_rollback)(dbi_conn_t_pointer);
+        int (*savepoint)(dbi_conn_t_pointer, const char *);
+        int (*rollback_to_savepoint)(dbi_conn_t_pointer, const char *);
+        int (*release_savepoint)(dbi_conn_t_pointer, const char *);
 	size_t (*quote_string)(dbi_driver_t_pointer, const char *, char *);
 	size_t (*conn_quote_string)(dbi_conn_t_pointer, const char *, char *);
 	size_t (*quote_binary)(dbi_conn_t_pointer, const unsigned char *, size_t, unsigned char **);
@@ -147,6 +156,7 @@ typedef struct dbi_driver_s {
 	dbi_custom_function_t *custom_functions;
 	const char **reserved_words;
 	_capability_t *caps;
+	dbi_inst_t_pointer dbi_inst; /* engine instance we are called from */
 	struct dbi_driver_s *next;
 } dbi_driver_t;
 	
@@ -159,6 +169,7 @@ typedef struct dbi_conn_s {
 	dbi_error_flag error_flag;
 	int error_number; /*XXX*/
 	char *error_message; /*XXX*/
+	char *full_errmsg;
 	dbi_conn_error_handler_func error_handler;
 	void *error_handler_argument;
 	dbi_result_t **results; /* for garbage-collector-mandated result disjoins */
@@ -166,8 +177,6 @@ typedef struct dbi_conn_s {
 	int results_size;
 	struct dbi_conn_s *next; /* so libdbi can unload all conns at exit */
 } dbi_conn_t;
-
-extern int dbi_verbosity;
 
 unsigned int _isolate_attrib(unsigned int attribs, unsigned int rangemin, unsigned int rangemax);
 void _error_handler(dbi_conn_t *conn, dbi_error_flag errflag);
@@ -178,6 +187,17 @@ void _logquery_null(dbi_conn_t *conn, const char* statement, size_t st_length);
 int _disjoin_from_conn(dbi_result_t *result);
 void _set_field_flag(dbi_row_t *row, unsigned int fieldidx, unsigned char flag, unsigned char value);
 int _get_field_flag(dbi_row_t *row, unsigned int fieldidx, unsigned char flag);
+size_t _dirent_buf_size(DIR * dirp);
+
+
+/******************************
+ * DBI INSTANCE RELATED TYPES *
+ ******************************/
+typedef struct dbi_inst_s {
+	dbi_driver_t *rootdriver;
+	dbi_conn_t *rootconn;
+	int dbi_verbosity;
+} dbi_inst_t;
 
 
 #ifdef __cplusplus

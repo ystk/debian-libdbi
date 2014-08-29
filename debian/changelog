@@ -1,3 +1,28 @@
+libdbi (0.9.0-2) unstable; urgency=medium
+
+  * Add missing copyright holders and fixed syntax (Closes: #736240)
+  * Add Breaks against non-multiarchified versions of libdbd-* packages.
+    Thanks to Sébastien Villemot for the suggestion (Closes: #737286)
+
+ -- Prach Pongpanich <prachpub@gmail.com>  Fri, 04 Apr 2014 16:40:25 +0700
+
+libdbi (0.9.0-1) unstable; urgency=medium
+
+  [ Laszlo Boszormenyi (GCS) ]
+  * Correct debian/copyright .
+
+  [ Prach Pongpanich ]
+  * Imported Upstream version 0.9.0 (Closes: #708115, #717437)
+  * Use debhelper short rules with autoreconf (Closes: #565558)
+  * Add -dbg package
+  * Update symbols file for new symbols
+  * Add multiarch support
+  * Bump Standards-Version to 3.9.5
+  * Change Vcs fields to point to collab-maint
+  * Adopt package (Closes: #635659)
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Mon, 20 Jan 2014 21:19:50 +0100
+
 libdbi (0.8.4-6) unstable; urgency=low
 
   [ Thomas Goirand ]

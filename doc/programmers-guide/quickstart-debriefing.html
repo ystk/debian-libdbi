@@ -53,7 +53,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 2. libdbi in a Nutshell (Quickstart Guide)</TD
+>Chapter 3. libdbi in a Nutshell (Quickstart Guide)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -74,23 +74,35 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="QUICKSTART-DEBRIEFING"
->2.1. Quick Overview</A
+>3.1. Quick Overview</A
 ></H1
 ><P
->      libdbi uses a plugin system that allows various databases to be supported simultaneously, and can dynamically load or unload drivers that are supplied by libdbi or a third party. The library is initiallized by calling <A
-HREF="reference-core.html#DBI-INITIALIZE"
->dbi_initialize</A
-> and a connection instance is started by calling either <A
-HREF="reference-conn.html#DBI-CONN-NEW"
->dbi_conn_new</A
-> or both <A
-HREF="reference-driver.html#DBI-DRIVER-OPEN"
->dbi_driver_open</A
-> and <A
+>libdbi is implemented as a library and is usually available as a shared object (aka dynamically linked library). If your program is supposed to use libdbi's capabilities, your program must be linked against libdbi which will be explained shortly. At runtime, the first step is always to create a libdbi instance by calling <A
+HREF="reference-core.html#DBI-INITIALIZE-R"
+>dbi_initialize_r</A
+>. Programs that use threads or a plugin system may create more than one instance if needed and use them independently of each other. libdbi uses a plugin system that allows various databases to be supported simultaneously, and can dynamically load or unload drivers that are supplied by libdbi or a third party. Each instance loads the available database drivers independently. Programs can then use one or more of these drivers to create connections to databases, either by calling <A
+HREF="reference-driver.html#DBI-DRIVER-OPEN-R"
+>dbi_driver_open_r</A
+> followed by <A
 HREF="reference-conn.html#DBI-CONN-OPEN"
 >dbi_conn_open</A
->.
-    </P
+>, or in a single step by calling <A
+HREF="reference-conn.html#DBI-CONN-NEW-R"
+>dbi_conn_new_r</A
+>. Multiple connections may exist for a single driver, and all will function independently of each other. As not all database engine client libraries allow simultaneous access of a single connection by multiple threads, it is advisable to use separate connections per thread, even if you use a single libdbi instance for the entire process. Also, an instance may open connections using different drivers at the same time. Each libdbi instance can be independently shut down when no longer needed by calling <A
+HREF="reference-core.html#DBI-SHUTDOWN-R"
+>dbi_shutdown_r</A
+> which frees the memory occupied by the loaded drivers.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>libdbi versions 0.8.x and earlier did not allow the use of separate instances per process. Instead, each process had exactly one instance which was managed by libdbi internally. This interface is still available for backwards compatibility but will eventually be dropped.</P
+></BLOCKQUOTE
+></DIV
 ><P
 >      The connection's options (username, password, hostname, etc.) are set with <A
 HREF="reference-conn.html#DBI-CONN-SET-OPTION"
@@ -157,7 +169,7 @@ CLASS="LITERAL"
 >dbi_result_bind_*</TT
 > function that matches the type of the requested field. <A
 HREF="quickstart-debriefing.html#TABLE-GET-BIND-FUNCTIONS"
->Table 2-1</A
+>Table 3-1</A
 > shows an overview of these functions sorted by the field type they retrieve.
     </P
 ><P
@@ -246,13 +258,13 @@ HREF="reference-field.html#DBI-RESULT-BIND-BINARY-COPY"
 >      <A
 HREF="reference-results.html#DBI-RESULT-NEXT-ROW"
 >dbi_result_next_row</A
-> and the other row-seeking functions will return zero when there are no more rows available. Before the next database operation is performed, you must call <A
+> and the other row-seeking functions will return zero when there are no more rows available. Before the program terminates, you must call <A
 HREF="reference-results.html#DBI-RESULT-FREE"
 >dbi_result_free</A
->.  Before the program terminates, the connection must be disconnected and unloaded with <A
+> on every result set and the connection must be disconnected and unloaded with <A
 HREF="reference-conn.html#DBI-CONN-CLOSE"
 >dbi_conn_close</A
-> and libdbi must be unloaded with <A
+>. Finally, libdbi must be unloaded with <A
 HREF="reference-core.html#DBI-SHUTDOWN"
 >dbi_shutdown</A
 >.
@@ -264,7 +276,7 @@ NAME="TABLE-GET-BIND-FUNCTIONS"
 ></A
 ><P
 ><B
->Table 2-1. get* and bind* functions sorted by field type</B
+>Table 3-1. get* and bind* functions sorted by field type</B
 ></P
 ><TABLE
 BORDER="1"

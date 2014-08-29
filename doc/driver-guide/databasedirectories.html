@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Database directories</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Database Independent Abstraction Layer for C"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Driver Infrastructure"
+HREF="driverinfrastructure.html"><LINK
+REL="PREVIOUS"
+TITLE="Driver Capabilities"
+HREF="drivercaps.html"><LINK
+REL="NEXT"
+TITLE="Driver data"
+HREF="driverdata.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Database Independent Abstraction Layer for C: libdbi Driver Author's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="drivercaps.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Driver Infrastructure</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="driverdata.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DATABASEDIRECTORIES"
+>2.2. Database directories</A
+></H1
+><P
+>Many database engines use database directories which they manage themselves. Other engines, like sqlite, sqlite3, or firebird, allow the database user to store database files basically anywhere on the filesystem. Drivers of such engines should follow some guidelines to make database operations as transparent as possible across all drivers. In order to allow e.g. listing available databases, most applications should keep all databases managed by such a driver in the same directory.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DEFAULTDATABASEDIRECTORIES"
+>2.2.1. Default Database Directories</A
+></H2
+><P
+>libdbi-drivers uses a common root directory (<TT
+CLASS="FILENAME"
+>&lt;localstatedir&gt;/lib/libdbi</TT
+>) containing homonymous subdirectories for each driver as a default database path. If nothing else is specified (see <A
+HREF="databasedirectories.html#CUSTOMDATABASEDIRECTORIES"
+>Section 2.2.2</A
+>), databases will be created and accessed in these subdirectories. Using different subdirectories for each driver makes switching between drivers painless without having to re-create database files from scratch.</P
+><P
+>Users can change the compile-time default root directory using the <CODE
+CLASS="OPTION"
+>--with-dbi-dbdir</CODE
+> option when configuring libdbi-drivers.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="CUSTOMDATABASEDIRECTORIES"
+>2.2.2. Custom Database Directories</A
+></H2
+><P
+>In order to allow applications to store databases outside of the default directory if desired, a driver should implement a &lt;drivername&gt;_dbdir option which overrides the default database path in a connection.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="drivercaps.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="driverdata.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Driver Capabilities</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="driverinfrastructure.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Driver data</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

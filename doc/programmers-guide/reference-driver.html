@@ -13,7 +13,7 @@ REL="UP"
 TITLE="libdbi API Reference"
 HREF="reference.html"><LINK
 REL="PREVIOUS"
-TITLE="Core Library Functions"
+TITLE="Instance Infrastructure"
 HREF="reference-core.html"><LINK
 REL="NEXT"
 TITLE="Connection Infrastructure"
@@ -53,7 +53,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 4. libdbi API Reference</TD
+>Chapter 7. libdbi API Reference</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -74,22 +74,92 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-DRIVER"
->4.2. Driver Infrastructure</A
+>7.2. Driver Infrastructure</A
 ></H1
 ><DIV
 CLASS="SECTION"
 ><H2
 CLASS="SECTION"
 ><A
-NAME="DBI-DRIVER-LIST"
->4.2.1. dbi_driver_list</A
+NAME="DBI-DRIVER-LIST-R"
+>7.2.1. dbi_driver_list_r</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN418"
+NAME="AEN671"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>dbi_driver <B
+CLASS="FSFUNC"
+>dbi_driver_list_r</B
+></CODE
+>(dbi_driver <VAR
+CLASS="PDPARAM"
+>Current</VAR
+>, dbi_inst <VAR
+CLASS="PDPARAM"
+>Inst</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Enumerates all loaded drivers of the given instance. If Current is NULL, the first available driver will be returned. If Current is a valid driver, the next available driver will be returned.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Current</TT
+>: The current driver in the list of drivers, or NULL to retrieve the first one.</P
+><P
+><TT
+CLASS="LITERAL"
+>Inst</TT
+>: The instance handle.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The next available driver, or NULL if there is an error or no more are available.</P
+></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.9.0</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-DRIVER-LIST"
+>7.2.2. dbi_driver_list</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN698"
 ></A
 ><P
 ><CODE
@@ -109,6 +179,19 @@ CLASS="PDPARAM"
 ></DIV
 ><P
 >Enumerates all loaded drivers. If Current is NULL, the first available driver will be returned. If Current is a valid driver, the next available driver will be returned.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This function is deprecated. Use <A
+HREF="reference-driver.html#DBI-DRIVER-LIST-R"
+>dbi_driver_list_r</A
+> instead.</P
+></BLOCKQUOTE
+></DIV
 ><P
 ></P
 ><DIV
@@ -121,7 +204,7 @@ CLASS="VARIABLELIST"
 ><TT
 CLASS="LITERAL"
 >Current</TT
->: The current driver in the list of drivers.</P
+>: The current driver in the list of drivers, or NULL to retrieve the first one.</P
 ></DD
 ><DT
 >Returns</DT
@@ -137,15 +220,85 @@ CLASS="SECTION"
 ><H2
 CLASS="SECTION"
 ><A
-NAME="DBI-DRIVER-OPEN"
->4.2.2. dbi_driver_open</A
+NAME="DBI-DRIVER-OPEN-R"
+>7.2.3. dbi_driver_open_r</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN437"
+NAME="AEN720"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>dbi_driver <B
+CLASS="FSFUNC"
+>dbi_driver_open_r</B
+></CODE
+>(const char *<VAR
+CLASS="PDPARAM"
+>name</VAR
+>, dbi_inst <VAR
+CLASS="PDPARAM"
+>Inst</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Locate the driver with the specified name.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>name</TT
+>: The name of the driver to open.</P
+><P
+><TT
+CLASS="LITERAL"
+>Inst</TT
+>: The instance handle.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The requested driver, or NULL if there is no such driver.</P
+></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.9.0</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-DRIVER-OPEN"
+>7.2.4. dbi_driver_open</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN747"
 ></A
 ><P
 ><CODE
@@ -165,6 +318,19 @@ CLASS="PDPARAM"
 ></DIV
 ><P
 >Locate the driver with the specified name.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This function is deprecated. Use <A
+HREF="reference-driver.html#DBI-DRIVER-OPEN-R"
+>dbi_driver_open_r</A
+> instead.</P
+></BLOCKQUOTE
+></DIV
 ><P
 ></P
 ><DIV
@@ -193,15 +359,77 @@ CLASS="SECTION"
 ><H2
 CLASS="SECTION"
 ><A
-NAME="DBI-DRIVER-IS-RESERVED-WORD"
->4.2.3. dbi_driver_is_reserved_word</A
+NAME="DBI-DRIVER-GET-INSTANCE"
+>7.2.5. dbi_driver_get_instance</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN456"
+NAME="AEN769"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_driver_get_instance</B
+></CODE
+>(dbi_driver <VAR
+CLASS="PDPARAM"
+>Driver</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Retrieves the handle of the instance that loaded the driver.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Driver</TT
+>: The target driver.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The instance handle, or NULL in case of an error.</P
+></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.9.0</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-DRIVER-IS-RESERVED-WORD"
+>7.2.6. dbi_driver_is_reserved_word</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN792"
 ></A
 ><P
 ><CODE
@@ -258,14 +486,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-SPECIFIC-FUNCTION"
->4.2.4. dbi_driver_specific_function</A
+>7.2.7. dbi_driver_specific_function</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN479"
+NAME="AEN815"
 ></A
 ><P
 ><CODE
@@ -313,6 +541,12 @@ CLASS="LITERAL"
 ><P
 >If the custom function is found, a pointer to that function. If not, returns NULL.</P
 ></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.9.0</P
+></DD
 ></DL
 ></DIV
 ></DIV
@@ -322,14 +556,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-QUOTE-STRING"
->4.2.5. dbi_driver_quote_string</A
+>7.2.8. dbi_driver_quote_string</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN502"
+NAME="AEN842"
 ></A
 ><P
 ><CODE
@@ -402,14 +636,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-QUOTE-STRING-COPY"
->4.2.6. dbi_driver_quote_string_copy</A
+>7.2.9. dbi_driver_quote_string_copy</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN529"
+NAME="AEN869"
 ></A
 ><P
 ><CODE
@@ -493,14 +727,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-ENCODING-FROM-IANA"
->4.2.7. dbi_driver_encoding_from_iana</A
+>7.2.10. dbi_driver_encoding_from_iana</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN561"
+NAME="AEN901"
 ></A
 ><P
 ><CODE
@@ -555,6 +789,12 @@ CLASS="LITERAL"
 ><P
 >A string containing the database engine specific encoding name. If the encoding name cannot be translated, the IANA name is returned without translation.</P
 ></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.8.0</P
+></DD
 ></DL
 ></DIV
 ></DIV
@@ -564,14 +804,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-ENCODING-TO-IANA"
->4.2.8. dbi_driver_encoding_to_iana</A
+>7.2.11. dbi_driver_encoding_to_iana</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN586"
+NAME="AEN930"
 ></A
 ><P
 ><CODE
@@ -623,6 +863,12 @@ CLASS="LITERAL"
 ><P
 >A string containing the IANA encoding name. If the encoding name cannot be translated, the database engine specific name is returned without translation.</P
 ></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.8.0</P
+></DD
 ></DL
 ></DIV
 ></DIV
@@ -632,7 +878,7 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-DRIVER-INFO"
->4.2.9. Driver Information</A
+>7.2.12. Driver Information</A
 ></H2
 ><DIV
 CLASS="SECTION"
@@ -640,14 +886,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-GET-NAME"
->4.2.9.1. dbi_driver_get_name</A
+>7.2.12.1. dbi_driver_get_name</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN612"
+NAME="AEN960"
 ></A
 ><P
 ><CODE
@@ -696,14 +942,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-GET-FILENAME"
->4.2.9.2. dbi_driver_get_filename</A
+>7.2.12.2. dbi_driver_get_filename</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN631"
+NAME="AEN979"
 ></A
 ><P
 ><CODE
@@ -752,14 +998,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-GET-DESCRIPTION"
->4.2.9.3. dbi_driver_get_description</A
+>7.2.12.3. dbi_driver_get_description</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN650"
+NAME="AEN998"
 ></A
 ><P
 ><CODE
@@ -805,14 +1051,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-GET-MAINTAINER"
->4.2.9.4. dbi_driver_get_maintainer</A
+>7.2.12.4. dbi_driver_get_maintainer</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN668"
+NAME="AEN1016"
 ></A
 ><P
 ><CODE
@@ -861,14 +1107,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-GET-URL"
->4.2.9.5. dbi_driver_get_url</A
+>7.2.12.5. dbi_driver_get_url</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN687"
+NAME="AEN1035"
 ></A
 ><P
 ><CODE
@@ -911,14 +1157,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-GET-VERSION"
->4.2.9.6. dbi_driver_get_version</A
+>7.2.12.6. dbi_driver_get_version</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN702"
+NAME="AEN1050"
 ></A
 ><P
 ><CODE
@@ -967,14 +1213,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-DRIVER-GET-DATE-COMPILED"
->4.2.9.7. dbi_driver_get_date_compiled</A
+>7.2.12.7. dbi_driver_get_date_compiled</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN721"
+NAME="AEN1069"
 ></A
 ><P
 ><CODE
@@ -1013,6 +1259,70 @@ CLASS="LITERAL"
 ><DD
 ><P
 >A string containing the date the driver was compiled.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="DBI-DRIVER-CAP-GET"
+>7.2.12.8. dbi_driver_cap_get</A
+></H3
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1088"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_driver_cap_get</B
+></CODE
+>(dbi_driver <VAR
+CLASS="PDPARAM"
+>Driver</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>capname</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Requests the value of the driver capability which is specified as an argument.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Driver</TT
+>: The target driver.</P
+><P
+><TT
+CLASS="LITERAL"
+>capname</TT
+>: A pointer to a string containing the name of the driver capability to be queried.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The numeric value of the driver capability.</P
 ></DD
 ></DL
 ></DIV
@@ -1063,7 +1373,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Core Library Functions</TD
+>Instance Infrastructure</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

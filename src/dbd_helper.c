@@ -17,18 +17,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbd_helper.c,v 1.40 2008/01/15 00:21:25 mhoenicka Exp $
+ * $Id: dbd_helper.c,v 1.44 2011/08/09 11:14:14 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include <sys/types.h>
+#include <dirent.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <unistd.h>
+#ifdef HAVE_UNISTD_H
+  #include <unistd.h>
+#endif
 #include <math.h>
 #include <limits.h>
 
@@ -145,7 +150,7 @@ size_t _dbd_escape_chars(char *dest, const char *orig, size_t orig_size, const c
 	return len;
 }
 
-void _dbd_internal_error_handler(dbi_conn_t *conn, const char *errmsg, const int errno) {
+void _dbd_internal_error_handler(dbi_conn_t *conn, const char *errmsg, const int err_no) {
   int my_errno = DBI_ERROR_NONE;
   int errstatus;
   char *my_errmsg = NULL;
@@ -154,7 +159,7 @@ void _dbd_internal_error_handler(dbi_conn_t *conn, const char *errmsg, const int
     free(conn->error_message);
   }
 	
-  if (errno == DBI_ERROR_DBD) {
+  if (err_no == DBI_ERROR_DBD) {
     /* translate into a client-library specific error number */
     errstatus = conn->driver->functions->geterror(conn, &my_errno, &my_errmsg);
 
@@ -164,15 +169,15 @@ void _dbd_internal_error_handler(dbi_conn_t *conn, const char *errmsg, const int
     }
     conn->error_flag = my_errno; /* legacy code may rely on this */
     conn->error_number = my_errno;
-    conn->error_message = my_errmsg ? strdup(my_errmsg) : NULL;
+    conn->error_message = my_errmsg ? my_errmsg : NULL;
     
     if (conn->error_handler != NULL) {
       conn->error_handler((dbi_conn)conn, conn->error_handler_argument);
     }
   }
   else if (errmsg) {
-    conn->error_flag = errno; /* legacy code may rely on this */
-    conn->error_number = errno;
+    conn->error_flag = err_no; /* legacy code may rely on this */
+    conn->error_number = err_no;
     conn->error_message = strdup(errmsg);
     
     if (conn->error_handler != NULL) {
@@ -181,7 +186,7 @@ void _dbd_internal_error_handler(dbi_conn_t *conn, const char *errmsg, const int
   }
   else {
     /* pass internal errors to the internal libdbi handler */
-    _error_handler(conn, errno);
+    _error_handler(conn, err_no);
   }
 
 }
@@ -303,7 +308,6 @@ time_t _dbd_parse_datetime(const char *raw, unsigned int attribs) {
 	int _tz_dir = 0;
 	int _tz_hours = 0;
 	int _tz_mins = 0;
-	int _hour_len = 2;
 
 	int check_time = 1;
 
@@ -403,6 +407,37 @@ time_t _dbd_parse_datetime(const char *raw, unsigned int attribs) {
 	/* output is UTC, not local time */
 	return (time_t)(_gm_offset + timegm(&unixtime));
 }
+
+/* Calculate the required buffer size (in bytes) for directory       *
+ * entries read from the given directory handle.  Return 0 if this  *
+ * this cannot be done.                                              *
+ * http://womble.decadentplace.org.uk/readdir_r-advisory.html        */
+
+size_t _dirent_buf_size(DIR * dirp)
+{
+    long name_max;
+    size_t name_end;
+#   if defined(HAVE_FPATHCONF) && defined(HAVE_DIRFD) \
+       && defined(_PC_NAME_MAX)
+        name_max = fpathconf(dirfd(dirp), _PC_NAME_MAX);
+        if (name_max == -1)
+#           if defined(NAME_MAX)
+                name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#           else
+                return (size_t)(0);
+#           endif
+#   else
+#       if defined(NAME_MAX)
+            name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#       else
+#           error "buffer size for readdir_r cannot be determined"
+#       endif
+#   endif
+    name_end = (size_t)offsetof(struct dirent, d_name) + name_max + 1;
+    return (name_end > sizeof(struct dirent)
+            ? name_end : sizeof(struct dirent));
+}
+
 
 /* encoding/decoding of binary strings. The code, including the
    introductory comments, was literally stolen from the SQLite 2.8.16

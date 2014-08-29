@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Library and Interface Versions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Database Independent Abstraction Layer for C"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Savepoints"
+HREF="savepoints.html"><LINK
+REL="NEXT"
+TITLE="Package and library versions"
+HREF="package-library-version.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Database Independent Abstraction Layer for C: libdbi Programmer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="savepoints.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="package-library-version.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="VERSIONING"
+></A
+>Chapter 6. Library and Interface Versions</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>6.1. <A
+HREF="package-library-version.html"
+>Package and library versions</A
+></DT
+><DT
+>6.2. <A
+HREF="libdbi-and-drivers-versions.html"
+>libdbi and libdbi-drivers versions</A
+></DT
+><DT
+>6.3. <A
+HREF="version-at-runtime.html"
+>Determining the library version at runtime</A
+></DT
+></DL
+></DIV
+><P
+>Libraries are no static entities, just as any other piece of software. Some parts evolve, some optimizations are made, new features are requested, and old features may be too cumbersome to support if no one uses them anyway. Any of these developments may result in a new release. This chapter briefly discusses the issues related to library and driver versions.</P
+><P
+>The version issues with libdbi are a little more convoluted than with a run-of-the-mill library because we have to consider two application interfaces (APIs):</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>DBI API</DT
+><DD
+><P
+>This is, as with any other library, the data structures and the functions that you, as a programmer of a software linked against libdbi, need to know about.</P
+></DD
+><DT
+>DBD API</DT
+><DD
+><P
+>This is the interface that matters to the authors of database engine drivers.</P
+></DD
+></DL
+></DIV
+><P
+>Both interfaces may change independently, and both may affect the version number of the package as will be discussed shortly.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="savepoints.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="package-library-version.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Savepoints</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Package and library versions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,51 +1,182 @@
-2008-01-15 15:01  mhoenicka
+2013-03-12 01:08  mhoenicka
 
-	* NEWS (1.6), doc/driver-guide.sgml (1.3), doc/example-program.sgml
-	(1.15), doc/libdbi-errorhandling.sgml (1.2),
-	doc/libdbi-reference.sgml (1.16): final touches for 0.8.3-pre1
+	* NEWS (1.9): updated for 0.9.0 release
 
-2008-01-15 14:59  mhoenicka
+2013-02-04 00:17  mhoenicka
 
-	* ChangeLog (1.22): shut up
+	* UPGRADING (1.1): initial import
 
-2008-01-15 01:21  mhoenicka
+2013-02-04 00:07  mhoenicka
 
-	* doc/libdbi-reference.sgml (1.15), include/dbi/dbi-dev.h (1.42),
-	include/dbi/dbi.h.in (1.2), src/dbd_helper.c (1.40), src/dbi_main.c
-	(1.78), src/dbi_result.c (1.46): overhauled error reporting;
-	dbi_conn_error_flags() is now deprecated, use the return value of
-	dbi_conn_error() instead; make sure error status is reset before
-	each dbi command
+	* configure.in (1.62): bumped version to 0.9
 
-2008-01-15 01:18  mhoenicka
+2013-02-04 00:04  mhoenicka
 
-	* doc/: Makefile.am (1.20), libdbi-errorhandling.sgml (1.1),
-	programmers-guide.sgml (1.13): added chapter about error handling
+	* doc/: driver-guide.sgml (1.8), programmers-guide.sgml (1.18):
+	  updated copyright info
 
-2008-01-15 01:15  mhoenicka
+2013-02-03 23:38  mhoenicka
 
-	* configure.in (1.44): bumped up version number to 0.8.3-pre1
+	* README (1.17), README.osx (1.5), README.win32 (1.8): final
+	  touches before next release
 
-2008-01-02 17:14  mhoenicka
+2013-01-24 23:10  mhoenicka
 
-	* drivers/example/dbd_example.c (1.2): added safe_dlclose cap
+	* src/dbi_main.c (1.103): actually implemented the new transaction
+	  and savepoint functions
 
-2008-01-01 01:12  mhoenicka
+2013-01-10 00:17  mhoenicka
 
-	* doc/driver-guide.sgml (1.2): added driver cap info
+	* doc/driver-guide.sgml (1.7): updated dbd_goto_row() description
 
-2008-01-01 01:11  mhoenicka
+2013-01-09 00:54  mhoenicka
 
-	* src/dbi_main.c (1.77): added _safe_dlclose() to work around crash
-	on FreeBSD when using firebird
+	* include/dbi/dbd.h (1.33), include/dbi/dbi-dev.h (1.49),
+	  src/dbi_result.c (1.57): added currowidx parameter to
+	  dbd_goto_row() to allow seek optimizations in drivers
 
-2007-05-01 21:38  qu1j0t3
+2012-12-09 02:04  mhoenicka
 
-	* ChangeLog (1.21), README (1.16), README.osx (1.4): minor doc
-	updates
+	* doc/: Makefile.am (1.24), libdbi-reference.sgml (1.24),
+	  libdbi-transactions.sgml (1.1), programmers-guide.sgml (1.17):
+	  added transaction documentation
 
-2007-04-30 14:40  qu1j0t3
+2012-12-03 01:13  mhoenicka
 
-	* src/dbi_main.c (1.76): restore test for Verbosity before logging
-	message (reported by Balazs Scheidler)
+	* include/dbi/dbd.h (1.32), include/dbi/dbi-dev.h (1.48),
+	  include/dbi/dbi.h.in (1.13), src/dbi_main.c (1.102): added
+	  transaction and savepoint interface
+
+2012-07-04 00:12  mhoenicka
+
+	* src/dbi_main.c (1.101): removed _GNU_SOURCE definition as it is
+	  in config.h as well; handle additional dbi_conn member
+	  full_errmsg as a replacement for the static errmsg variable in
+	  dbi_conn_error() as per Emmanuel's suggestion
+
+2012-07-04 00:08  mhoenicka
+
+	* include/dbi/dbi-dev.h (1.47): added full_errmsg to dbi_conn_t
+
+2011-09-20 23:49  mhoenicka
+
+	* src/dbi_result.c (1.56): _is_row_fetched(): fixed off-by-one
+	  error causing memory leak as suggested by Tom Lane
+
+2011-08-10 00:56  mhoenicka
+
+	* doc/driver-guide.sgml (1.6): dbd_geterror(): enhanced description
+
+2011-08-09 13:14  mhoenicka
+
+	* src/dbd_helper.c (1.44): _dbd_internal_error_handler(): fixed
+	  memory leak
+
+2011-08-09 00:41  mhoenicka
+
+	* src/dbi_result.c (1.55): dbi_result_get_double_idx(): Tom Lane's
+	  patch to return SIZE4 values properly
+
+2011-02-20 15:03  mhoenicka
+
+	* configure.in (1.61): Jan's libdbi-readdir_r_solaris patch
+
+2011-02-20 01:34  mhoenicka
+
+	* doc/programmers-guide.sgml (1.16): added build and install
+	  chapter
+
+2011-02-19 21:26  mhoenicka
+
+	* doc/libdbi-reference.sgml (1.23): fixed return value of
+	  dbi_conn_get_option_numeric()
+
+2011-02-19 12:56  mhoenicka
+
+	* configure.in (1.60): updated libtool initialization; user-defined
+	  CFLAGS variable is now picked up correctly; removed all
+	  platform-dependent compiler optimizations
+
+2011-02-13 00:24  mhoenicka
+
+	* src/dbi_main.c (1.100): dbi_conn_close(), dbi_conn_get_socket(),
+	  dbi_conn_get_encoding(), dbi_conn_get_engine_version(),
+	  dbi_conn_get_engine_version_string(), dbi_conn_get_db_list(),
+	  dbi_conn_get_table_list(), dbi_conn_query(), dbi_conn_queryf(),
+	  dbi_conn_query_null(), dbi_conn_select_db(),
+	  dbi_conn_sequence_last(), dbi_conn_sequence_next(),
+	  dbi_conn_ping(): test for existing connection in conn struct
+
+2010-09-27 00:06  mhoenicka
+
+	* configure.in (1.59): bumped version number to 0.9.0-pre4
+
+2010-09-27 00:05  mhoenicka
+
+	* INSTALL (1.3), Makefile.am (1.28), configure.in (1.58),
+	  include/dbi/Makefile.am (1.6): reworked separate lib and doc
+	  installation once again; readded --disable-docs configure switch
+
+2010-09-25 15:02  mhoenicka
+
+	* INSTALL (1.2), Makefile.am (1.27), configure.in (1.57),
+	  doc/Makefile.am (1.23): reworked doc installation
+
+2010-09-25 12:47  mhoenicka
+
+	* doc/Makefile.am (1.22): added sleep to prevent race condition
+	  during html doc building
+
+2010-09-25 12:47  mhoenicka
+
+	* doc/example-program.sgml (1.17): added some threading thoughts
+
+2010-09-23 22:51  mhoenicka
+
+	* doc/: libdbi-quickstart.sgml (1.11), libdbi-reference.sgml
+	  (1.22): reverted _r to _i changes
+
+2010-09-21 22:49  mhoenicka
+
+	* doc/libdbi-versioning.sgml (1.1): initial revision
+
+2010-09-21 22:43  mhoenicka
+
+	* configure.in (1.56): fixed LIBDBI_MAJOR computation typo
+
+2010-09-10 21:11  mhoenicka
+
+	* include/dbi/dbi.h.in (1.12), src/dbi_main.c (1.99): reverted
+	  function name changes
+
+2010-09-05 21:02  mhoenicka
+
+	* include/dbi/dbi.h.in (1.11): fixed _r vs. _i typo
+
+2010-09-03 00:15  mhoenicka
+
+	* doc/: libdbi-quickstart.sgml (1.10), libdbi-reference.sgml
+	  (1.21): more -r vs. -i fixes
+
+2010-09-02 23:54  mhoenicka
+
+	* debian/: changelog (1.13), control (1.11), copyright (1.6),
+	  libdbd-mysql.dirs (1.4), libdbd-mysql.files (1.5),
+	  libdbd-pgsql.dirs (1.4), libdbd-pgsql.files (1.4),
+	  libdbi0-dev.dirs (1.5), libdbi0-dev.doc-base.driver (1.6),
+	  libdbi0-dev.doc-base.programmer (1.4), libdbi0-dev.docs (1.7),
+	  libdbi0-dev.files (1.6), libdbi0.dirs (1.5), libdbi0.docs (1.9),
+	  libdbi0.files (1.5), libdbi0.postinst (1.4), libdbi0.postrm
+	  (1.5), libdbi0.shlibs (1.9), rules (1.9), shlibs.local (1.5):
+	  removed obsolete /debian directory and files
+
+2010-09-02 23:19  mhoenicka
+
+	* doc/libdbi-quickstart.sgml (1.9), doc/libdbi-reference.sgml
+	  (1.20), include/dbi/dbi.h.in (1.10), src/dbi_main.c (1.98):
+	  changed instance-based function names from dbi_initialize_r to
+	  dbi_initialize_i, dbi_shutdown_r to dbi_shutdown_i,
+	  dbi_set_verbosity_r to dbi_set_verbosity_i, dbi_driver_list_r to
+	  dbi_driver_list_i, dbi_driver_open_r to dbi_driver_open_i to not
+	  imply thread-safety
 

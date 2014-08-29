@@ -13,6 +13,7 @@ libdbi.so.1 libdbi1 #MINVER#
  _dbd_result_set_numfields@Base 0.8.4
  _dbd_row_allocate@Base 0.8.4
  _dbd_row_finalize@Base 0.8.4
+ _dirent_buf_size@Base 0.9.0
  _disjoin_from_conn@Base 0.8.4
  _error_handler@Base 0.8.4
  _get_field_flag@Base 0.8.4
@@ -45,6 +46,7 @@ libdbi.so.1 libdbi1 #MINVER#
  dbi_conn_get_socket@Base 0.8.4
  dbi_conn_get_table_list@Base 0.8.4
  dbi_conn_new@Base 0.8.4
+ dbi_conn_new_r@Base 0.9.0
  dbi_conn_open@Base 0.8.4
  dbi_conn_ping@Base 0.8.4
  dbi_conn_query@Base 0.8.4
@@ -53,31 +55,41 @@ libdbi.so.1 libdbi1 #MINVER#
  dbi_conn_quote_binary_copy@Base 0.8.4
  dbi_conn_quote_string@Base 0.8.4
  dbi_conn_quote_string_copy@Base 0.8.4
+ dbi_conn_release_savepoint@Base 0.9.0
  dbi_conn_require_option@Base 0.8.4
  dbi_conn_require_option_numeric@Base 0.8.4
+ dbi_conn_rollback_to_savepoint@Base 0.9.0
+ dbi_conn_savepoint@Base 0.9.0
  dbi_conn_select_db@Base 0.8.4
  dbi_conn_sequence_last@Base 0.8.4
  dbi_conn_sequence_next@Base 0.8.4
  dbi_conn_set_error@Base 0.8.4
  dbi_conn_set_option@Base 0.8.4
  dbi_conn_set_option_numeric@Base 0.8.4
+ dbi_conn_transaction_begin@Base 0.9.0
+ dbi_conn_transaction_commit@Base 0.9.0
+ dbi_conn_transaction_rollback@Base 0.9.0
  dbi_driver_cap_get@Base 0.8.4
  dbi_driver_encoding_from_iana@Base 0.8.4
  dbi_driver_encoding_to_iana@Base 0.8.4
  dbi_driver_get_date_compiled@Base 0.8.4
  dbi_driver_get_description@Base 0.8.4
  dbi_driver_get_filename@Base 0.8.4
+ dbi_driver_get_instance@Base 0.9.0
  dbi_driver_get_maintainer@Base 0.8.4
  dbi_driver_get_name@Base 0.8.4
  dbi_driver_get_url@Base 0.8.4
  dbi_driver_get_version@Base 0.8.4
  dbi_driver_is_reserved_word@Base 0.8.4
  dbi_driver_list@Base 0.8.4
+ dbi_driver_list_r@Base 0.9.0
  dbi_driver_open@Base 0.8.4
+ dbi_driver_open_r@Base 0.9.0
  dbi_driver_quote_string@Base 0.8.4
  dbi_driver_quote_string_copy@Base 0.8.4
  dbi_driver_specific_function@Base 0.8.4
  dbi_initialize@Base 0.8.4
+ dbi_initialize_r@Base 0.9.0
  dbi_result_bind_binary@Base 0.8.4
  dbi_result_bind_binary_copy@Base 0.8.4
  dbi_result_bind_char@Base 0.8.4
@@ -101,6 +113,10 @@ libdbi.so.1 libdbi1 #MINVER#
  dbi_result_field_is_null_idx@Base 0.8.4
  dbi_result_first_row@Base 0.8.4
  dbi_result_free@Base 0.8.4
+ dbi_result_get_as_longlong@Base 0.9.0
+ dbi_result_get_as_longlong_idx@Base 0.9.0
+ dbi_result_get_as_string_copy@Base 0.9.0
+ dbi_result_get_as_string_copy_idx@Base 0.9.0
  dbi_result_get_binary@Base 0.8.4
  dbi_result_get_binary_copy@Base 0.8.4
  dbi_result_get_binary_copy_idx@Base 0.8.4
@@ -160,6 +176,8 @@ libdbi.so.1 libdbi1 #MINVER#
  dbi_result_prev_row@Base 0.8.4
  dbi_result_seek_row@Base 0.8.4
  dbi_set_verbosity@Base 0.8.4
+ dbi_set_verbosity_r@Base 0.9.0
  dbi_shutdown@Base 0.8.4
- dbi_verbosity@Base 0.8.4
+ dbi_shutdown_r@Base 0.9.0
  dbi_version@Base 0.8.4
+ dbi_version_numeric@Base 0.9.0

@@ -77,37 +77,32 @@ NAME="TERMINOLOGY"
 >1.2. libdbi Concepts and Terminology</A
 ></H1
 ><P
->	In this guide, the terms <SPAN
+>In this guide, the terms <SPAN
 CLASS="QUOTE"
 >"user"</SPAN
 > and <SPAN
 CLASS="QUOTE"
 >"programmer"</SPAN
-> are used
-	interchangably, since the target audience is the software developer using libdbi in
-	his program. The libdbi architecture provides serveral <SPAN
-CLASS="QUOTE"
->"drivers"</SPAN
->, one
-	for each type of database server. All drivers are loaded into memory upon libdbi
-	initiallization and are made available to the programmer. Once a driver is
-	<EM
->instantiated</EM
->, it represents a distinct database session and is
-	called a <SPAN
-CLASS="QUOTE"
->"connection"</SPAN
->. Multiple connections may exist for a single driver, and
-	all will function independently of each other. A star character (*) represents a
-	wildcard matching any letters. For example, <SPAN
+> are used interchangably, since the target audience is the software developer using libdbi in his	program. A star character (*) represents a wildcard matching any letters. For example, <SPAN
 CLASS="QUOTE"
 >"dbi_conn_*"</SPAN
-> would
-	represent all functions beginning with <SPAN
+> would represent all functions beginning with <SPAN
 CLASS="QUOTE"
 >"dbi_conn_"</SPAN
->.
-      </P
+>.</P
+><P
+>Before doing anything useful, your program must initialize libdbi. This creates an <SPAN
+CLASS="QUOTE"
+>"instance"</SPAN
+> of libdbi which is accessible through a handle. The libdbi architecture provides several <SPAN
+CLASS="QUOTE"
+>"drivers"</SPAN
+>, one for each type of database server. All drivers are loaded into memory by each libdbi instance upon initialization and are made available to the programmer. Once a driver is <EM
+>instantiated</EM
+>, it represents a distinct database session and is called a <SPAN
+CLASS="QUOTE"
+>"connection"</SPAN
+>.</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

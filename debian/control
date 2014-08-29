@@ -1,17 +1,28 @@
 Source: libdbi
 Section: libs
 Priority: optional
-Maintainer: Thomas Goirand <zigo@debian.org>
-Build-Depends: debhelper (>= 9), autotools-dev, docbook-dsssl, jadetex, automake, libtool
-Standards-Version: 3.9.3.1
-Vcs-Browser: http://git.debian.org/?p=users/zigo/libdbi.git
-Vcs-Git: http://git.debian.org/git/users/zigo/libdbi.git
+Maintainer: Laszlo Boszormenyi (GCS) <gcs@debian.org>
+Uploaders: Prach Pongpanich <prachpub@gmail.com>
+Build-Depends: debhelper (>= 9),
+               dh-autoreconf,
+               docbook-dsssl,
+               jadetex
+Standards-Version: 3.9.5
+Vcs-Git: git://anonscm.debian.org/collab-maint/libdbi.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/libdbi.git
 Homepage: http://libdbi.sourceforge.net/
 
 Package: libdbi1
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Breaks: libapache2-mod-log-sql-dbi (<= 1.100-11), libdbd-mysql (<< 0.8.2-1), libdbd-pgsql (<< 0.8.2-1), libdbd-sqlite (<< 0.8.2-1)
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: libapache2-mod-log-sql-dbi (<= 1.100-11),
+        libdbd-freetds (<< 0.9.0-2),
+        libdbd-mysql (<< 0.9.0-2),
+        libdbd-pgsql (<< 0.9.0-2),
+        libdbd-sqlite (<< 0.9.0-2),
+        libdbd-sqlite3 (<< 0.9.0-2)
+Multi-Arch: same
 Description: DB Independent Abstraction Layer for C -- shared library
  libdbi implements a database-independent abstraction layer in C, similar to
  the DBI/DBD layer in Perl. Writing one generic set of code, programmers can
@@ -23,8 +34,11 @@ Description: DB Independent Abstraction Layer for C -- shared library
 Package: libdbi-dev
 Section: libdevel
 Architecture: any
-Depends: libdbi1 (= ${binary:Version}), ${misc:Depends}
-Replaces: libdbi0-dev, libdbi0, libdbi1 (<< 0.8.4-2)
+Depends: libdbi1 (= ${binary:Version}),
+         ${misc:Depends}
+Replaces: libdbi0,
+          libdbi0-dev,
+          libdbi1 (<< 0.8.4-2)
 Conflicts: libdbi0-dev
 Provides: libdbi0-dev
 Description: DB Independent Abstraction Layer for C  -- development files
@@ -46,3 +60,19 @@ Description: DB Independent Abstraction Layer for C  -- documentation
  connections by using this framework.
  .
  This package contains the documentation of libdbi.
+
+Package: libdbi1-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends: libdbi1 (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
+Multi-Arch: same
+Description: DB Independent Abstraction Layer for C -- debugging symbols
+ libdbi implements a database-independent abstraction layer in C, similar to
+ the DBI/DBD layer in Perl. Writing one generic set of code, programmers can
+ leverage the power of multiple databases and multiple simultaneous database
+ connections by using this framework.
+ .
+ This package contains the debugging symbols associated with libdbi.

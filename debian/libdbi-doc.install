@@ -1,0 +1,4 @@
+build-tree/doc/driver-guide/ usr/share/doc/libdbi-doc/
+build-tree/doc/programmers-guide/ usr/share/doc/libdbi-doc/
+doc/driver-guide.pdf usr/share/doc/libdbi-doc/
+doc/programmers-guide.pdf usr/share/doc/libdbi-doc/

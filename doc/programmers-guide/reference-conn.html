@@ -53,7 +53,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 4. libdbi API Reference</TD
+>Chapter 7. libdbi API Reference</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -74,22 +74,92 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-CONN"
->4.3. Connection Infrastructure</A
+>7.3. Connection Infrastructure</A
 ></H1
 ><DIV
 CLASS="SECTION"
 ><H2
 CLASS="SECTION"
 ><A
-NAME="DBI-CONN-NEW"
->4.3.1. dbi_conn_new</A
+NAME="DBI-CONN-NEW-R"
+>7.3.1. dbi_conn_new_r</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN742"
+NAME="AEN1113"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>dbi_conn <B
+CLASS="FSFUNC"
+>dbi_conn_new_r</B
+></CODE
+>(const char *<VAR
+CLASS="PDPARAM"
+>name</VAR
+>, dbi_inst <VAR
+CLASS="PDPARAM"
+>Inst</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Creates a connection instance of the driver specified by "name" loaded by the given libdbi instance. This is a shortcut for calling <A
+HREF="reference-driver.html#DBI-DRIVER-OPEN-R"
+>dbi_driver_open_r</A
+> and passing the result to <A
+HREF="reference-conn.html#DBI-CONN-OPEN"
+>dbi_conn_open</A
+>.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>name</TT
+>: The name of the desired driver.</P
+><P
+><TT
+CLASS="LITERAL"
+>Inst</TT
+>: The instance handle.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>A connection instance of the specified driver, or NULL if there was an error.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-NEW"
+>7.3.2. dbi_conn_new</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1138"
 ></A
 ><P
 ><CODE
@@ -108,7 +178,26 @@ CLASS="PDPARAM"
 ></P
 ></DIV
 ><P
->Creates a connection instance of the driver specified by "name". This is a shortcut for calling dbi_driver_open() and passing the result to dbi_conn_open().</P
+>Creates a connection instance of the driver specified by "name". This is a shortcut for calling <A
+HREF="reference-driver.html#DBI-DRIVER-OPEN"
+>dbi_driver_open</A
+> and passing the result to <A
+HREF="reference-conn.html#DBI-CONN-OPEN"
+>dbi_conn_open</A
+>.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This function is deprecated. Use <A
+HREF="reference-conn.html#DBI-CONN-NEW-R"
+>dbi_conn_new_r</A
+> instead.</P
+></BLOCKQUOTE
+></DIV
 ><P
 ></P
 ><DIV
@@ -138,14 +227,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-OPEN"
->4.3.2. dbi_conn_open</A
+>7.3.3. dbi_conn_open</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN761"
+NAME="AEN1162"
 ></A
 ><P
 ><CODE
@@ -194,14 +283,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-CLOSE"
->4.3.3. dbi_conn_close</A
+>7.3.4. dbi_conn_close</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN780"
+NAME="AEN1181"
 ></A
 ><P
 ><CODE
@@ -244,14 +333,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-DRIVER"
->4.3.4. dbi_conn_get_driver</A
+>7.3.5. dbi_conn_get_driver</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN795"
+NAME="AEN1196"
 ></A
 ><P
 ><CODE
@@ -300,14 +389,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-SET-OPTION"
->4.3.5. dbi_conn_set_option</A
+>7.3.6. dbi_conn_set_option</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN814"
+NAME="AEN1215"
 ></A
 ><P
 ><CODE
@@ -375,14 +464,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-SET-OPTION-NUMERIC"
->4.3.6. dbi_conn_set_option_numeric</A
+>7.3.7. dbi_conn_set_option_numeric</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN842"
+NAME="AEN1243"
 ></A
 ><P
 ><CODE
@@ -450,14 +539,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-OPTION"
->4.3.7. dbi_conn_get_option</A
+>7.3.8. dbi_conn_get_option</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN870"
+NAME="AEN1271"
 ></A
 ><P
 ><CODE
@@ -514,14 +603,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-REQUIRE-OPTION"
->4.3.8. dbi_conn_require_option</A
+>7.3.9. dbi_conn_require_option</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN893"
+NAME="AEN1294"
 ></A
 ><P
 ><CODE
@@ -581,14 +670,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-OPTION-NUMERIC"
->4.3.9. dbi_conn_get_option_numeric</A
+>7.3.10. dbi_conn_get_option_numeric</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN917"
+NAME="AEN1318"
 ></A
 ><P
 ><CODE
@@ -634,7 +723,7 @@ CLASS="LITERAL"
 >Returns</DT
 ><DD
 ><P
->The value of the setting, or -1 if it is not available. It is not considered an error if the option has not been set.</P
+>The value of the setting, or 0 (zero) if it is not available. It is not considered an error if the option has not been set.</P
 ></DD
 ></DL
 ></DIV
@@ -645,14 +734,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-REQUIRE-OPTION-NUMERIC"
->4.3.10. dbi_conn_require_option_numeric</A
+>7.3.11. dbi_conn_require_option_numeric</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN940"
+NAME="AEN1341"
 ></A
 ><P
 ><CODE
@@ -712,14 +801,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-OPTION-LIST"
->4.3.11. dbi_conn_get_option_list</A
+>7.3.12. dbi_conn_get_option_list</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN964"
+NAME="AEN1365"
 ></A
 ><P
 ><CODE
@@ -779,14 +868,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-CLEAR-OPTION"
->4.3.12. dbi_conn_clear_option</A
+>7.3.13. dbi_conn_clear_option</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN988"
+NAME="AEN1389"
 ></A
 ><P
 ><CODE
@@ -837,14 +926,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-CLEAR-OPTIONS"
->4.3.13. dbi_conn_clear_options</A
+>7.3.14. dbi_conn_clear_options</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1007"
+NAME="AEN1408"
 ></A
 ><P
 ><CODE
@@ -886,15 +975,79 @@ CLASS="SECTION"
 ><H2
 CLASS="SECTION"
 ><A
-NAME="DBI-CONN-GET-SOCKET"
->4.3.14. dbi_conn_get_socket</A
+NAME="DBI-CONN-CAP-GET"
+>7.3.15. dbi_conn_cap_get</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1022"
+NAME="AEN1423"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_cap_get</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>capname</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Requests the value of a driver capability associated with the current connection. The name of the capability is specified as an argument.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>capname</TT
+>: A pointer to a string containing the name of the driver capability to be queried.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The numeric value of the driver capability.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-GET-SOCKET"
+>7.3.16. dbi_conn_get_socket</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1446"
 ></A
 ><P
 ><CODE
@@ -943,14 +1096,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-ENCODING"
->4.3.15. dbi_conn_get_encoding</A
+>7.3.17. dbi_conn_get_encoding</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1041"
+NAME="AEN1465"
 ></A
 ><P
 ><CODE
@@ -1009,14 +1162,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-ENGINE-VERSION-STRING"
->4.3.16. dbi_conn_get_engine_version_string</A
+>7.3.18. dbi_conn_get_engine_version_string</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1063"
+NAME="AEN1487"
 ></A
 ><P
 ><CODE
@@ -1080,6 +1233,12 @@ HREF="reference-conn.html#DBI-CONN-GET-ENGINE-VERSION"
 ></BLOCKQUOTE
 ></DIV
 ></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.8.0</P
+></DD
 ></DL
 ></DIV
 ></DIV
@@ -1089,14 +1248,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-GET-ENGINE-VERSION"
->4.3.17. dbi_conn_get_engine_version</A
+>7.3.19. dbi_conn_get_engine_version</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1090"
+NAME="AEN1518"
 ></A
 ><P
 ><CODE
@@ -1136,6 +1295,12 @@ CLASS="LITERAL"
 ><P
 >A numeric representation of the version. String representations of the version (e.g. "4.1.10") do not lend themselves to an easy comparison in order to find out whether a particular engine feature is already implemented. For example, a string comparison would claim that "4.1.9" is a later version than "4.1.10". Therefore libdbi computes a numeric representation of the version number [[[[A.]B.]C.]D.]E[.] according to the formula E + D*100 + C*10000 + B*1000000 + A*100000000. The resulting integers (40109 and 40110 in the example above) will be sorted correctly. Returns 0 if the version number cannot be retrieved.</P
 ></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.8.0</P
+></DD
 ></DL
 ></DIV
 ></DIV
@@ -1145,7 +1310,7 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-CONN-ERROR"
->4.3.18. Error Handling</A
+>7.3.20. Error Handling</A
 ></H2
 ><DIV
 CLASS="SECTION"
@@ -1153,14 +1318,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-ERROR"
->4.3.18.1. dbi_conn_error</A
+>7.3.20.1. dbi_conn_error</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1111"
+NAME="AEN1543"
 ></A
 ><P
 ><CODE
@@ -1208,7 +1373,7 @@ CLASS="LITERAL"
 ><P
 >The error number of the most recent database operation if it resulted in an error. If not, this will return DBI_ERROR_NONE. See <A
 HREF="errorhandling.html"
->Chapter 3</A
+>Chapter 4</A
 > for further information.</P
 ></DD
 ></DL
@@ -1220,14 +1385,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-ERROR-HANDLER"
->4.3.18.2. dbi_conn_error_handler</A
+>7.3.20.2. dbi_conn_error_handler</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1135"
+NAME="AEN1567"
 ></A
 ><P
 ><CODE
@@ -1302,14 +1467,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-ERROR-FLAG"
->4.3.18.3. dbi_conn_error_flag</A
+>7.3.20.3. dbi_conn_error_flag</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1164"
+NAME="AEN1596"
 ></A
 ><P
 ><CODE
@@ -1375,14 +1540,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-CONN-SET-ERROR"
->4.3.18.4. dbi_conn_set_error</A
+>7.3.20.4. dbi_conn_set_error</A
 ></H3
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN1188"
+NAME="AEN1620"
 ></A
 ><P
 ><CODE
@@ -1441,6 +1606,400 @@ CLASS="LITERAL"
 ><DD
 ><P
 >The length of the error message in bytes, or 0 if there was an error.</P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="REFERENCE-CONN-TRANSACTIONS-SAVEPOINTS"
+>7.3.21. Transactions and Savepoints</A
+></H2
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-TRANSACTION-BEGIN"
+>7.3.21.1. dbi_conn_transaction_begin</A
+></H3
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1652"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_transaction_begin</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Starts a transaction.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>0 (zero) if successful, otherwise nonzero.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-TRANSACTION-COMMIT"
+>7.3.21.2. dbi_conn_transaction_commit</A
+></H3
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1671"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_transaction_commit</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Commits a transaction, i.e. writes all changes since the transaction was started to the database.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>0 (zero) if successful, otherwise nonzero.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-TRANSACTION-ROLLBACK"
+>7.3.21.3. dbi_conn_transaction_rollback</A
+></H3
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1690"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_transaction_rollback</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Rolls back a transaction, i.e. reverts all changes since the transaction started.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><EM
+>Arguments</EM
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+></DD
+><DT
+><EM
+>Returns</EM
+></DT
+><DD
+><P
+>0 (zero) if successful, otherwise nonzero.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-SAVEPOINT"
+>7.3.21.4. dbi_conn_savepoint</A
+></H3
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1711"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_savepoint</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>savepoint</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Sets a savepoint named <CODE
+CLASS="PARAMETER"
+>savepoint</CODE
+> within the current transaction.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><EM
+>Arguments</EM
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>savepoint</TT
+>: a pointer to a string containing the name of the savepoint.</P
+></DD
+><DT
+><EM
+>Returns</EM
+></DT
+><DD
+><P
+>0 (zero) if successful, otherwise nonzero.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-ROLLBACK-TO-SAVEPOINT"
+>7.3.21.5. dbi_conn_rollback_to_savepoint</A
+></H3
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1737"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_rollback_to_savepoint</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>savepoint</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Rolls back all changes since the savepoint named <CODE
+CLASS="PARAMETER"
+>savepoint</CODE
+> was established within the current transaction.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><EM
+>Arguments</EM
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>savepoint</TT
+>: a pointer to a string containing the name of the savepoint.</P
+></DD
+><DT
+><EM
+>Returns</EM
+></DT
+><DD
+><P
+>0 (zero) if successful, otherwise nonzero.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="DBI-CONN-RELEASE-SAVEPOINT"
+>7.3.21.6. dbi_conn_release_savepoint</A
+></H3
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1763"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_conn_release_savepoint</B
+></CODE
+>(dbi_conn <VAR
+CLASS="PDPARAM"
+>Conn</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>savepoint</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Removes the savepoint named <CODE
+CLASS="PARAMETER"
+>savepoint</CODE
+> within the current transaction and releases all resources associated with it. Changes can no longer be rolled back to that particular savepoint. However, changes may still be rolled back to different savepoints, or to the beginning of the entire transaction.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><EM
+>Arguments</EM
+></DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Conn</TT
+>: The target connection.</P
+><P
+><TT
+CLASS="LITERAL"
+>savepoint</TT
+>: a pointer to a string containing the name of the savepoint.</P
+></DD
+><DT
+><EM
+>Returns</EM
+></DT
+><DD
+><P
+>0 (zero) if successful, otherwise nonzero.</P
 ></DD
 ></DL
 ></DIV

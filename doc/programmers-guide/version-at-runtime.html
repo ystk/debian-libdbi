@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Required driver capabilities</TITLE
+>Determining the library version at runtime</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -10,16 +10,16 @@ REL="HOME"
 TITLE="Database Independent Abstraction Layer for C"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Driver Capabilities"
-HREF="drivercaps.html"><LINK
+TITLE="Library and Interface Versions"
+HREF="versioning.html"><LINK
 REL="PREVIOUS"
-TITLE="Setting driver capabilities"
-HREF="settingdrivercaps.html"><LINK
+TITLE="libdbi and libdbi-drivers versions"
+HREF="libdbi-and-drivers-versions.html"><LINK
 REL="NEXT"
-TITLE="Driver Functions"
-HREF="driverfuncs.html"></HEAD
+TITLE="libdbi API Reference"
+HREF="reference.html"></HEAD
 ><BODY
-CLASS="SECTION"
+CLASS="SECT1"
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
 LINK="#0000FF"
@@ -37,7 +37,7 @@ CELLSPACING="0"
 ><TH
 COLSPAN="3"
 ALIGN="center"
->Database Independent Abstraction Layer for C: libdbi Driver Author's Guide</TH
+>Database Independent Abstraction Layer for C: libdbi Programmer's Guide</TH
 ></TR
 ><TR
 ><TD
@@ -45,7 +45,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="settingdrivercaps.html"
+HREF="libdbi-and-drivers-versions.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -53,13 +53,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 2. Driver Capabilities</TD
+>Chapter 6. Library and Interface Versions</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="driverfuncs.html"
+HREF="reference.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -69,28 +69,21 @@ ACCESSKEY="N"
 ALIGN="LEFT"
 WIDTH="100%"></DIV
 ><DIV
-CLASS="SECTION"
+CLASS="SECT1"
 ><H1
-CLASS="SECTION"
+CLASS="SECT1"
 ><A
-NAME="REQUIREDDRIVERCAPS"
->2.2. Required driver capabilities</A
+NAME="VERSION-AT-RUNTIME"
+>6.3. Determining the library version at runtime</A
 ></H1
 ><P
->libdbi currently queries only one driver capability.</P
-><P
-></P
-><DIV
-CLASS="VARIABLELIST"
-><DL
-><DT
->safe_dlclose</DT
-><DD
-><P
->A nonzero value indicates that the driver can safely be unloaded from memory by calling dlclose(). A value of 0 (zero) indicates that the driver should not be unloaded when libdbi is shut down. Drivers must not be unloaded if they, or any library they are linked against, install exit handlers via atexit() as this would leave dangling pointers, causing segfaults on some platforms.</P
-></DD
-></DL
-></DIV
+>The functions <A
+HREF="reference-core.html#DBI-VERSION"
+>dbi_version</A
+> and <A
+HREF="reference-core.html#DBI-VERSION-NUMERIC"
+>dbi_version_numeric</A
+> provide access to the package version. The former returns the name and the version as a string (mainly for display purposes), whereas the latter returns an integer value for easy comparisons, defined as ((major*10000) + (minor * 100) + patch).</P
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -108,7 +101,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="settingdrivercaps.html"
+HREF="libdbi-and-drivers-versions.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -126,7 +119,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="driverfuncs.html"
+HREF="reference.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -136,13 +129,13 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Setting driver capabilities</TD
+>libdbi and libdbi-drivers versions</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="drivercaps.html"
+HREF="versioning.html"
 ACCESSKEY="U"
 >Up</A
 ></TD
@@ -150,7 +143,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Driver Functions</TD
+>libdbi API Reference</TD
 ></TR
 ></TABLE
 ></DIV

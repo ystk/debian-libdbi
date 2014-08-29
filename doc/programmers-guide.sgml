@@ -3,6 +3,8 @@
 <!ENTITY libdbi-reference SYSTEM "libdbi-reference.sgml">
 <!ENTITY libdbi-quickstart SYSTEM "libdbi-quickstart.sgml">
 <!ENTITY libdbi-errorhandling SYSTEM "libdbi-errorhandling.sgml">
+<!ENTITY libdbi-transactions SYSTEM "libdbi-transactions.sgml">
+<!ENTITY libdbi-versioning SYSTEM "libdbi-versioning.sgml">
 <!ENTITY example-program SYSTEM "example-program.sgml">
 <!ENTITY freedoc-license SYSTEM "include/copying-fdl.sgml">
 <!ENTITY www '<ULink url="http://libdbi.sourceforge.net">http://libdbi.sourceforge.net</ULink>'>
@@ -30,11 +32,12 @@
 	<address format="linespecific"><email>markus@mhoenicka.de</email></address>
       </affiliation>
     </author>
-    <Edition>Document revision: $Id: programmers-guide.sgml,v 1.13 2008/01/15 00:18:22 mhoenicka Exp $</Edition>
-    <PubDate>$Date: 2008/01/15 00:18:22 $</PubDate>
+    <Edition>Document revision: $Id: programmers-guide.sgml,v 1.18 2013/02/03 23:04:32 mhoenicka Exp $</Edition>
+    <PubDate>$Date: 2013/02/03 23:04:32 $</PubDate>
     <Copyright>
-      <Year>2001-2006</Year>
+      <Year>2001-2013</Year>
       <Holder>David Parker, Neon Goat Productions</Holder>
+      <holder>Markus Hoenicka</holder>
     </Copyright>
     <LegalNotice>
       <Para>
@@ -70,18 +73,8 @@
       </Para>
     </Section>
     <Section id="terminology"><Title>libdbi Concepts and Terminology</Title>
-      <Para>
-	In this guide, the terms <Quote>user</Quote> and <Quote>programmer</Quote> are used
-	interchangably, since the target audience is the software developer using libdbi in
-	his program. The libdbi architecture provides serveral <Quote>drivers</Quote>, one
-	for each type of database server. All drivers are loaded into memory upon libdbi
-	initiallization and are made available to the programmer. Once a driver is
-	<Emphasis>instantiated</Emphasis>, it represents a distinct database session and is
-	called a <Quote>connection</Quote>. Multiple connections may exist for a single driver, and
-	all will function independently of each other. A star character (*) represents a
-	wildcard matching any letters. For example, <Quote>dbi_conn_*</Quote> would
-	represent all functions beginning with <Quote>dbi_conn_</Quote>.
-      </Para>
+      <para>In this guide, the terms <Quote>user</Quote> and <Quote>programmer</Quote> are used interchangably, since the target audience is the software developer using libdbi in his	program. A star character (*) represents a wildcard matching any letters. For example, <Quote>dbi_conn_*</Quote> would represent all functions beginning with <Quote>dbi_conn_</Quote>.</para>
+      <para>Before doing anything useful, your program must initialize libdbi. This creates an <quote>instance</quote> of libdbi which is accessible through a handle. The libdbi architecture provides several <quote>drivers</quote>, one for each type of database server. All drivers are loaded into memory by each libdbi instance upon initialization and are made available to the programmer. Once a driver is <Emphasis>instantiated</Emphasis>, it represents a distinct database session and is called a <Quote>connection</Quote>.</Para>
     </Section>
     <Section id="gnugpl"><Title>Modifications and redistribution of libdbi</Title>
       <Para>
@@ -120,6 +113,26 @@
     </Section>
   </Chapter>
 
+  <chapter id="buildinstall">
+    <title>Building and Installing libdbi</title>
+    <para>libdbi uses the "autotools", i.e. <application moreinfo="none">automake</application>, <application moreinfo="none">autoconf</application>, and <application moreinfo="none">libtool</application> to provide a simple and consistend build and install process on all supported platforms. The good news is that you usually don't have to fiddle that much with <command moreinfo="none">./configure</command> as libdbi provides only a single option:</para>
+    <variablelist>
+      <varlistentry>
+	<term><option>--disable-docs</option></term>
+	<listitem>
+	  <para>If you build libdbi from a tarball, the docs are already prebuilt and ready to install. In this case, you don't need this option. However, if you build from a cvs checkout, this is a simple way to switch off building the documentation. This is useful if you don't want to install the prerequisites for building the docs (<application moreinfo="none">openjade</application>, the DocBook DSSSL stylesheets, <application moreinfo="none">TeX</application>, and <application moreinfo="none">JadeTeX</application>).</para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    <para>If you type <command moreinfo="none">./configure --help</command>, you'll see a few more options. These are provided by the autotools, and you should consult their documentation to make best use of them.</para>
+    <para>Once you have figured out which options to use or not, you are ready to go ahead and run:</para>
+    <screen format="linespecific">
+      <prompt moreinfo="none">$ </prompt><command moreinfo="none">./configure [your options]</command>
+      <prompt moreinfo="none">$ </prompt><command moreinfo="none">make</command>
+      <prompt moreinfo="none">$ </prompt><command moreinfo="none">sudo make install</command>
+</screen>
+  </chapter>
+
   <Chapter id="quickstart"><Title>libdbi in a Nutshell (Quickstart Guide)</Title>
     <!-- this is a section -->
       &libdbi-quickstart;
@@ -129,6 +142,14 @@
 
   <chapter id="errorhandling"><title>Error Handling</Title>
     &libdbi-errorhandling;
+  </Chapter>
+
+  <chapter id="transactions-savepoints"><title>Transactions and Savepoints</Title>
+    &libdbi-transactions;
+  </Chapter>
+
+  <chapter id="versioning"><title>Library and Interface Versions</Title>
+    &libdbi-versioning;
   </Chapter>
 
   &libdbi-reference;

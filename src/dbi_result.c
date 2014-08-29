@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbi_result.c,v 1.47 2008/01/23 16:37:36 mhoenicka Exp $
+ * $Id: dbi_result.c,v 1.57 2013/01/08 23:54:30 mhoenicka Exp $
  *
  * (anything that has to do with row seeking or fetching fields goes in this file)
  */
@@ -30,14 +30,18 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <unistd.h>
+#ifdef HAVE_UNISTD_H
+  #include <unistd.h>
+#endif
 #include <math.h>
 #include <limits.h>
+#include <time.h>
 
 #include <dbi/dbi.h>
 #include <dbi/dbi-dev.h>
 
 #ifdef __MINGW32__
+#warning "Using the thread-unsafe strtok function!"
 #define strtok_r(s1,s2,s3) strtok(s1,s2)
 #endif
 
@@ -99,7 +103,7 @@ int dbi_result_seek_row(dbi_result Result, unsigned long long rowidx) {
   }
 	
   /* row is one-based for the user, but zero-based to the dbd conn */
-  retval = RESULT->conn->driver->functions->goto_row(RESULT, rowidx-1);
+  retval = RESULT->conn->driver->functions->goto_row(RESULT, rowidx-1, RESULT->currowidx-1);
   if (retval == -1) {
     _error_handler(RESULT->conn, DBI_ERROR_DBD);
     return 0;
@@ -212,7 +216,7 @@ unsigned long long dbi_result_get_numrows_affected(dbi_result Result) {
 /* returns the length of the string or binary, excluding a trailing \0 */
 size_t dbi_result_get_field_length(dbi_result Result, const char *fieldname) {
   unsigned int fieldidx = 0;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   if (!RESULT) {
     _error_handler(/*RESULT->conn*/ NULL, DBI_ERROR_BADPTR);
@@ -271,7 +275,7 @@ size_t dbi_result_get_field_size_idx(dbi_result Result, unsigned int fieldidx) {
 
 unsigned int dbi_result_get_field_idx(dbi_result Result, const char *fieldname) {
   unsigned int fieldidx = 0;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   if (!RESULT) {
     _error_handler(/*RESULT->conn*/ NULL, DBI_ERROR_BADPTR);
@@ -321,7 +325,7 @@ unsigned int dbi_result_get_numfields(dbi_result Result) {
 
 unsigned short dbi_result_get_field_type(dbi_result Result, const char *fieldname) {
   unsigned int fieldidx = 0;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 	
   if (!RESULT) {
     _error_handler(/*RESULT->conn*/ NULL, DBI_ERROR_BADPTR);
@@ -363,7 +367,7 @@ unsigned short dbi_result_get_field_type_idx(dbi_result Result, unsigned int fie
 
 unsigned int dbi_result_get_field_attrib(dbi_result Result, const char *fieldname, unsigned int attribmin, unsigned int attribmax) {
   unsigned int fieldidx = 0;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 	
   if (!RESULT) {
     _error_handler(/*RESULT->conn*/ NULL, DBI_ERROR_BADPTR);
@@ -406,7 +410,7 @@ unsigned int dbi_result_get_field_attrib_idx(dbi_result Result,
 
 unsigned int dbi_result_get_field_attribs(dbi_result Result, const char *fieldname) {
   unsigned int fieldidx = 0;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 	
   if (!RESULT) {
     _error_handler(/*RESULT->conn*/ NULL, DBI_ERROR_BADPTR);
@@ -460,7 +464,7 @@ int _get_field_flag(dbi_row_t *row, unsigned int fieldidx, unsigned char flag) {
 
 int dbi_result_field_is_null(dbi_result Result, const char *fieldname) {
   unsigned int fieldidx = 0;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   if (!RESULT) {
     _error_handler(/*RESULT->conn*/ NULL, DBI_ERROR_BADPTR);
@@ -808,9 +812,9 @@ unsigned int dbi_result_bind_fields(dbi_result Result, const char *format, ...) 
 /* RESULT: get_* functions */
 
 signed char dbi_result_get_char(dbi_result Result, const char *fieldname) {
-  signed char ERROR = 0;
+  signed char my_ERROR = 0;
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   _reset_conn_error(RESULT->conn);
 
@@ -818,13 +822,13 @@ signed char dbi_result_get_char(dbi_result Result, const char *fieldname) {
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, errflag);
-    return ERROR;
+    return my_ERROR;
   }
   return dbi_result_get_char_idx(Result, fieldidx+1);
 }
 
 signed char dbi_result_get_char_idx(dbi_result Result, unsigned int fieldidx) {
-  signed char ERROR = 0;
+  signed char my_ERROR = 0;
 
   fieldidx--;
 
@@ -832,13 +836,13 @@ signed char dbi_result_get_char_idx(dbi_result Result, unsigned int fieldidx) {
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return ERROR;
+    return my_ERROR;
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_INTEGER) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not integer type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 
   switch (RESULT->field_attribs[fieldidx] & DBI_INTEGER_SIZEMASK) {
@@ -852,14 +856,14 @@ signed char dbi_result_get_char_idx(dbi_result Result, unsigned int fieldidx) {
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
   default:
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 }
 
 short dbi_result_get_short(dbi_result Result, const char *fieldname) {
-  short ERROR = 0;
+  short my_ERROR = 0;
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   _reset_conn_error(RESULT->conn);
 
@@ -867,30 +871,31 @@ short dbi_result_get_short(dbi_result Result, const char *fieldname) {
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return ERROR;
+    return my_ERROR;
   }
   return dbi_result_get_short_idx(Result, fieldidx+1);
 }
 
 short dbi_result_get_short_idx(dbi_result Result, unsigned int fieldidx) {
-  short ERROR = 0;
+  short my_ERROR = 0;
   fieldidx--;
 
   _reset_conn_error(RESULT->conn);
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return ERROR;
+    return my_ERROR;
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_INTEGER) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not integer type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 
   switch (RESULT->field_attribs[fieldidx] & DBI_INTEGER_SIZEMASK) {
   case DBI_INTEGER_SIZE1:
+    return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_char;
   case DBI_INTEGER_SIZE2:
     return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_short;
   case DBI_INTEGER_SIZE3:
@@ -900,7 +905,7 @@ short dbi_result_get_short_idx(dbi_result Result, unsigned int fieldidx) {
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
   default:
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 }
 
@@ -909,9 +914,9 @@ int dbi_result_get_long(dbi_result Result, const char *fieldname) {
 }
 
 int dbi_result_get_int(dbi_result Result, const char *fieldname) {
-  long ERROR = 0;
+  long my_ERROR = 0;
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   _reset_conn_error(RESULT->conn);
 
@@ -919,7 +924,7 @@ int dbi_result_get_int(dbi_result Result, const char *fieldname) {
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return ERROR;
+    return my_ERROR;
   }
   return dbi_result_get_int_idx(Result, fieldidx+1);
 }
@@ -929,25 +934,27 @@ int dbi_result_get_long_idx(dbi_result Result, unsigned int fieldidx) {
 }
 
 int dbi_result_get_int_idx(dbi_result Result, unsigned int fieldidx) {
-  long ERROR = 0;
+  long my_ERROR = 0;
   fieldidx--;
 	
   _reset_conn_error(RESULT->conn);
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return ERROR;
+    return my_ERROR;
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_INTEGER) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not integer type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 
   switch (RESULT->field_attribs[fieldidx] & DBI_INTEGER_SIZEMASK) {
   case DBI_INTEGER_SIZE1:
+    return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_char;
   case DBI_INTEGER_SIZE2:
+    return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_short;
   case DBI_INTEGER_SIZE3:
   case DBI_INTEGER_SIZE4:
     return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_long;
@@ -956,14 +963,14 @@ int dbi_result_get_int_idx(dbi_result Result, unsigned int fieldidx) {
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
   default:
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 }
 
 long long dbi_result_get_longlong(dbi_result Result, const char *fieldname) {
-  long long ERROR = 0;
+  long long my_ERROR = 0;
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
     
   _reset_conn_error(RESULT->conn);
 
@@ -971,38 +978,41 @@ long long dbi_result_get_longlong(dbi_result Result, const char *fieldname) {
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return ERROR;
+    return my_ERROR;
   }
   return dbi_result_get_longlong_idx(Result, fieldidx+1);
 }
 
 long long dbi_result_get_longlong_idx(dbi_result Result, unsigned int fieldidx) {
-  long long ERROR = 0;
+  long long my_ERROR = 0;
   fieldidx--;
 	
   _reset_conn_error(RESULT->conn);
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return ERROR;
+    return my_ERROR;
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_INTEGER) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not integer type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 
   switch (RESULT->field_attribs[fieldidx] & DBI_INTEGER_SIZEMASK) {
   case DBI_INTEGER_SIZE1:
+    return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_char;
   case DBI_INTEGER_SIZE2:
+    return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_short;
   case DBI_INTEGER_SIZE3:
   case DBI_INTEGER_SIZE4:
+    return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_long;
   case DBI_INTEGER_SIZE8:
     return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_longlong;
   default:
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 }
 
@@ -1047,8 +1057,8 @@ unsigned long long dbi_result_get_ulonglong_idx(dbi_result Result, unsigned int 
 }
 
 float dbi_result_get_float(dbi_result Result, const char *fieldname) {
-  float ERROR = 0.0;
-  dbi_error_flag errflag;
+  float my_ERROR = 0.0;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
   unsigned int fieldidx;
 
   _reset_conn_error(RESULT->conn);
@@ -1057,13 +1067,13 @@ float dbi_result_get_float(dbi_result Result, const char *fieldname) {
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return ERROR;
+    return my_ERROR;
   }
   return dbi_result_get_float_idx(Result, fieldidx+1);
 }
 
 float dbi_result_get_float_idx(dbi_result Result, unsigned int fieldidx) {
-  float ERROR = 0.0;
+  float my_ERROR = 0.0;
   fieldidx--;
 	
   _reset_conn_error(RESULT->conn);
@@ -1071,13 +1081,13 @@ float dbi_result_get_float_idx(dbi_result Result, unsigned int fieldidx) {
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return ERROR;
+    return my_ERROR;
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_DECIMAL) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not float type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 
   switch (RESULT->field_attribs[fieldidx] & DBI_DECIMAL_SIZEMASK) {
@@ -1088,14 +1098,14 @@ float dbi_result_get_float_idx(dbi_result Result, unsigned int fieldidx) {
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
   default:
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 }
 
 double dbi_result_get_double(dbi_result Result, const char *fieldname) {
-  double ERROR = 0.0;
+  double my_ERROR = 0.0;
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   _reset_conn_error(RESULT->conn);
 
@@ -1103,42 +1113,43 @@ double dbi_result_get_double(dbi_result Result, const char *fieldname) {
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return ERROR;
+    return my_ERROR;
   }
   return dbi_result_get_double_idx(Result, fieldidx+1);
 }
 	
 double dbi_result_get_double_idx(dbi_result Result, unsigned int fieldidx) {
-  double ERROR = 0.0;
+  double my_ERROR = 0.0;
   fieldidx--;
 	
   _reset_conn_error(RESULT->conn);
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return ERROR;
+    return my_ERROR;
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_DECIMAL) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not double type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 
   switch (RESULT->field_attribs[fieldidx] & DBI_DECIMAL_SIZEMASK) {
   case DBI_DECIMAL_SIZE4:
+    return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_float;
   case DBI_DECIMAL_SIZE8:
     return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_double;
   default:
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 }
 
 const char *dbi_result_get_string(dbi_result Result, const char *fieldname) {
-  const char *ERROR = "ERROR";
+  const char *my_ERROR = "ERROR";
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   _reset_conn_error(RESULT->conn);
 
@@ -1146,13 +1157,13 @@ const char *dbi_result_get_string(dbi_result Result, const char *fieldname) {
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return ERROR;
+    return my_ERROR;
   }
   return dbi_result_get_string_idx(Result, fieldidx+1);
 }
 	
 const char *dbi_result_get_string_idx(dbi_result Result, unsigned int fieldidx) {
-  const char *ERROR = "ERROR";
+  const char *my_ERROR = "ERROR";
   fieldidx--;
 	
   _reset_conn_error(RESULT->conn);
@@ -1160,7 +1171,7 @@ const char *dbi_result_get_string_idx(dbi_result Result, unsigned int fieldidx) 
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return ERROR;
+    return my_ERROR;
   }
 
   if (RESULT->field_types[fieldidx] != DBI_TYPE_STRING) {
@@ -1168,7 +1179,7 @@ const char *dbi_result_get_string_idx(dbi_result Result, unsigned int fieldidx) 
     _verbose_handler(conn, "%s: field `%s` is not string type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
   if (RESULT->rows[RESULT->currowidx]->field_sizes[fieldidx] == 0
       && _get_field_flag(RESULT->rows[RESULT->currowidx], fieldidx, DBI_VALUE_NULL)) {
@@ -1181,9 +1192,9 @@ const char *dbi_result_get_string_idx(dbi_result Result, unsigned int fieldidx) 
 }
 
 const unsigned char *dbi_result_get_binary(dbi_result Result, const char *fieldname) {
-  const char *ERROR = "ERROR";
+  const char *my_ERROR = "ERROR";
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   _reset_conn_error(RESULT->conn);
 
@@ -1191,13 +1202,13 @@ const unsigned char *dbi_result_get_binary(dbi_result Result, const char *fieldn
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return (const unsigned char*)ERROR;
+    return (const unsigned char*)my_ERROR;
   }
   return dbi_result_get_binary_idx(Result, fieldidx+1);
 }
 	
 const unsigned char *dbi_result_get_binary_idx(dbi_result Result, unsigned int fieldidx) {
-  const char *ERROR = "ERROR";
+  const char *my_ERROR = "ERROR";
   fieldidx--;
 	
   _reset_conn_error(RESULT->conn);
@@ -1205,13 +1216,13 @@ const unsigned char *dbi_result_get_binary_idx(dbi_result Result, unsigned int f
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return (const unsigned char*)ERROR;
+    return (const unsigned char*)my_ERROR;
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_BINARY) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not binary type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return (const unsigned char*)ERROR;
+    return (const unsigned char*)my_ERROR;
   }
   if (RESULT->rows[RESULT->currowidx]->field_sizes[fieldidx] == 0) return NULL;
 
@@ -1219,9 +1230,9 @@ const unsigned char *dbi_result_get_binary_idx(dbi_result Result, unsigned int f
 }
 
 char *dbi_result_get_string_copy(dbi_result Result, const char *fieldname) {
-  char *ERROR = "ERROR";
+  char *my_ERROR = "ERROR";
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   _reset_conn_error(RESULT->conn);
 
@@ -1229,13 +1240,13 @@ char *dbi_result_get_string_copy(dbi_result Result, const char *fieldname) {
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return strdup(ERROR);
+    return strdup(my_ERROR);
   }
   return dbi_result_get_string_copy_idx(Result, fieldidx+1);
 }
 	
 char *dbi_result_get_string_copy_idx(dbi_result Result, unsigned int fieldidx) {
-  char *ERROR = "ERROR";
+  char *my_ERROR = "ERROR";
   char *newstring = NULL;
   fieldidx--;
 	
@@ -1244,13 +1255,13 @@ char *dbi_result_get_string_copy_idx(dbi_result Result, unsigned int fieldidx) {
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return strdup(ERROR);
+    return strdup(my_ERROR);
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_STRING) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not string type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return strdup(ERROR);
+    return strdup(my_ERROR);
   }
   if (RESULT->rows[RESULT->currowidx]->field_sizes[fieldidx] == 0
    && RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_string == NULL) {
@@ -1266,14 +1277,14 @@ char *dbi_result_get_string_copy_idx(dbi_result Result, unsigned int fieldidx) {
   }
   else {
     _error_handler(RESULT->conn, DBI_ERROR_NOMEM);
-    return strdup(ERROR);
+    return strdup(my_ERROR);
   }
 }
 
 unsigned char *dbi_result_get_binary_copy(dbi_result Result, const char *fieldname) {
-  char *ERROR = "ERROR";
+  char *my_ERROR = "ERROR";
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   _reset_conn_error(RESULT->conn);
 
@@ -1281,13 +1292,13 @@ unsigned char *dbi_result_get_binary_copy(dbi_result Result, const char *fieldna
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return (unsigned char *)strdup(ERROR);
+    return (unsigned char *)strdup(my_ERROR);
   }
   return dbi_result_get_binary_copy_idx(Result, fieldidx+1);
 }
 	
 unsigned char *dbi_result_get_binary_copy_idx(dbi_result Result, unsigned int fieldidx) {
-  char *ERROR = "ERROR";
+  char *my_ERROR = "ERROR";
   unsigned char *newblob = NULL;
   unsigned long long size;
   fieldidx--;
@@ -1297,13 +1308,13 @@ unsigned char *dbi_result_get_binary_copy_idx(dbi_result Result, unsigned int fi
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return (unsigned char *)strdup(ERROR);
+    return (unsigned char *)strdup(my_ERROR);
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_BINARY) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not binary type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return (unsigned char *)strdup(ERROR);
+    return (unsigned char *)strdup(my_ERROR);
   }
   if (RESULT->rows[RESULT->currowidx]->field_sizes[fieldidx] == 0) return NULL;
 
@@ -1312,16 +1323,16 @@ unsigned char *dbi_result_get_binary_copy_idx(dbi_result Result, unsigned int fi
   newblob = malloc(size);
   if (!newblob) {
     _error_handler(RESULT->conn, DBI_ERROR_NOMEM);
-    return (unsigned char *)strdup(ERROR);
+    return (unsigned char *)strdup(my_ERROR);
   }
   memcpy(newblob, RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_string, size);
   return newblob;
 }
 
 time_t dbi_result_get_datetime(dbi_result Result, const char *fieldname) {
-  time_t ERROR = 0;
+  time_t my_ERROR = 0;
   unsigned int fieldidx;
-  dbi_error_flag errflag;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
 
   _reset_conn_error(RESULT->conn);
 
@@ -1329,30 +1340,216 @@ time_t dbi_result_get_datetime(dbi_result Result, const char *fieldname) {
   if (errflag != DBI_ERROR_NONE) {
     dbi_conn_t *conn = RESULT->conn;
     _error_handler(conn, DBI_ERROR_BADNAME);
-    return ERROR;
+    return my_ERROR;
   }
   return dbi_result_get_datetime_idx(Result, fieldidx+1);
 }
 	
 time_t dbi_result_get_datetime_idx(dbi_result Result, unsigned int fieldidx) {
-  time_t ERROR = 0;
+  time_t my_ERROR = 0;
   fieldidx--;
 
   _reset_conn_error(RESULT->conn);
 
   if (fieldidx >= RESULT->numfields) {
     _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
-    return ERROR;
+    return my_ERROR;
   }
   if (RESULT->field_types[fieldidx] != DBI_TYPE_DATETIME) {
     _verbose_handler(RESULT->conn, "%s: field `%s` is not datetime type\n",
                      __func__, dbi_result_get_field_name(Result, fieldidx+1));
     _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
-    return ERROR;
+    return my_ERROR;
   }
 	
   return (time_t)(RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_datetime);
 }
+
+/* RESULT: get_as* functions */
+
+long long dbi_result_get_as_longlong(dbi_result Result, const char *fieldname) {
+  long long my_ERROR = 0;
+  unsigned int fieldidx;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
+    
+  _reset_conn_error(RESULT->conn);
+
+  fieldidx = _find_field(RESULT, fieldname, &errflag);
+  if (errflag != DBI_ERROR_NONE) {
+    dbi_conn_t *conn = RESULT->conn;
+    _error_handler(conn, DBI_ERROR_BADNAME);
+    return my_ERROR;
+  }
+  return dbi_result_get_as_longlong_idx(Result, fieldidx+1);
+}
+
+long long dbi_result_get_as_longlong_idx(dbi_result Result, unsigned int fieldidx) {
+  long long my_ERROR = 0;
+  fieldidx--;
+
+  switch (RESULT->field_types[fieldidx]) {
+  case DBI_TYPE_INTEGER:
+    switch (RESULT->field_attribs[fieldidx] & DBI_INTEGER_SIZEMASK) {
+    case DBI_INTEGER_SIZE1:
+      return (long long)RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_char;
+    case DBI_INTEGER_SIZE2:
+      return (long long)RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_short;
+    case DBI_INTEGER_SIZE3:
+    case DBI_INTEGER_SIZE4:
+      return (long long)RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_long;
+    case DBI_INTEGER_SIZE8:
+      return RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_longlong;
+    default:
+      _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
+      return my_ERROR;
+    }
+  case DBI_TYPE_DECIMAL:
+    switch (RESULT->field_attribs[fieldidx] & DBI_DECIMAL_SIZEMASK) {
+    case DBI_DECIMAL_SIZE4:
+      return (long long)RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_float;
+    case DBI_DECIMAL_SIZE8:
+      return (long long)RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_double;
+    default:
+      _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
+      return my_ERROR;
+    }
+  case DBI_TYPE_STRING:
+    if (RESULT->rows[RESULT->currowidx]->field_sizes[fieldidx] == 0
+	&& RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_string == NULL) {
+      /* string does not exist */
+      return 0; /* do not raise an error */
+    }
+    /* else if field size == 0: empty string */
+    /* todo: do we need strtoll() error handling? */
+    return strtoll((const char *)(RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_string), NULL, 10);
+  case DBI_TYPE_BINARY:
+    return 0; /* do not raise an error */
+  case DBI_TYPE_DATETIME:
+    return (long long)(RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_datetime);
+  default:
+    _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
+    return my_ERROR;
+  }
+}
+
+char *dbi_result_get_as_string_copy(dbi_result Result, const char *fieldname) {
+  char *my_ERROR = "ERROR";
+  unsigned int fieldidx;
+  dbi_error_flag errflag = DBI_ERROR_NONE;
+
+  _reset_conn_error(RESULT->conn);
+
+  fieldidx = _find_field(RESULT, fieldname, &errflag);
+  if (errflag != DBI_ERROR_NONE) {
+    dbi_conn_t *conn = RESULT->conn;
+    _error_handler(conn, DBI_ERROR_BADNAME);
+    return strdup(my_ERROR);
+  }
+  return dbi_result_get_as_string_copy_idx(Result, fieldidx+1);
+}
+
+char *dbi_result_get_as_string_copy_idx(dbi_result Result, unsigned int fieldidx) {
+  char *my_ERROR = "ERROR";
+  char *newstring = NULL;
+  char *oldstring = NULL;
+  struct tm utctime;
+
+  fieldidx--;
+
+  newstring = malloc(32); /* sufficient for integers, decimal, and datetime */
+
+  if (!newstring) {
+    _error_handler(RESULT->conn, DBI_ERROR_NOMEM);
+    return my_ERROR;
+  }
+  *newstring = '\0';
+
+  /* output depends on: type, size, sign */
+  switch (RESULT->field_types[fieldidx]) {
+  case DBI_TYPE_INTEGER:
+    switch (RESULT->field_attribs[fieldidx] & DBI_INTEGER_SIZEMASK) {
+    case DBI_INTEGER_SIZE1:
+      if (RESULT->field_attribs[fieldidx] & DBI_INTEGER_UNSIGNED) {
+	snprintf(newstring, 32, "%hu", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_char);
+      }
+      else {
+	snprintf(newstring, 32, "%hd", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_char);
+      }
+      break;
+    case DBI_INTEGER_SIZE2:
+      if (RESULT->field_attribs[fieldidx] & DBI_INTEGER_UNSIGNED) {
+	snprintf(newstring, 32, "%hu", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_short);
+      }
+      else {
+	snprintf(newstring, 32, "%hd", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_short);
+      }
+      break;
+    case DBI_INTEGER_SIZE3:
+    case DBI_INTEGER_SIZE4:
+      if (RESULT->field_attribs[fieldidx] & DBI_INTEGER_UNSIGNED) {
+	snprintf(newstring, 32, "%u", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_long);
+      }
+      else {
+	snprintf(newstring, 32, "%d", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_long);
+      }
+      break;
+    case DBI_INTEGER_SIZE8:
+      if (RESULT->field_attribs[fieldidx] & DBI_INTEGER_UNSIGNED) {
+	snprintf(newstring, 32, "%llu", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_longlong);
+      }
+      else {
+	snprintf(newstring, 32, "%lld", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_longlong);
+      }
+      break;
+    default:
+      _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
+    }
+    break;
+  case DBI_TYPE_DECIMAL:
+    switch (RESULT->field_attribs[fieldidx] & DBI_DECIMAL_SIZEMASK) {
+    case DBI_DECIMAL_SIZE4:
+      snprintf(newstring, 32, "%e", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_float);
+      break;
+    case DBI_DECIMAL_SIZE8:
+      snprintf(newstring, 32, "%e", RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_double);
+      break;
+    default:
+      _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
+    }
+    break;
+  case DBI_TYPE_STRING:
+    if (RESULT->rows[RESULT->currowidx]->field_sizes[fieldidx] == 0
+	&& RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_string == NULL) {
+      /* string does not exist */
+      /* return an empty string instead, no error */
+    }
+    else {
+      /* else if field size == 0: empty string */
+
+      oldstring = newstring;
+      if ((newstring = strdup(RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_string)) == NULL) {
+	_error_handler(RESULT->conn, DBI_ERROR_NOMEM);
+	newstring = oldstring;
+      }
+      else {
+	/* don't free in case of an error as we'd return a dangling pointer */
+	free(oldstring);
+      }
+    }
+    break;
+  case DBI_TYPE_BINARY:
+    break; /* return empty string, do not raise an error */
+  case DBI_TYPE_DATETIME:
+    gmtime_r(&(RESULT->rows[RESULT->currowidx]->field_values[fieldidx].d_datetime), &utctime);
+    snprintf(newstring, 32, "%04d-%02d-%02d %02d:%02d:%02d", utctime.tm_year+1900, utctime.tm_mon+1, utctime.tm_mday, utctime.tm_hour, utctime.tm_min, utctime.tm_sec);
+    break;
+  default:
+    _error_handler(RESULT->conn, DBI_ERROR_BADTYPE);
+  }
+
+  return newstring; /* is still empty string in case of an error */
+}
+
 
 /* RESULT: bind_* functions */
 
@@ -1533,7 +1730,9 @@ static unsigned int _find_field(dbi_result_t *result, const char *fieldname, dbi
 }
 
 static int _is_row_fetched(dbi_result_t *result, unsigned long long row) {
-  if (!result->rows || (row >= result->numrows_matched)) return -1;
+  /* Bull patch reported by Tom Lane */
+  /*  if (!result->rows || (row >= result->numrows_matched)) return -1; */
+  if (!result->rows || (row > result->numrows_matched)) return -1;
   return !(result->rows[row] == NULL);
 }
 

@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="Generic Example Program"
 HREF="quickstart-code.html"><LINK
 REL="NEXT"
-TITLE="Adding libdbi to your project"
-HREF="x276.html"></HEAD
+TITLE="Using libdbi in multithreaded applications"
+HREF="threads.html"></HEAD
 ><BODY
 CLASS="SECTION"
 BGCOLOR="#FFFFFF"
@@ -53,13 +53,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 2. libdbi in a Nutshell (Quickstart Guide)</TD
+>Chapter 3. libdbi in a Nutshell (Quickstart Guide)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="x276.html"
+HREF="threads.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -73,8 +73,8 @@ CLASS="SECTION"
 ><H1
 CLASS="SECTION"
 ><A
-NAME="AEN267"
->2.3. Loading libdbi at runtime</A
+NAME="LOADINGLIBDBI"
+>3.3. Loading libdbi at runtime</A
 ></H1
 ><P
 >The generic example shown in the previous section assumed that the program is linked against libdbi. This is in fact the recommended way to add libdbi functionality to your programs. However, there are situations where this approach will not work. Some programs are designed to load modules at runtime to extend their capabilities. A well-known example is the web server Apache, which uses loadable modules to custom-tailor its capabilities. If such a module were to use libdbi, we'd look at the following pattern:</P
@@ -83,7 +83,7 @@ CLASS="INFORMALEXAMPLE"
 ><P
 ></P
 ><A
-NAME="AEN270"
+NAME="AEN302"
 ></A
 ><P
 >Parent =&gt; dl_open(module) =&gt; dl_open(driver)</P
@@ -148,7 +148,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="x276.html"
+HREF="threads.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -172,7 +172,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Adding libdbi to your project</TD
+>Using libdbi in multithreaded applications</TD
 ></TR
 ></TABLE
 ></DIV

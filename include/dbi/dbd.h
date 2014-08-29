@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbd.h,v 1.29 2005/08/15 19:18:18 mhoenicka Exp $
+ * $Id: dbd.h,v 1.33 2013/01/08 23:54:30 mhoenicka Exp $
  */
 
 
@@ -34,11 +34,12 @@ extern "C" {
 /* FUNCTIONS EXPORTED BY EACH DRIVER */
 void dbd_register_driver(const dbi_info_t **_driver_info, const char ***_custom_functions, const char ***_reserved_words);
 int dbd_initialize(dbi_driver_t *driver);
+int dbd_finalize(dbi_driver_t *driver);
 int dbd_connect(dbi_conn_t *conn);
 int dbd_disconnect(dbi_conn_t *conn);
 int dbd_fetch_row(dbi_result_t *result, unsigned long long rowidx);
 int dbd_free_query(dbi_result_t *result);
-int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx);
+int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx, unsigned long long currowidx);
 int dbd_get_socket(dbi_conn_t *conn);
 const char *dbd_get_encoding(dbi_conn_t *conn);
 const char* dbd_encoding_from_iana(const char *iana_encoding);
@@ -48,11 +49,17 @@ dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern);
 dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *pattern);
 dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement);
 dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, size_t st_length);
+int dbd_transaction_begin(dbi_conn_t *conn);
+int dbd_transaction_commit(dbi_conn_t *conn);
+int dbd_transaction_rollback(dbi_conn_t *conn);
+int dbd_savepoint(dbi_conn_t *conn, const char *savepoint);
+int dbd_rollback_to_savepoint(dbi_conn_t *conn, const char *savepoint);
+int dbd_release_savepoint(dbi_conn_t *conn, const char *savepoint);
 size_t dbd_quote_string(dbi_driver_t *driver, const char *orig, char *dest);
 size_t dbd_quote_binary(dbi_conn_t *conn, const unsigned char *orig, size_t from_length, unsigned char **ptr_dest);
 size_t dbd_conn_quote_string(dbi_conn_t *conn, const char *orig, char *dest);
 const char *dbd_select_db(dbi_conn_t *conn, const char *db);
-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr);
+int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr);
 unsigned long long dbd_get_seq_last(dbi_conn_t *conn, const char *sequence);
 unsigned long long dbd_get_seq_next(dbi_conn_t *conn, const char *sequence);
 int dbd_ping(dbi_conn_t *conn);
@@ -63,7 +70,7 @@ void _dbd_result_set_numfields(dbi_result_t *result, unsigned int numfields);
 void _dbd_result_add_field(dbi_result_t *result, unsigned int fieldidx, char *name, unsigned short type, unsigned int attribs);
 dbi_row_t *_dbd_row_allocate(unsigned int numfields);
 void _dbd_row_finalize(dbi_result_t *result, dbi_row_t *row, unsigned long long rowidx);
-void _dbd_internal_error_handler(dbi_conn_t *conn, const char *errmsg, const int errno);
+void _dbd_internal_error_handler(dbi_conn_t *conn, const char *errmsg, const int err_no);
 dbi_result_t *_dbd_result_create_from_stringarray(dbi_conn_t *conn, unsigned long long numrows_matched, const char **stringarray);
 void _dbd_register_driver_cap(dbi_driver_t *driver, const char *capname, int value);
 void _dbd_register_conn_cap(dbi_conn_t *conn, const char *capname, int value);

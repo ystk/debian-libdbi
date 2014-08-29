@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Driver data</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Database Independent Abstraction Layer for C"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Driver Infrastructure"
+HREF="driverinfrastructure.html"><LINK
+REL="PREVIOUS"
+TITLE="Database directories"
+HREF="databasedirectories.html"><LINK
+REL="NEXT"
+TITLE="Driver Functions"
+HREF="driverfuncs.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Database Independent Abstraction Layer for C: libdbi Driver Author's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="databasedirectories.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Driver Infrastructure</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="driverfuncs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DRIVERDATA"
+>2.3. Driver data</A
+></H1
+><P
+>Each driver has to declare two global string arrays which are queried by libdbi. They provide a list of driver-specific functions and a list of reserved words. Both string arrays must be declared even if they are empty.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DRIVERSPECIFICFUNCTIONS"
+>2.3.1. Driver specific functions</A
+></H2
+><P
+>libdbi was designed to provide access to a variety of database engines using a single common interface. However, database engines may have client library APIs weird enough to make them badly suited for libdbi. A driver may therefore have to provide additional functions which are specific to this driver. Also, it may be useful to provide access to database engine specific functions (i.e. functions of the database engine client library) if their usage is not covered by the libdbi interface.</P
+><P
+>The following line defines a string array with two representative function names. Please note that the string array must be terminated with a NULL string. This holds true even if the driver does not export any custom functions.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><FONT
+COLOR="#000000"
+><PRE
+CLASS="PROGRAMLISTING"
+>static const char *<CODE
+CLASS="VARNAME"
+>custom_functions</CODE
+>[] = {"foo", "bar", NULL};</PRE
+></FONT
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>libdbi internally attempts to create pointers to the named functions. It is not considered an error if the symbol is missing, so it is safe to provide the names of functions which are not present in all versions of a client library. Creating pointers may also fail if functions are implemented as macros by the client library.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN138"
+>2.3.2. Reserved words</A
+></H2
+><P
+>Database engines use different implementations of the SQL standard. Some language features of the SQL standard may not be supported, whereas some engines implement language features which are not part of the standard. In order to avoid conflicts between e.g. table or column names and "reserved words" (i.e. words which a specific SQL implementation considers part of the language), libdbi provides a function to find out at runtime whether or not a word is a reserved word. Each driver therefore has to provide such a list of reserved words. Again, the string array used to provide this list must be terminated by a NULL string:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><FONT
+COLOR="#000000"
+><PRE
+CLASS="PROGRAMLISTING"
+>static const char *<CODE
+CLASS="VARNAME"
+>reserved_words</CODE
+>[] = {"foo", "bar", NULL};</PRE
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="databasedirectories.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="driverfuncs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Database directories</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="driverinfrastructure.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Driver Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

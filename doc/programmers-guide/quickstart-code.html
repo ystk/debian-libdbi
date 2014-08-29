@@ -17,7 +17,7 @@ TITLE="Quick Overview"
 HREF="quickstart-debriefing.html"><LINK
 REL="NEXT"
 TITLE="Loading libdbi at runtime"
-HREF="x267.html"></HEAD
+HREF="loadinglibdbi.html"></HEAD
 ><BODY
 CLASS="SECTION"
 BGCOLOR="#FFFFFF"
@@ -53,13 +53,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 2. libdbi in a Nutshell (Quickstart Guide)</TD
+>Chapter 3. libdbi in a Nutshell (Quickstart Guide)</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="x267.html"
+HREF="loadinglibdbi.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -74,7 +74,7 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="QUICKSTART-CODE"
->2.2. Generic Example Program</A
+>3.2. Generic Example Program</A
 ></H1
 ><P
 >The following listing shows how to establish a connection to a MySQL database server and retrieve the results of a SQL query. Only a small number of functions offered by libdbi are shown here. For a more extensive example check out the test program <TT
@@ -101,13 +101,14 @@ CLASS="PROGRAMLISTING"
 int main() {
     dbi_conn conn;
     dbi_result result;
+    dbi_inst instance;
 
     double threshold = 4.333333;
     unsigned int idnumber;
     const char *fullname;
     
-    dbi_initialize(NULL);
-    conn = dbi_conn_new("mysql");
+    dbi_initialize_r(NULL, &#38;instance);
+    conn = dbi_conn_new_r("mysql", instance);
 
     dbi_conn_set_option(conn, "host", "localhost");
     dbi_conn_set_option(conn, "username", "your_name");
@@ -133,7 +134,7 @@ int main() {
       dbi_conn_close(conn);
     }
     
-    dbi_shutdown();
+    dbi_shutdown_r(instance);
 
     return 0;
 }</PRE
@@ -199,7 +200,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="x267.html"
+HREF="loadinglibdbi.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
