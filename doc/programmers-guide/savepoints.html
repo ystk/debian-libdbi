@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Savepoints</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Database Independent Abstraction Layer for C"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Transactions and Savepoints"
+HREF="transactions-savepoints.html"><LINK
+REL="PREVIOUS"
+TITLE="Transactions"
+HREF="transactions.html"><LINK
+REL="NEXT"
+TITLE="Library and Interface Versions"
+HREF="versioning.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Database Independent Abstraction Layer for C: libdbi Programmer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="transactions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Transactions and Savepoints</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="versioning.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SAVEPOINTS"
+>5.2. Savepoints</A
+></H1
+><P
+>Most database engines which support transactions also support the concept of savepoints. To find out at runtime whether or not the driver associated with the current connection supports savepoints, use the function <A
+HREF="reference-conn.html#DBI-CONN-CAP-GET"
+>dbi_conn_cap_get</A
+> to query if the "savepoint_support" capability is nonzero. Savepoints are essentially named markers within a transaction where you can jump back in case of an error. In this case, all commands that were issued after the savepoint are dismissed. The changes caused by the commands after a savepoint are committed as soon as the entire transaction is committed. Usually several markers may be used at a time within the same transaction. libdbi provides the following commands to manage savepoints:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Set a savepoint</DT
+><DD
+><P
+>To set a named savepoint within a transaction, use the function <A
+HREF="reference-conn.html#DBI-CONN-SAVEPOINT"
+>dbi_conn_savepoint</A
+>. You need to keep track of the name of savepoints in order to be able to revert the changes.</P
+></DD
+><DT
+>Rollback to a savepoint</DT
+><DD
+><P
+>To dismiss any changes during an open transaction which occurred after a particular savepoint, use the function <A
+HREF="reference-conn.html#DBI-CONN-ROLLBACK-TO-SAVEPOINT"
+>dbi_conn_rollback_to_savepoint</A
+>.</P
+></DD
+><DT
+>Release a savepoint</DT
+><DD
+><P
+>Some database engines allow to clear savepoints if they are no longer needed. This is important only within lengthy transactions as savepoints are automatically cleared when a transaction is committed or rolled back. Releasing a savepoint does not affect the commands that occurred after the savepoint was set. It merely makes it impossible to jump back to that savepoint and releases all system resources which were needed to maintain that savepoint. To release a savepoint, use the command <A
+HREF="reference-conn.html#DBI-CONN-RELEASE-SAVEPOINT"
+>dbi_conn_release_savepoint</A
+>.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="transactions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="versioning.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Transactions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="transactions-savepoints.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Library and Interface Versions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

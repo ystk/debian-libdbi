@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Package and library versions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Database Independent Abstraction Layer for C"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Library and Interface Versions"
+HREF="versioning.html"><LINK
+REL="PREVIOUS"
+TITLE="Library and Interface Versions"
+HREF="versioning.html"><LINK
+REL="NEXT"
+TITLE="libdbi and libdbi-drivers versions"
+HREF="libdbi-and-drivers-versions.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Database Independent Abstraction Layer for C: libdbi Programmer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="versioning.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. Library and Interface Versions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="libdbi-and-drivers-versions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="PACKAGE-LIBRARY-VERSION"
+>6.1. Package and library versions</A
+></H1
+><P
+>libdbi utilizes <A
+HREF="http://www.gnu.org/software/libtool/"
+TARGET="_top"
+>libtool</A
+> to manage the library in a platform-independent fashion. libtool uses an abstract library versioning scheme which consists of three numbers:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>current</DT
+><DD
+><P
+>This is the number of the current interface. The first "incarnation" is usually 0 (zero), the next version that adds or subtracts something from this interface would be 1 (think of new API functions or functions with altered parameter lists).</P
+></DD
+><DT
+>revision</DT
+><DD
+><P
+>This number counts the released changes of the interface which do not alter the interface (think of internal optimizations, bugfixes and so on)</P
+></DD
+><DT
+>age</DT
+><DD
+><P
+>This is the number of previous interfaces that the current version is backwards-compatible with. That is, if <CODE
+CLASS="PARAMETER"
+>current</CODE
+> is "n", programs linked against "n", "n-1", and "n-2" will run with the current version.</P
+></DD
+></DL
+></DIV
+><P
+>The package version number (major.minor.patch) is computed from the above numbers using the formulas:</P
+><P
+></P
+><UL
+><LI
+><P
+>major = current - age</P
+></LI
+><LI
+><P
+>minor = age + 8</P
+></LI
+><LI
+><P
+>patch = revision</P
+></LI
+></UL
+><P
+>The correction applied to <CODE
+CLASS="VARNAME"
+>minor</CODE
+> is currently required to bring the package version in line with earlier releases which did not use proper libtool interface versioning. It will be dropped if <CODE
+CLASS="VARNAME"
+>major</CODE
+> rises above zero.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="versioning.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="libdbi-and-drivers-versions.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Library and Interface Versions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="versioning.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>libdbi and libdbi-drivers versions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -91,7 +91,7 @@ CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN234"
+NAME="AEN279"
 ></A
 ><P
 ><CODE
@@ -107,13 +107,16 @@ CLASS="PDPARAM"
 >, unsigned long long <VAR
 CLASS="PDPARAM"
 >rowidx</VAR
+>, unsigned long long <VAR
+CLASS="PDPARAM"
+>currowidx</VAR
 >);</CODE
 ></P
 ><P
 ></P
 ></DIV
 ><P
->Jumps to the specifed row in the result set. Internal row counts start at 0.</P
+>Jumps to the specifed row in the result set. Internal row counts start at 0. The current row number is passed to the driver to allow it to check whether a (presumably expensive) seek operation is required.</P
 ><P
 ></P
 ><DIV
@@ -132,6 +135,11 @@ CLASS="LITERAL"
 CLASS="LITERAL"
 >row</TT
 >: The target row number.</P
+><P
+><TT
+CLASS="LITERAL"
+>row</TT
+>: The current row number.</P
 ></DD
 ><DT
 >Returns</DT
@@ -155,7 +163,7 @@ CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN257"
+NAME="AEN306"
 ></A
 ><P
 ><CODE
@@ -225,7 +233,7 @@ CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN282"
+NAME="AEN331"
 ></A
 ><P
 ><CODE

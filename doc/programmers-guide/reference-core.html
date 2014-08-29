@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Core Library Functions</TITLE
+>Instance Infrastructure</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -53,7 +53,7 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 4. libdbi API Reference</TD
+>Chapter 7. libdbi API Reference</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
@@ -74,22 +74,89 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="REFERENCE-CORE"
->4.1. Core Library Functions</A
+>7.1. Instance Infrastructure</A
 ></H1
 ><DIV
 CLASS="SECTION"
 ><H2
 CLASS="SECTION"
 ><A
-NAME="DBI-INITIALIZE"
->4.1.1. dbi_initialize</A
+NAME="DBI-INITIALIZE-R"
+>7.1.1. dbi_initialize_r</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN376"
+NAME="AEN509"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_initialize_r</B
+></CODE
+>(const char *<VAR
+CLASS="PDPARAM"
+>driverdir</VAR
+>, dbi_inst *pInst);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Creates an instance of libdbi, locates all available database drivers and loads them into memory.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>driverdir</TT
+>: The directory to search for drivers. If NULL, DBI_DRIVER_DIR (defined at compile time) will be used instead.</P
+><P
+><TT
+CLASS="LITERAL"
+>pInst</TT
+>: A pointer to an instance handle. The function will fill in the new instance handle if successful, or set it to NULL if an error occurred.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The number of drivers successfully loaded, or -1 if there was an error. The latter may be due to an incorrect driver directory or to a lack of permissions.</P
+></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.9.0</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-INITIALIZE"
+>7.1.2. dbi_initialize</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN535"
 ></A
 ><P
 ><CODE
@@ -109,6 +176,19 @@ CLASS="PDPARAM"
 ></DIV
 ><P
 >Locates all available database drivers and loads them into memory.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This function is deprecated. Use <A
+HREF="reference-core.html#DBI-INITIALIZE-R"
+>dbi_initialize_r</A
+> instead. In contrast to that function, dbi_initialize allows only one (internally managed) libdbi instance per process.</P
+></BLOCKQUOTE
+></DIV
 ><P
 ></P
 ><DIV
@@ -137,15 +217,71 @@ CLASS="SECTION"
 ><H2
 CLASS="SECTION"
 ><A
-NAME="DBI-SHUTDOWN"
->4.1.2. dbi_shutdown</A
+NAME="DBI-SHUTDOWN-R"
+>7.1.3. dbi_shutdown_r</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN395"
+NAME="AEN557"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void <B
+CLASS="FSFUNC"
+>dbi_shutdown_r</B
+></CODE
+>(dbi_inst <VAR
+CLASS="PDPARAM"
+>Inst</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Frees all loaded drivers and terminates the libdbi instance. You should close each connection you opened before shutting down, but libdbi will clean up after you if you don't.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>Inst</TT
+>: The instance handle.</P
+></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.9.0</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-SHUTDOWN"
+>7.1.4. dbi_shutdown</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN576"
 ></A
 ><P
 ><CODE
@@ -162,6 +298,167 @@ CLASS="FSFUNC"
 ></DIV
 ><P
 >Frees all loaded drivers and terminates the DBI system. You should close each connection you opened before shutting down, but libdbi will clean up after you if you don't.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This function is deprecated. Use <A
+HREF="reference-core.html#DBI-SHUTDOWN-R"
+>dbi_shutdown_r</A
+> instead.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-SET-VERBOSITY-R"
+>7.1.5. dbi_set_verbosity_r</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN587"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_set_verbosity_r</B
+></CODE
+>(int <VAR
+CLASS="PDPARAM"
+>verbosity</VAR
+>, dbi_inst Inst);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Toggles internal error messages on or off in the given libdbi instance. This affects only those error messages which are directly sent to stderr, not those handled by the <A
+HREF="errorhandling.html"
+>connection error API</A
+>.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>verbosity</TT
+>: A nonzero value causes error messages to be printed on stderr. 0 (zero) suppresses error messages.</P
+><P
+><TT
+CLASS="LITERAL"
+>Inst</TT
+>: The instance handle.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The previous setting of <CODE
+CLASS="PARAMETER"
+>verbosity</CODE
+>.</P
+></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.9.0</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-SET-VERBOSITY"
+>7.1.6. dbi_set_verbosity</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN615"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>int <B
+CLASS="FSFUNC"
+>dbi_set_verbosity</B
+></CODE
+>(int <VAR
+CLASS="PDPARAM"
+>verbosity</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Toggles internal error messages on or off. This affects only those error messages which are directly sent to stderr, not those handled by the <A
+HREF="errorhandling.html"
+>connection error API</A
+>.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This function is deprecated. Use <A
+HREF="reference-core.html#DBI-SET-VERBOSITY-R"
+>dbi_set_verbosity_r</A
+> instead.</P
+></BLOCKQUOTE
+></DIV
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>verbosity</TT
+>: A nonzero value causes error messages to be printed on stderr. 0 (zero) suppresses error messages.</P
+></DD
+><DT
+>Returns</DT
+><DD
+><P
+>The previous setting of <CODE
+CLASS="PARAMETER"
+>verbosity</CODE
+>.</P
+></DD
+></DL
+></DIV
 ></DIV
 ><DIV
 CLASS="SECTION"
@@ -169,14 +466,14 @@ CLASS="SECTION"
 CLASS="SECTION"
 ><A
 NAME="DBI-VERSION"
->4.1.3. dbi_version</A
+>7.1.7. dbi_version</A
 ></H2
 ><DIV
 CLASS="FUNCSYNOPSIS"
 ><P
 ></P
 ><A
-NAME="AEN403"
+NAME="AEN639"
 ></A
 ><P
 ><CODE
@@ -203,6 +500,56 @@ CLASS="VARIABLELIST"
 ><DD
 ><P
 >A string containing the library's name and version.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="DBI-VERSION-NUMERIC"
+>7.1.8. dbi_version_numeric</A
+></H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN652"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>unsigned int <B
+CLASS="FSFUNC"
+>dbi_version_numeric</B
+></CODE
+>(void);</CODE
+></P
+><P
+></P
+></DIV
+><P
+>Requests the version of libdbi as an integer.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Returns</DT
+><DD
+><P
+>The version, computed as ((major * 10000) + (minor * 100) + patch).</P
+></DD
+><DT
+>Availability</DT
+><DD
+><P
+>0.9.0</P
 ></DD
 ></DL
 ></DIV

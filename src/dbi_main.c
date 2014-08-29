@@ -17,19 +17,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbi_main.c,v 1.79 2008/02/06 16:21:29 mhoenicka Exp $
+ * $Id: dbi_main.c,v 1.103 2013/01/24 22:10:18 mhoenicka Exp $
  */
+
+/* silence the deprecated warnings as this lib must implement and call
+   the deprecated functions for the time being */
+#define LIBDBI_API_DEPRECATED /**/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#define _GNU_SOURCE /* since we need the asprintf() prototype */
+/* #define _GNU_SOURCE */ /* we need the asprintf() prototype but _GNU_SOURCE should be defined in config.h */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <strings.h> /* for strcasecmp */
+#include <sys/types.h>
+#include <stddef.h>
 
 /* Dlopen stuff */
 #if HAVE_LTDL_H
@@ -78,7 +85,9 @@ char *win_dlerror();
 /* end dlopen stuff */
 
 #include <sys/stat.h>
-#include <unistd.h>
+#ifdef HAVE_UNISTD_H
+  #include <unistd.h>
+#endif
 #include <dirent.h>
 
 #include <math.h>
@@ -103,17 +112,20 @@ char *win_dlerror();
 #define DLSYM_PREFIX ""
 #endif
 
+#ifndef RTLD_NEXT
+#define RTLD_NEXT ((void *) -1) /* taken from FreeBSD, just a compile helper */
+#endif
+
 /* declarations of optional external functions */
-#ifndef HAVE_VASPRINTF
-int int_vasprintf(char **result, const char *format, va_list *args);
+#if !HAVE_DECL_VASPRINTF
 int vasprintf(char **result, const char *format, va_list args);
 #endif
-#ifndef HAVE_ASPRINTF
+#if !HAVE_DECL_ASPRINTF
 int asprintf(char **result, const char *format, ...);
 #endif
 
 /* declarations for internal functions -- anything declared as static won't be accessible by name from client programs */
-static dbi_driver_t *_get_driver(const char *filename);
+static dbi_driver_t *_get_driver(const char *filename, dbi_inst_t *inst);
 static void _free_custom_functions(dbi_driver_t *driver);
 static dbi_option_t *_find_or_create_option_node(dbi_conn Conn, const char *key);
 static int _update_internal_conn_list(dbi_conn_t *conn, int operation);
@@ -131,13 +143,13 @@ int dbi_conn_set_error(dbi_conn Conn, int errnum, const char *formatstr, ...) __
 
 /* must not be called "ERROR" due to a name clash on Windoze */
 static const char *my_ERROR = "ERROR";
-static dbi_driver_t *rootdriver;
-static dbi_conn_t *rootconn;
-int dbi_verbosity = 1;
+static dbi_inst dbi_inst_legacy;
+
 
 /* XXX DBI CORE FUNCTIONS XXX */
 
-int dbi_initialize(const char *driverdir) {
+int dbi_initialize_r(const char *driverdir, dbi_inst *pInst) {
+	dbi_inst_t *inst;
 	DIR *dir;
 	struct dirent *driver_dirent = NULL;
 	struct stat statbuf;
@@ -145,12 +157,22 @@ int dbi_initialize(const char *driverdir) {
 	char *effective_driverdir;
 	
 	int num_loaded = 0;
+	*pInst = NULL; /* use a defined value if the function fails */
 	dbi_driver_t *driver = NULL;
 	dbi_driver_t *prevdriver = NULL;
 #if HAVE_LTDL_H
         (void)lt_dlinit();
 #endif	
-	rootdriver = NULL;
+	/* init the instance */
+	inst = malloc(sizeof(dbi_inst_t));
+	if (!inst) {
+		return -1;
+	}
+	*pInst = (void*) inst;
+	inst->rootdriver = NULL;
+	inst->rootconn = NULL;
+	inst->dbi_verbosity = 1; /* TODO: is this really the correct default? */
+	/* end instance init */
 	effective_driverdir = (driverdir ? (char *)driverdir : DBI_DRIVER_DIR);
 	dir = opendir(effective_driverdir);
 
@@ -158,15 +180,39 @@ int dbi_initialize(const char *driverdir) {
 		return -1;
 	}
 	else {
-		while ((driver_dirent = readdir(dir)) != NULL) {
+		struct dirent *buffer;
+		size_t buffer_size;
+		int status;
+
+		/* allocate memory for readdir_r(3) */
+		buffer_size = _dirent_buf_size(dir);
+		if (buffer_size == 0) {
+		  return -1;
+		}
+
+		buffer = (struct dirent *) malloc (buffer_size);
+		if (buffer == NULL) {
+		  return -1;
+		}
+
+		memset (buffer, 0, buffer_size);
+
+		status = 0;
+		while (42) { /* yes, we all admire Douglas Adams */
+			driver_dirent = NULL;
+			status = readdir_r (dir, buffer, &driver_dirent);
+			if (status != 0 || driver_dirent == NULL) {
+			  break;
+			}
+
 			driver = NULL;
 			snprintf(fullpath, FILENAME_MAX, "%s%s%s", effective_driverdir, DBI_PATH_SEPARATOR, driver_dirent->d_name);
 			if ((stat(fullpath, &statbuf) == 0) && S_ISREG(statbuf.st_mode) && strrchr(driver_dirent->d_name, '.') && (!strcmp(strrchr(driver_dirent->d_name, '.'), DRIVER_EXT))) {
 				/* file is a stat'able regular file that ends in .so (or appropriate dynamic library extension) */
-				driver = _get_driver(fullpath);
+				driver = _get_driver(fullpath, inst);
 				if (driver && (driver->functions->initialize(driver) != -1)) {
-					if (!rootdriver) {
-						rootdriver = driver;
+					if (!inst->rootdriver) {
+						inst->rootdriver = driver;
 					}
 					if (prevdriver) {
 						prevdriver->next = driver;
@@ -179,21 +225,27 @@ int dbi_initialize(const char *driverdir) {
 					if (driver && driver->functions) free(driver->functions);
 					if (driver) free(driver);
 					driver = NULL; /* don't include in linked list */
-					if (dbi_verbosity) fprintf(stderr, "libdbi: Failed to load driver: %s\n", fullpath);
+					if (inst->dbi_verbosity) fprintf(stderr, "libdbi: Failed to load driver: %s\n", fullpath);
 				}
 			}
-		}
+		} /* while (42) */
 		closedir(dir);
+		free(buffer);
 	}
 	
 	return num_loaded;
 }
 
-void dbi_shutdown() {
-	dbi_conn_t *curconn = rootconn;
+int dbi_initialize(const char *driverdir) {
+  return (dbi_initialize_r(driverdir, &dbi_inst_legacy));
+}
+
+void dbi_shutdown_r(dbi_inst Inst) {
+	dbi_inst_t *inst = (dbi_inst_t*) Inst;
+	dbi_conn_t *curconn = inst->rootconn;
 	dbi_conn_t *nextconn;
 	
-	dbi_driver_t *curdriver = rootdriver;
+	dbi_driver_t *curdriver = inst->rootdriver;
 	dbi_driver_t *nextdriver;
 	
 	while (curconn) {
@@ -204,6 +256,7 @@ void dbi_shutdown() {
 	
 	while (curdriver) {
 		nextdriver = curdriver->next;
+		curdriver->functions->finalize(curdriver);		
  		_safe_dlclose(curdriver);
 		free(curdriver->functions);
 		_free_custom_functions(curdriver);
@@ -215,43 +268,71 @@ void dbi_shutdown() {
 #if HAVE_LTDL_H
         (void)lt_dlexit();
 #endif	
-	rootdriver = NULL;
+	free(inst);
+}
+
+void dbi_shutdown() {
+	dbi_shutdown_r(dbi_inst_legacy);
 }
 
 const char *dbi_version() {
 	return "libdbi v" VERSION;
 }
 
-int dbi_set_verbosity(int verbosity) {
+unsigned int dbi_version_numeric() {
+  return (unsigned int)LIBDBI_VERSION;
+}
+
+int dbi_set_verbosity_r(int verbosity, dbi_inst Inst) {
+	dbi_inst_t *inst = (dbi_inst_t*) Inst;
 	/* whether or not to spew stderr messages when something bad happens (and
 	 * isn't handled through the normal connection-oriented DBI error
 	 * mechanisms) */
 
-	int prev = dbi_verbosity;
-	dbi_verbosity = verbosity;
+	int prev = inst->dbi_verbosity;
+	inst->dbi_verbosity = verbosity;
 	return prev;
+}
+int dbi_set_verbosity(int verbosity) {
+	return dbi_set_verbosity_r(verbosity, dbi_inst_legacy);
 }
 
 /* XXX DRIVER FUNCTIONS XXX */
 
-dbi_driver dbi_driver_list(dbi_driver Current) {
+dbi_driver dbi_driver_list_r(dbi_driver Current, dbi_inst Inst) {
+	dbi_inst_t *inst = (dbi_inst_t*) Inst;
 	dbi_driver_t *current = Current;
 
 	if (current == NULL) {
-		return (dbi_driver)rootdriver;
+		return (dbi_driver)inst->rootdriver;
 	}
 
 	return (dbi_driver)current->next;
 }
+dbi_driver dbi_driver_list(dbi_driver Current) {
+	return dbi_driver_list_r(Current, dbi_inst_legacy);
+}
 
-dbi_driver dbi_driver_open(const char *name) {
-	dbi_driver_t *driver = rootdriver;
+dbi_driver dbi_driver_open_r(const char *name, dbi_inst Inst) {
+	dbi_inst_t *inst = (dbi_inst_t*) Inst;
+	dbi_driver_t *driver = inst->rootdriver;
 
 	while (driver && strcasecmp(name, driver->info->name)) {
 		driver = driver->next;
 	}
 
 	return driver;
+}
+dbi_driver dbi_driver_open(const char *name) {
+	return dbi_driver_open_r(name, dbi_inst_legacy);
+}
+
+dbi_inst dbi_driver_get_instance(dbi_driver Driver) {
+	dbi_driver_t *driver = Driver;
+	
+	if (!driver) return NULL;
+	
+	return driver->dbi_inst;
 }
 
 int dbi_driver_is_reserved_word(dbi_driver Driver, const char *word) {
@@ -445,14 +526,17 @@ const char* dbi_driver_encoding_to_iana(dbi_driver Driver, const char* db_encodi
 
 /* XXX DRIVER FUNCTIONS XXX */
 
-dbi_conn dbi_conn_new(const char *name) {
+dbi_conn dbi_conn_new_r(const char *name, dbi_inst Inst) {
 	dbi_driver driver;
 	dbi_conn conn;
 
-	driver = dbi_driver_open(name);
+	driver = dbi_driver_open_r(name, Inst);
 	conn = dbi_conn_open(driver);
 
 	return conn;
+}
+dbi_conn dbi_conn_new(const char *name) {
+  return (dbi_conn_new_r(name, dbi_inst_legacy));
 }
 
 dbi_conn dbi_conn_open(dbi_driver Driver) {
@@ -475,6 +559,7 @@ dbi_conn dbi_conn_open(dbi_driver Driver) {
 	conn->error_flag = DBI_ERROR_NONE; /* for legacy code only */
 	conn->error_number = DBI_ERROR_NONE;
 	conn->error_message = NULL;
+	conn->full_errmsg = NULL;
 	conn->error_handler = NULL;
 	conn->error_handler_argument = NULL;
 	_update_internal_conn_list(conn, 1);
@@ -503,7 +588,7 @@ int dbi_conn_disjoin_results(dbi_conn Conn) {
 void dbi_conn_close(dbi_conn Conn) {
 	dbi_conn_t *conn = Conn;
 	
-	if (!conn) return;
+	if (!conn || !(conn->connection)) return;
 	
 	_update_internal_conn_list(conn, -1);
 	
@@ -515,6 +600,7 @@ void dbi_conn_close(dbi_conn Conn) {
 	
 	if (conn->current_db) free(conn->current_db);
 	if (conn->error_message) free(conn->error_message);
+	if (conn->full_errmsg) free(conn->full_errmsg);
 	conn->error_number = 0;
 	
 	conn->error_handler = NULL;
@@ -536,10 +622,9 @@ dbi_driver dbi_conn_get_driver(dbi_conn Conn) {
 int dbi_conn_error(dbi_conn Conn, const char **errmsg_dest) {
 	dbi_conn_t *conn = Conn;
 	char number_portion[20];
-	static char *errmsg = NULL; // XXX quick hack, revisit this when API is redesigned
 
 	if (errmsg_dest) {
-		if (errmsg) free(errmsg);
+		if (conn->full_errmsg) free(conn->full_errmsg);
 		
 		if (conn->error_number) {
 			snprintf(number_portion, 20, "%d: ", conn->error_number);
@@ -548,8 +633,8 @@ int dbi_conn_error(dbi_conn Conn, const char **errmsg_dest) {
 			number_portion[0] = '\0';
 		}
 
-		asprintf(&errmsg, "%s%s", number_portion, conn->error_message ? conn->error_message : "");
-		*errmsg_dest = errmsg;
+		asprintf(&(conn->full_errmsg), "%s%s", number_portion, conn->error_message ? conn->error_message : "");
+		*errmsg_dest = conn->full_errmsg;
 	}
 
 	return conn->error_number;
@@ -703,7 +788,6 @@ size_t dbi_conn_quote_binary_copy(dbi_conn Conn, const unsigned char *orig, size
    do */
 
 size_t dbi_conn_escape_string_copy(dbi_conn Conn, const char *orig, char **newquoted) {
-	char *newstr;
 	size_t newlen;
 	
 	if (!Conn) {
@@ -954,7 +1038,7 @@ int dbi_conn_get_socket(dbi_conn Conn){
 	dbi_conn_t *conn = Conn;
 	int retval;
 
-	if (!conn) {
+	if (!conn || !(conn->connection)) {
 	  return -1;
 	}
 
@@ -969,7 +1053,7 @@ const char *dbi_conn_get_encoding(dbi_conn Conn){
 	dbi_conn_t *conn = Conn;
 	const char *retval;
 
-	if (!conn) return NULL;
+	if (!conn || !(conn->connection)) return NULL;
 
 	_reset_conn_error(conn);
 
@@ -982,7 +1066,7 @@ unsigned int dbi_conn_get_engine_version(dbi_conn Conn){
 	dbi_conn_t *conn = Conn;
 	char versionstring[VERSIONSTRING_LENGTH];
 
-	if (!conn) return 0;
+	if (!conn || !(conn->connection)) return 0;
 
 	_reset_conn_error(conn);
 
@@ -994,7 +1078,7 @@ unsigned int dbi_conn_get_engine_version(dbi_conn Conn){
 char* dbi_conn_get_engine_version_string(dbi_conn Conn, char *versionstring) {
 	dbi_conn_t *conn = Conn;
 
-	if (!conn) return 0;
+	if (!conn || !(conn->connection)) return 0;
 
 	_reset_conn_error(conn);
 
@@ -1005,7 +1089,7 @@ dbi_result dbi_conn_get_db_list(dbi_conn Conn, const char *pattern) {
 	dbi_conn_t *conn = Conn;
 	dbi_result_t *result;
 	
-	if (!conn) return NULL;
+	if (!conn || !(conn->connection)) return NULL;
 	
 	_reset_conn_error(conn);
 
@@ -1022,7 +1106,7 @@ dbi_result dbi_conn_get_table_list(dbi_conn Conn, const char *db, const char *pa
 	dbi_conn_t *conn = Conn;
 	dbi_result_t *result;
 	
-	if (!conn) return NULL;
+	if (!conn || !(conn->connection)) return NULL;
 	
 	_reset_conn_error(conn);
 
@@ -1039,7 +1123,7 @@ dbi_result dbi_conn_query(dbi_conn Conn, const char *statement) {
 	dbi_conn_t *conn = Conn;
 	dbi_result_t *result;
 
-	if (!conn) return NULL;
+	if (!conn || !(conn->connection)) return NULL;
 	
 	_reset_conn_error(conn);
 
@@ -1059,7 +1143,7 @@ dbi_result dbi_conn_queryf(dbi_conn Conn, const char *formatstr, ...) {
 	dbi_result_t *result;
 	va_list ap;
 
-	if (!conn) return NULL;
+	if (!conn || !(conn->connection)) return NULL;
 	
 	_reset_conn_error(conn);
 
@@ -1082,11 +1166,11 @@ dbi_result dbi_conn_query_null(dbi_conn Conn, const unsigned char *statement, si
 	dbi_conn_t *conn = Conn;
 	dbi_result_t *result;
 
-	if (!conn) return NULL;
+	if (!conn || !(conn->connection)) return NULL;
 
 	_reset_conn_error(conn);
 
-	_logquery_null(conn, statement, st_length);
+	_logquery_null(conn, (const char *)statement, st_length);
 	result = conn->driver->functions->query_null(conn, statement, st_length);
 
 	if (result == NULL) {
@@ -1100,7 +1184,7 @@ int dbi_conn_select_db(dbi_conn Conn, const char *db) {
 	dbi_conn_t *conn = Conn;
 	const char *retval;
 	
-	if (!conn) return -1;
+	if (!conn || !(conn->connection)) return -1;
 	
 	_reset_conn_error(conn);
 
@@ -1129,7 +1213,7 @@ int dbi_conn_select_db(dbi_conn Conn, const char *db) {
 unsigned long long dbi_conn_sequence_last(dbi_conn Conn, const char *name) {
 	dbi_conn_t *conn = Conn;
 	unsigned long long result;
-	if (!conn) return 0;
+	if (!conn || !(conn->connection)) return 0;
 
 	_reset_conn_error(conn);
 
@@ -1140,7 +1224,7 @@ unsigned long long dbi_conn_sequence_last(dbi_conn Conn, const char *name) {
 unsigned long long dbi_conn_sequence_next(dbi_conn Conn, const char *name) {
 	dbi_conn_t *conn = Conn;
 	unsigned long long result;
-	if (!conn) return 0;
+	if (!conn || !(conn->connection)) return 0;
 
 	_reset_conn_error(conn);
 
@@ -1152,7 +1236,7 @@ int dbi_conn_ping(dbi_conn Conn) {
 	dbi_conn_t *conn = Conn;
 	int result;
 
-	if (!conn) return 0;
+	if (!conn || !(conn->connection)) return 0;
 
 	_reset_conn_error(conn);
 
@@ -1160,16 +1244,94 @@ int dbi_conn_ping(dbi_conn Conn) {
 	return result;
 }
 
+/* XXX TRANSACTION RELATED FUNCTIONS XXX */
+int dbi_conn_transaction_begin(dbi_conn Conn) {
+	dbi_conn_t *conn = Conn;
+	int result;
+
+	if (!conn || !(conn->connection)) return 0;
+
+	_reset_conn_error(conn);
+
+	result = conn->driver->functions->transaction_begin(conn);
+	return result;
+}
+
+int dbi_conn_transaction_commit(dbi_conn Conn) {
+	dbi_conn_t *conn = Conn;
+	int result;
+
+	if (!conn || !(conn->connection)) return 0;
+
+	_reset_conn_error(conn);
+
+	result = conn->driver->functions->transaction_commit(conn);
+	return result;
+}
+
+int dbi_conn_transaction_rollback(dbi_conn Conn) {
+	dbi_conn_t *conn = Conn;
+	int result;
+
+	if (!conn || !(conn->connection)) return 0;
+
+	_reset_conn_error(conn);
+
+	result = conn->driver->functions->transaction_rollback(conn);
+	return result;
+}
+
+int dbi_conn_savepoint(dbi_conn Conn, const char *savepoint) {
+	dbi_conn_t *conn = Conn;
+	int result;
+
+	if (!conn || !(conn->connection)
+	    || !savepoint) return 0;
+
+	_reset_conn_error(conn);
+
+	result = conn->driver->functions->savepoint(conn, savepoint);
+	return result;
+}
+
+int dbi_conn_rollback_to_savepoint(dbi_conn Conn, const char *savepoint) {
+	dbi_conn_t *conn = Conn;
+	int result;
+
+	if (!conn || !(conn->connection)
+	    || !savepoint) return 0;
+
+	_reset_conn_error(conn);
+
+	result = conn->driver->functions->rollback_to_savepoint(conn, savepoint);
+	return result;
+}
+
+int dbi_conn_release_savepoint(dbi_conn Conn, const char *savepoint) {
+	dbi_conn_t *conn = Conn;
+	int result;
+
+	if (!conn || !(conn->connection)
+	    || !savepoint) return 0;
+
+	_reset_conn_error(conn);
+
+	result = conn->driver->functions->release_savepoint(conn, savepoint);
+	return result;
+}
+
+
 /* XXX INTERNAL PRIVATE IMPLEMENTATION FUNCTIONS XXX */
 
-static dbi_driver_t *_get_driver(const char *filename) {
+static dbi_driver_t *_get_driver(const char *filename, dbi_inst_t *inst) {
 	dbi_driver_t *driver;
 	void *dlhandle;
+	void *symhandle;
 	const char **custom_functions_list;
 	unsigned int idx = 0;
 	dbi_custom_function_t *prevcustom = NULL;
 	dbi_custom_function_t *custom = NULL;
-	char function_name[256];
+	const char* error;
 
 	dlhandle = my_dlopen(filename, DLOPEN_FLAG); /* DLOPEN_FLAG defined by autoconf */
 
@@ -1183,6 +1345,7 @@ static dbi_driver_t *_get_driver(const char *filename) {
 
 		driver->dlhandle = dlhandle;
 		driver->filename = strdup(filename);
+		driver->dbi_inst = inst;
 		driver->next = NULL;
 		driver->caps = NULL;
 		driver->functions = malloc(sizeof(dbi_functions_t));
@@ -1190,6 +1353,7 @@ static dbi_driver_t *_get_driver(const char *filename) {
 		if ( /* nasty looking if block... is there a better way to do it? */
 			((driver->functions->register_driver = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_register_driver")) == NULL) ||
 			((driver->functions->initialize = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_initialize")) == NULL) ||
+			((driver->functions->finalize = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_finalize")) == NULL) ||
 			((driver->functions->connect = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_connect")) == NULL) ||
 			((driver->functions->disconnect = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_disconnect")) == NULL) ||
 			((driver->functions->fetch_row = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_fetch_row")) == NULL) ||
@@ -1204,6 +1368,12 @@ static dbi_driver_t *_get_driver(const char *filename) {
 			((driver->functions->list_tables = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_list_tables")) == NULL) ||
 			((driver->functions->query = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_query")) == NULL) ||
 			((driver->functions->query_null = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_query_null")) == NULL) ||
+			((driver->functions->transaction_begin = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_transaction_begin")) == NULL) ||
+			((driver->functions->transaction_commit = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_transaction_commit")) == NULL) ||
+			((driver->functions->transaction_rollback = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_transaction_rollback")) == NULL) ||
+			((driver->functions->savepoint = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_savepoint")) == NULL) ||
+			((driver->functions->rollback_to_savepoint = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_rollback_to_savepoint")) == NULL) ||
+			((driver->functions->release_savepoint = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_release_savepoint")) == NULL) ||
 			((driver->functions->quote_string = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_quote_string")) == NULL) ||
 			((driver->functions->quote_binary = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_quote_binary")) == NULL) ||
 			((driver->functions->conn_quote_string = my_dlsym(dlhandle, DLSYM_PREFIX "dbd_conn_quote_string")) == NULL) ||
@@ -1221,6 +1391,22 @@ static dbi_driver_t *_get_driver(const char *filename) {
 		}
 		driver->functions->register_driver(&driver->info, &custom_functions_list, &driver->reserved_words);
 		driver->custom_functions = NULL; /* in case no custom functions are available */
+
+		/* this is a weird hack for the sake of dlsym
+		   portability. I can't imagine why using dlhandle
+		   fails on FreeBSD except that dlsym may expect a
+		   leading underscore in front of the function
+		   names. But then, why does RTLD_NEXT work? */
+		/* update 2008-11-28: this is most likely a FreeBSD
+		   bug which was fixed in 6.3. TODO: follow up on this
+		   once I have a 6.3 or later box */
+		if (DLSYM_HANDLE) { /* most OSes */
+		  symhandle = dlhandle;
+		}
+		else { /* the BSDs */
+ 		  symhandle = RTLD_NEXT;
+		}
+
 		while (custom_functions_list && custom_functions_list[idx] != NULL) {
 			custom = malloc(sizeof(dbi_custom_function_t));
 			if (!custom) {
@@ -1232,15 +1418,21 @@ static dbi_driver_t *_get_driver(const char *filename) {
 			}
 			custom->next = NULL;
 			custom->name = custom_functions_list[idx];
-			snprintf(function_name, 256, DLSYM_PREFIX "dbd_%s", custom->name);
-			custom->function_pointer = my_dlsym(dlhandle, function_name);
-			if (!custom->function_pointer) {
-				_free_custom_functions(driver);
-				free(custom); /* not linked into the list yet */
-				free(driver->functions);
-				free(driver->filename);
-				free(driver);
-				return NULL;
+/* 			snprintf(function_name, 256, DLSYM_PREFIX "dbd_%s", custom->name); */
+/* 			printf("loading %s<<\n", custom->name); */
+			my_dlerror(); /* clear any previous errors */
+			custom->function_pointer = my_dlsym(symhandle, custom->name);
+/* 			if (!custom->function_pointer) { */
+			if ((error = my_dlerror()) != NULL) {
+/*  			  fprintf(STDERR, error); */
+
+			  /* this usually fails because a function was
+			     renamed, is no longer available, or not
+			     yet available. Simply skip this
+			     function */
+			  free(custom); /* not linked into the list yet */
+			  idx++;
+			  continue;
 			}
 			if (driver->custom_functions == NULL) {
 				driver->custom_functions = custom;
@@ -1289,7 +1481,7 @@ static int _update_internal_conn_list(dbi_conn_t *conn, const int operation) {
 	 * operation = -1: remove conn
 	 *           =  0: just look for conn (return 1 if found, -1 if not)
 	 *           =  1: add conn */
-	dbi_conn_t *curconn = rootconn;
+	dbi_conn_t *curconn = conn->driver->dbi_inst->rootconn;
 	dbi_conn_t *prevconn = NULL;
 
 	if ((operation == -1) || (operation == 0)) {
@@ -1301,7 +1493,7 @@ static int _update_internal_conn_list(dbi_conn_t *conn, const int operation) {
 		if (operation == 0) return 1;
 		else if (operation == -1) {
 			if (prevconn) prevconn->next = curconn->next;
-			else rootconn = NULL;
+			else conn->driver->dbi_inst->rootconn = NULL;
 			return 0;
 		}
 	}
@@ -1313,7 +1505,7 @@ static int _update_internal_conn_list(dbi_conn_t *conn, const int operation) {
 			curconn->next = conn;
 		}
 		else {
-			rootconn = conn;
+			conn->driver->dbi_inst->rootconn = conn;
 		}
 		conn->next = NULL;
 		return 0;
@@ -1468,8 +1660,19 @@ unsigned int _isolate_attrib(unsigned int attribs, unsigned int rangemin, unsign
 	/* hahaha! who woulda ever thunk strawberry's code would come in handy? */
 	// find first (highest) bit set; methods not using FP can be found at 
 	// http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
-	unsigned startbit = log(rangemin)/log(2);
-	unsigned endbit = log(rangemax)/log(2);
+/* 	unsigned startbit = log(rangemin)/log(2); */
+/* 	unsigned endbit = log(rangemax)/log(2); */
+  unsigned int startbit = 0;
+  unsigned int endbit = 0;
+
+  while (rangemin >>= 1) {
+    startbit++;
+  }
+
+  while (rangemax >>= 1) {
+    endbit++;
+  }
+
 	// construct mask from startbit to endbit inclusive
 	unsigned attrib_mask = ((1<<(endbit+1))-1) ^ ((1<<startbit)-1);
 	return attribs & attrib_mask;
@@ -1534,6 +1737,7 @@ static int _safe_dlclose(dbi_driver_t *driver) {
   }
   return 1;
 }
+
 
 #if HAVE_MACH_O_DYLD_H
 static int dyld_error_set=0;

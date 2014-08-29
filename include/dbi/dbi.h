@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbi.h.in,v 1.3 2008/02/06 19:34:27 mhoenicka Exp $
+ * $Id: dbi.h.in,v 1.13 2012/12/03 00:13:30 mhoenicka Exp $
  */
 
 #ifndef __DBI_H__
@@ -32,15 +32,18 @@ extern "C" {
 #include <time.h>
 #include <limits.h> /* for the *_MAX definitions */
 
+#ifndef LIBDBI_API_DEPRECATED
 #if defined _MSC_VER && _MSC_VER >= 1300
 #define LIBDBI_API_DEPRECATED __declspec(deprecated)
 #elif defined __GNUC__ && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 2))
 #define LIBDBI_API_DEPRECATED __attribute__((__deprecated__))
 #else
-#define LIBDBI_API_DEPRECATED
+#define LIBDBI_API_DEPRECATED /**/
+#endif
 #endif
 
 /* opaque type definitions */
+typedef void * dbi_inst;
 typedef void * dbi_driver;
 typedef void * dbi_conn;
 typedef void * dbi_result;
@@ -96,10 +99,13 @@ typedef struct {
 /* function callback definitions */
 typedef void (*dbi_conn_error_handler_func)(dbi_conn, void *);
 
-/* definitions of the library interface versions */
-#define LIBDBI_LIB_CURRENT 1
+/* definitions of the libtool library interface versions */
+#define LIBDBI_LIB_CURRENT 2
 #define LIBDBI_LIB_REVISION 0
-#define LIBDBI_LIB_AGE 0
+#define LIBDBI_LIB_AGE 1
+
+/* definition of the libdbi version */
+#define LIBDBI_VERSION ((0 * 10000) + (9 * 100) + (0))
 
 /* values for the int in field_types[] */
 #define DBI_TYPE_INTEGER 1
@@ -159,13 +165,20 @@ typedef void (*dbi_conn_error_handler_func)(dbi_conn, void *);
   /* needed by get_engine_version functions */
 #define VERSIONSTRING_LENGTH 32
 
-int dbi_initialize(const char *driverdir);
-void dbi_shutdown();
+int dbi_initialize_r(const char *driverdir, dbi_inst *pInst);
+int LIBDBI_API_DEPRECATED dbi_initialize(const char *driverdir);
+void dbi_shutdown_r(dbi_inst Inst);
+void LIBDBI_API_DEPRECATED dbi_shutdown();
 const char *dbi_version();
-int dbi_set_verbosity(int verbosity);
+unsigned int dbi_version_numeric();
+int dbi_set_verbosity_r(int verbosity, dbi_inst Inst);
+int LIBDBI_API_DEPRECATED dbi_set_verbosity(int verbosity);
 
-dbi_driver dbi_driver_list(dbi_driver Current); /* returns next driver. if current is NULL, return first driver. */
-dbi_driver dbi_driver_open(const char *name); /* goes thru linked list until it finds the right one */
+dbi_driver dbi_driver_list_r(dbi_driver Current, dbi_inst Inst);
+dbi_driver LIBDBI_API_DEPRECATED dbi_driver_list(dbi_driver Current); /* returns next driver. if current is NULL, return first driver. */
+dbi_driver dbi_driver_open_r(const char *name, dbi_inst Inst);
+dbi_driver LIBDBI_API_DEPRECATED dbi_driver_open(const char *name); /* goes thru linked list until it finds the right one */
+dbi_inst dbi_driver_get_instance(dbi_driver Driver);
 int dbi_driver_is_reserved_word(dbi_driver Driver, const char *word);
 void *dbi_driver_specific_function(dbi_driver Driver, const char *name);
 size_t LIBDBI_API_DEPRECATED dbi_driver_quote_string_copy(dbi_driver Driver, const char *orig, char **newstr);
@@ -182,7 +195,8 @@ const char *dbi_driver_get_url(dbi_driver Driver);
 const char *dbi_driver_get_version(dbi_driver Driver);
 const char *dbi_driver_get_date_compiled(dbi_driver Driver);
 
-dbi_conn dbi_conn_new(const char *name); /* shortcut for dbi_conn_open(dbi_driver_open("foo")) */
+dbi_conn dbi_conn_new_r(const char *name, dbi_inst Inst);
+dbi_conn LIBDBI_API_DEPRECATED dbi_conn_new(const char *name); /* shortcut for dbi_conn_open(dbi_driver_open("foo")) */
 dbi_conn dbi_conn_open(dbi_driver Driver); /* returns an actual instance of the conn */
 dbi_driver dbi_conn_get_driver(dbi_conn Conn);
 int dbi_conn_set_option(dbi_conn Conn, const char *key, const char *value); /* if value is NULL, remove option from list */
@@ -223,6 +237,13 @@ size_t dbi_conn_quote_binary_copy(dbi_conn Conn, const unsigned char *orig, size
 size_t dbi_conn_escape_string_copy(dbi_conn Conn, const char *orig, char **newstr);
 size_t dbi_conn_escape_string(dbi_conn Conn, char **orig);
 size_t dbi_conn_escape_binary_copy(dbi_conn Conn, const unsigned char *orig, size_t from_length, unsigned char **newstr);
+
+int dbi_conn_transaction_begin(dbi_conn Conn);
+int dbi_conn_transaction_commit(dbi_conn Conn);
+int dbi_conn_transaction_rollback(dbi_conn Conn);
+int dbi_conn_savepoint(dbi_conn Conn, const char *savepoint);
+int dbi_conn_rollback_to_savepoint(dbi_conn Conn, const char *savepoint);
+int dbi_conn_release_savepoint(dbi_conn Conn, const char *savepoint);
 
 dbi_conn dbi_result_get_conn(dbi_result Result);
 int dbi_result_free(dbi_result Result);
@@ -323,6 +344,12 @@ char *dbi_result_get_string_copy_idx(dbi_result Result, unsigned int fieldidx);
 unsigned char *dbi_result_get_binary_copy_idx(dbi_result Result, unsigned int fieldidx);
 
 time_t dbi_result_get_datetime_idx(dbi_result Result, unsigned int fieldidx);
+
+/* get_as* functions */
+long long dbi_result_get_as_longlong(dbi_result Result, const char *fieldname);
+long long dbi_result_get_as_longlong_idx(dbi_result Result, unsigned int fieldidx);
+char *dbi_result_get_as_string_copy(dbi_result Result, const char *fieldname);
+char *dbi_result_get_as_string_copy_idx(dbi_result Result, unsigned int fieldidx);
 
 /*
 int dbi_result_bind_char_idx(dbi_result Result, unsigned int fieldidx, char *bindto);

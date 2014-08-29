@@ -9,14 +9,17 @@ CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
 TITLE="Database Independent Abstraction Layer for C"
 HREF="index.html"><LINK
+REL="UP"
+TITLE="Driver Infrastructure"
+HREF="driverinfrastructure.html"><LINK
 REL="PREVIOUS"
-TITLE="Contact Info"
-HREF="contact.html"><LINK
+TITLE="Driver Infrastructure"
+HREF="driverinfrastructure.html"><LINK
 REL="NEXT"
-TITLE="Setting driver capabilities"
-HREF="settingdrivercaps.html"></HEAD
+TITLE="Database directories"
+HREF="databasedirectories.html"></HEAD
 ><BODY
-CLASS="CHAPTER"
+CLASS="SECTION"
 BGCOLOR="#FFFFFF"
 TEXT="#000000"
 LINK="#0000FF"
@@ -42,7 +45,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="contact.html"
+HREF="driverinfrastructure.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -50,13 +53,13 @@ ACCESSKEY="P"
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
-></TD
+>Chapter 2. Driver Infrastructure</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="settingdrivercaps.html"
+HREF="databasedirectories.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -66,33 +69,141 @@ ACCESSKEY="N"
 ALIGN="LEFT"
 WIDTH="100%"></DIV
 ><DIV
-CLASS="CHAPTER"
+CLASS="SECTION"
 ><H1
+CLASS="SECTION"
 ><A
 NAME="DRIVERCAPS"
-></A
->Chapter 2. Driver Capabilities</H1
-><DIV
-CLASS="TOC"
-><DL
-><DT
-><B
->Table of Contents</B
-></DT
-><DT
->2.1. <A
-HREF="settingdrivercaps.html"
->Setting driver capabilities</A
-></DT
-><DT
->2.2. <A
-HREF="requireddrivercaps.html"
->Required driver capabilities</A
-></DT
-></DL
-></DIV
+>2.1. Driver Capabilities</A
+></H1
 ><P
 >Driver capabilities are essentially an array of key/value pairs which the drivers set when they're loaded. Both the libdbi framework and programs linked against libdbi can query these capabilities and adjust their behaviour accordingly.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="SETTINGDRIVERCAPS"
+>2.1.1. Setting driver capabilities</A
+></H2
+><P
+>The perfect place to set driver capabilities is in the <A
+HREF="driverfuncs-infrastructure.html#DBD-INITIALIZE"
+>dbd_initialize</A
+> function which is called right after the driver is loaded by libdbi. To set capabilities, call the _dbd_register_driver_cap function for each of them:</P
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN73"
+></A
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>void <B
+CLASS="FSFUNC"
+>_dbd_register_driver_cap</B
+></CODE
+>(dbi_driver_t *<VAR
+CLASS="PDPARAM"
+>driver</VAR
+>, const char *<VAR
+CLASS="PDPARAM"
+>capname</VAR
+>, int <VAR
+CLASS="PDPARAM"
+>value</VAR
+>);</CODE
+></P
+><P
+></P
+></DIV
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Arguments</DT
+><DD
+><P
+><TT
+CLASS="LITERAL"
+>driver</TT
+>: the driver as passed to <A
+HREF="driverfuncs-infrastructure.html#DBD-INITIALIZE"
+>dbd_initialize</A
+>.</P
+><P
+><TT
+CLASS="LITERAL"
+>capname</TT
+>: A string containing the name of the capability (i.e. the key).</P
+><P
+><TT
+CLASS="LITERAL"
+>value</TT
+>: The value of the capability.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="REQUIREDDRIVERCAPS"
+>2.1.2. Required driver capabilities</A
+></H2
+><P
+>libdbi currently queries only one driver capability.</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>safe_dlclose</DT
+><DD
+><P
+>A nonzero value indicates that the driver can safely be unloaded from memory by calling dlclose(). A value of 0 (zero) indicates that the driver should not be unloaded when libdbi is shut down. Drivers must not be unloaded if they, or any library they are linked against, install exit handlers via atexit() as this would leave dangling pointers, causing segfaults on some platforms.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="RECOMMENDEDDRIVERCAPS"
+>2.1.3. Recommended driver capabilities</A
+></H2
+><P
+>Two driver capabilities may be of interest to programs using libdbi and should therefore be published by drivers:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>transaction_support</DT
+><DD
+><P
+>A nonzero value indicates that the database engine supports transactions. Therefore functions to start, commit, or roll back transactions may be safely used.</P
+></DD
+><DT
+>savepoint_support</DT
+><DD
+><P
+>A nonzero value indicates that the database engine supports savepoints within transactions. Functions to set, release, and roll back to savepoints may be safely used.</P
+></DD
+></DL
+></DIV
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -110,7 +221,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="contact.html"
+HREF="driverinfrastructure.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -128,7 +239,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="settingdrivercaps.html"
+HREF="databasedirectories.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -138,17 +249,21 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Contact Info</TD
+>Driver Infrastructure</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
->&nbsp;</TD
+><A
+HREF="driverinfrastructure.html"
+ACCESSKEY="U"
+>Up</A
+></TD
 ><TD
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Setting driver capabilities</TD
+>Database directories</TD
 ></TR
 ></TABLE
 ></DIV

@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using libdbi in multithreaded applications</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Database Independent Abstraction Layer for C"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="libdbi in a Nutshell (Quickstart Guide)"
+HREF="quickstart.html"><LINK
+REL="PREVIOUS"
+TITLE="Loading libdbi at runtime"
+HREF="loadinglibdbi.html"><LINK
+REL="NEXT"
+TITLE="Adding libdbi to your project"
+HREF="addtoproject.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Database Independent Abstraction Layer for C: libdbi Programmer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="loadinglibdbi.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. libdbi in a Nutshell (Quickstart Guide)</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="addtoproject.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="THREADS"
+>3.4. Using libdbi in multithreaded applications</A
+></H1
+><P
+>With some precautions, libdbi can be used in multithreaded applications. One way to do this is to initialize separate libdbi instances in each thread. If this is not an option and several threads have to share a single instance, you currently need to protect certain libdbi function calls with mutexes. These functions are <A
+HREF="reference-query.html#DBI-CONN-QUERY"
+>dbi_conn_query</A
+>, <A
+HREF="reference-query.html#DBI-CONN-PING"
+>dbi_conn_ping</A
+>, and <A
+HREF="reference-conn.html#DBI-CONN-ERROR"
+>dbi_conn_error</A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="loadinglibdbi.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="addtoproject.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Loading libdbi at runtime</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="quickstart.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Adding libdbi to your project</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

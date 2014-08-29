@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Transactions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Database Independent Abstraction Layer for C"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Transactions and Savepoints"
+HREF="transactions-savepoints.html"><LINK
+REL="PREVIOUS"
+TITLE="Transactions and Savepoints"
+HREF="transactions-savepoints.html"><LINK
+REL="NEXT"
+TITLE="Savepoints"
+HREF="savepoints.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Database Independent Abstraction Layer for C: libdbi Programmer's Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="transactions-savepoints.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Transactions and Savepoints</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="savepoints.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="TRANSACTIONS"
+>5.1. Transactions</A
+></H1
+><P
+>To find out at runtime whether or not the driver associated with the current connection supports transactions, use the function <A
+HREF="reference-conn.html#DBI-CONN-CAP-GET"
+>dbi_conn_cap_get</A
+> to query if the "transaction_support" capability is nonzero. Drivers should throw an error if transaction-related functions are called although the database engine does not support them. If a database engine supports both transaction-safe and non-transaction safe table types, the behaviour of the driver depends on its implementation.</P
+><P
+>Transactions are usually handled by a standard sequence of actions. First, the transaction is set up. Then one or more commands are executed. Based on the result of these commands, the transaction can either be aborted (rolled back) or be written to the database (committed). libdbi provides the following functions to handle these tasks:</P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Start a transaction</DT
+><DD
+><P
+>Some database engines start a transaction after a connection is established, and after each transaction is finished. These database engines do not strictly need a command to start a transaction. Others work in autocommit mode, i.e. each command is automatically committed. Some of the latter can be coerced to use transactions, while others simply do not provide explicit transaction management. As a database abstraction layer, libdbi has to cover all cases by providing an explicit command to start transactions, see <A
+HREF="reference-conn.html#DBI-CONN-TRANSACTION-BEGIN"
+>dbi_conn_transaction_begin</A
+>.</P
+></DD
+><DT
+>Commit a transaction</DT
+><DD
+><P
+>If no errors occurred during a transaction, the changes can actually be written to the database by calling <A
+HREF="reference-conn.html#DBI-CONN-TRANSACTION-COMMIT"
+>dbi_conn_transaction_commit</A
+>.</P
+></DD
+><DT
+>Rollback a transaction</DT
+><DD
+><P
+>If an error occurred during a transaction, the database can be reverted to the state when the transaction started by calling <A
+HREF="reference-conn.html#DBI-CONN-TRANSACTION-ROLLBACK"
+>dbi_conn_transaction_rollback</A
+>.</P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="transactions-savepoints.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="savepoints.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Transactions and Savepoints</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="transactions-savepoints.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Savepoints</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
