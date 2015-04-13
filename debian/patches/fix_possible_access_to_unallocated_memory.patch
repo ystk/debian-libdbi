@@ -1,0 +1,24 @@
+Description: fixed possible access to unallocated memory
+ fixed possible access to unallocated memory if dealing with empty or
+ nonexistent input strings
+Author: Markus Hoenicka <markus.hoenicka@mhoenicka.de>
+Origin: upstream, https://sourceforge.net/p/libdbi/libdbi/ci/b18cb39d712789db747556a7642cb37624681de0/
+Last-Update: 2014-09-21
+
+---
+
+--- libdbi-0.9.0.orig/src/dbd_helper.c
++++ libdbi-0.9.0/src/dbd_helper.c
+@@ -601,6 +601,12 @@ size_t _dbd_encode_binary(const unsigned
+ size_t _dbd_decode_binary(const unsigned char *in, unsigned char *out){
+   int i, e;
+   unsigned char c;
++
++  if (in == NULL
++      || *in == NULL) {
++    return (size_t)0;
++  }
++
+   e = *(in++);
+   i = 0;
+   while( (c = *(in++))!=0 ){

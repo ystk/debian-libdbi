@@ -1,0 +1,26 @@
+Description: fixed memory leak if not connected
+Author: Markus Hoenicka <markus.hoenicka@mhoenicka.de>
+Origin: upstream, https://sourceforge.net/p/libdbi/libdbi/ci/2846c87ad3d1aa5c919f27379b8b7f6a56881492/
+Bug-Debian: https://bugs.debian.org/745980
+Last-Update: 2014-09-21
+
+---
+
+--- libdbi-0.9.0.orig/src/dbi_main.c
++++ libdbi-0.9.0/src/dbi_main.c
+@@ -588,7 +588,14 @@ int dbi_conn_disjoin_results(dbi_conn Co
+ void dbi_conn_close(dbi_conn Conn) {
+ 	dbi_conn_t *conn = Conn;
+ 	
+-	if (!conn || !(conn->connection)) return;
++	if (!conn) {
++	  return;
++	}
++
++	if (!(conn->connection)) {
++	  free(conn);
++	  return;
++	}
+ 	
+ 	_update_internal_conn_list(conn, -1);
+ 	

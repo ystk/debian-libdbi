@@ -1,3 +1,18 @@
+libdbi (0.9.0-4) unstable; urgency=medium
+
+  * Backport fix for double-free in dbi_shutdown_r() (closes: #764130).
+  * Update Standards-Version to 3.9.6 .
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Sat, 01 Nov 2014 12:06:55 +0000
+
+libdbi (0.9.0-3) unstable; urgency=medium
+
+  * Backport important upstream patches:
+    - fix memory leak if not connected (closes: #745980),
+    - fix possible access to unallocated memory.
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Sun, 21 Sep 2014 08:54:25 +0000
+
 libdbi (0.9.0-2) unstable; urgency=medium
 
   * Add missing copyright holders and fixed syntax (Closes: #736240)

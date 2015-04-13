@@ -1,0 +1,32 @@
+Description: dbi_conn_close(): do not return early if conn->connection is NULL
+Origin: upstream, http://sourceforge.net/p/libdbi/libdbi/ci/cdc447994cf767ae03fa6b0ca663a6b2a89469dd/tree/src/dbi_main.c?diff=06e738a61a06f3e6720c84210b7cce47b82e0c7f
+Bug-Debian: https://bugs.debian.org/764130
+Author: Markus Hoenicka <markus.hoenicka@mhoenicka.de>
+Last-Update: 2014-11-01
+
+---
+
+--- libdbi-0.9.0.orig/src/dbi_main.c
++++ libdbi-0.9.0/src/dbi_main.c
+@@ -592,13 +592,17 @@ void dbi_conn_close(dbi_conn Conn) {
+ 	  return;
+ 	}
+ 
+-	if (!(conn->connection)) {
+-	  free(conn);
+-	  return;
+-	}
++	/* if (!(conn->connection)) { */
++	/*   free(conn); */
++	/*   return; */
++	/* } */
+ 	
+ 	_update_internal_conn_list(conn, -1);
+ 	
++	/* give drivers a chance to clean up even if there is no
++	   connection. It is assumed that
++	   driver->functions->disconnects() checks the existence of
++	   conn->connection */
+ 	conn->driver->functions->disconnect(conn);
+ 	conn->driver = NULL;
+ 	dbi_conn_clear_options(Conn);
