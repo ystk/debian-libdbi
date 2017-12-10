@@ -1,3 +1,10 @@
+libdbi (0.9.0-4+deb8u1) jessie; urgency=medium
+
+  * Backport fix to re-enable a call to _error_handler() that was commented
+    out for no obvious reason in dbi_result_next_row() .
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Sun, 29 Oct 2017 18:18:56 +0000
+
 libdbi (0.9.0-4) unstable; urgency=medium
 
   * Backport fix for double-free in dbi_shutdown_r() (closes: #764130).

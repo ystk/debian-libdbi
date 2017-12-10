@@ -1,0 +1,19 @@
+commit 88b8477d57153b9f736dd19d432d3b7ab1c49073
+Author: mhoenicka <markus.hoenicka@mhoenicka.de>
+Date:   Sat Oct 28 01:54:33 2017 +0200
+
+    re-enabled a call to _error_handler() that was commented out for no obvious reason
+
+diff --git a/src/dbi_result.c b/src/dbi_result.c
+index 232d0ec..1e1b0be 100644
+--- a/src/dbi_result.c
++++ b/src/dbi_result.c
+@@ -174,7 +174,7 @@ int dbi_result_next_row(dbi_result Result) {
+   _reset_conn_error(RESULT->conn);
+ 
+   if (!dbi_result_has_next_row(Result)) {
+-/*     _error_handler(RESULT->conn, DBI_ERROR_BADIDX); */
++    _error_handler(RESULT->conn, DBI_ERROR_BADIDX);
+     return 0;
+   }
+   return dbi_result_seek_row(Result, RESULT->currowidx+1);

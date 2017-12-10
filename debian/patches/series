@@ -1,3 +1,4 @@
 fix_memory_leak_if_not_connected.patch
 fix_possible_access_to_unallocated_memory.patch
 fix_double-free_in_dbi_shutdown_r.patch
+re-enable_call_to_error_handler.patch
